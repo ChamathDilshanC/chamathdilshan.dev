@@ -37,7 +37,14 @@ export async function apiGet<T>(path: string, cache: CacheOpts = {}): Promise<T>
   return (await res.json()) as T;
 }
 
-/** Uncached read that returns null on 404 instead of throwing. */
+/**
+ * Read that returns null instead of throwing when the data is missing or the
+ * backend is unreachable.
+ *
+ * Use this for anything rendered at build time: a prerender must not fail
+ * because the API is briefly down. Pages that genuinely cannot render without
+ * the data should use apiGet and let the error surface.
+ */
 export async function apiGetOptional<T>(
   path: string,
   cache: CacheOpts = {},
@@ -45,8 +52,14 @@ export async function apiGetOptional<T>(
   try {
     return await apiGet<T>(path, cache);
   } catch (err) {
-    if (err instanceof ApiError && err.status === 404) return null;
-    throw err;
+    if (err instanceof ApiError) {
+      if (err.status === 404) return null;
+      console.warn(`[api] ${path} responded ${err.status} — rendering without it`);
+      return null;
+    }
+    // Network / DNS / timeout — the backend is unreachable.
+    console.warn(`[api] ${path} unreachable — rendering without it`);
+    return null;
   }
 }
 

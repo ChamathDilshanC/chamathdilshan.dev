@@ -37,7 +37,10 @@ export async function POST(req: NextRequest) {
   const tags = Array.isArray(body.tags) ? body.tags.filter((t): t is string => typeof t === "string") : [];
   const paths = Array.isArray(body.paths) ? body.paths.filter((p): p is string => typeof p === "string") : [];
 
-  for (const tag of tags) revalidateTag(tag);
+  // { expire: 0 } — the content just changed, so drop the entries now rather
+  // than letting them ride out a cacheLife profile. (Next 16 requires the
+  // second argument.)
+  for (const tag of tags) revalidateTag(tag, { expire: 0 });
   for (const path of paths) revalidatePath(path);
 
   return NextResponse.json(
