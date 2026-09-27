@@ -1,0 +1,202 @@
+[
+  {
+    "name": "sorceress",
+    "source": "dark_fantasy_sorceress_crystal_staff.glb",
+    "originalBytes": 134422216,
+    "bytes": 1522540,
+    "bounds": {
+      "min": [
+        -0.4425049424171448,
+        0.0007629448416816731,
+        -0.28799440460646114
+      ],
+      "max": [
+        0.4427796006202698,
+        0.9807739264867513,
+        0.28628534739540307
+      ]
+    },
+    "animations": 0,
+    "vertices": 360066
+  },
+  {
+    "name": "necromancer",
+    "source": "dark_necromancer_-_corrupted_staff__skulls.glb",
+    "originalBytes": 124054224,
+    "bytes": 1242620,
+    "bounds": {
+      "min": [
+        -0.295501708984375,
+        -0.4901733302652084,
+        -0.3974304120608144
+      ],
+      "max": [
+        0.29736328125,
+        0.48974609570959526,
+        0.3817138516014436
+      ]
+    },
+    "animations": 0,
+    "vertices": 239934
+  },
+  {
+    "name": "fighter",
+    "source": "decepticon_fighter_transformers.glb",
+    "originalBytes": 7501768,
+    "bytes": 238076,
+    "bounds": {
+      "min": [
+        -2.2114988214187576,
+        -0.9835479516488018,
+        -3.2203310437426467
+      ],
+      "max": [
+        2.2114988214187576,
+        1.629446679887622,
+        2.980855646263308
+      ]
+    },
+    "animations": 0,
+    "vertices": 28576
+  },
+  {
+    "name": "mango",
+    "source": "mango_tree.glb",
+    "originalBytes": 16309300,
+    "bytes": 1129260,
+    "bounds": {
+      "min": [
+        -3.4414257234016254,
+        -0.07310370335054185,
+        -3.209866188954029
+      ],
+      "max": [
+        3.2488288153224687,
+        6.784505788284319,
+        3.5508189973829545
+      ]
+    },
+    "animations": 0,
+    "vertices": 104359
+  },
+  {
+    "name": "forest",
+    "source": "more_realistic_trees_free.glb",
+    "originalBytes": 124249644,
+    "bytes": 2691636,
+    "bounds": {
+      "min": [
+        -7.4633002281188965,
+        -0.0253886841237545,
+        -3.218841552734375
+      ],
+      "max": [
+        8.600454330444336,
+        7.3086442947387695,
+        4.111579895019531
+      ]
+    },
+    "animations": 0,
+    "vertices": 262760
+  },
+  {
+    "name": "cybertron",
+    "source": "transformers-_the_planet_cybertron.glb",
+    "originalBytes": 6978516,
+    "bytes": 826072,
+    "bounds": {
+      "min": [
+        -42377.580860515125,
+        10406.394908550428,
+        -39938.54182696715
+      ],
+      "max": [
+        38111.107559191994,
+        87410.784895394,
+        45956.63066707365
+      ]
+    },
+    "animations": 0,
+    "vertices": 57372
+  },
+  {
+    "name": "bugatti",
+    "source": "bugati_divo.glb",
+    "originalBytes": 16360492,
+    "bytes": 1229224,
+    "bounds": {
+      "min": [
+        -11.096272395923734,
+        0.04616408967643837,
+        -24.385387351864097
+      ],
+      "max": [
+        11.089778827503324,
+        12.87747216401742,
+        22.58384006582683
+      ]
+    },
+    "animations": 0,
+    "vertices": 184219
+  },
+  {
+    "name": "mclaren",
+    "source": "mclaren_ultimate_vision_gt.glb",
+    "originalBytes": 11926100,
+    "bytes": 883708,
+    "bounds": {
+      "min": [
+        -1.3697967640894149,
+        -0.013785513969827292,
+        -3.091139023288576
+      ],
+      "max": [
+        1.3697967640894149,
+        1.3655119278287209,
+        2.7778049879453306
+      ]
+    },
+    "animations": 0,
+    "vertices": 114041
+  },
+  {
+    "name": "ssc",
+    "source": "exmods_ssc_tuatara_aggressor.glb",
+    "originalBytes": 29257352,
+    "bytes": 2321636,
+    "bounds": {
+      "min": [
+        -1.06051504611969,
+        -0.0019145660335200547,
+        -2.1045761108398438
+      ],
+      "max": [
+        1.06051504611969,
+        1.1337260007858276,
+        2.7732529640197754
+      ]
+    },
+    "animations": 0,
+    "vertices": 182611
+  },
+  {
+    "name": "nissan",
+    "source": "nissan_super_snowland_sdc_performancetm.glb",
+    "originalBytes": 41140220,
+    "bytes": 1803300,
+    "bounds": {
+      "min": [
+        -0.8114852905273438,
+        -0.09408354759216309,
+        -1.7395760330064427
+      ],
+      "max": [
+        0.8114852905273438,
+        1.4956032650455615,
+        1.5551876896606132
+      ]
+    },
+    "animations": 0,
+    "vertices": 425864
+  }
+]

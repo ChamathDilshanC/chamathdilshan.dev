@@ -41,3 +41,9 @@ Thumbs.db
 .claude/
 .cursor/
 CLAUDE.local.md
+
+# Local browser verification and performance reports
+artifacts/
+test-results/
+playwright-report/
+prototype.png

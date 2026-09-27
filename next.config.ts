@@ -3,14 +3,22 @@ import type { NextConfig } from "next";
 const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_HOST ?? "*.supabase.co";
 
 const securityHeaders = [
-  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
 ];
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Loopback and this workstation's LAN preview must hydrate like localhost.
+  allowedDevOrigins: ["127.0.0.1", "192.168.1.26"],
 
   // Media is served from Supabase Storage only.  (CACHING.md §12)
   images: {
