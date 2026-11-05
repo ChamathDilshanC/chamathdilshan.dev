@@ -93,6 +93,19 @@ html.lenis body {
 }
 
 /*
+ * The public site scrolls without visible scrollbars; the wheel, trackpad,
+ * keyboard and touch all still scroll. The admin panel keeps its scrollbars.
+ */
+html:has(.protected),
+.protected * {
+  scrollbar-width: none;
+}
+html:has(.protected)::-webkit-scrollbar,
+.protected *::-webkit-scrollbar {
+  display: none;
+}
+
+/*
  * Content protection for the public site (see components/layout/content-guard.tsx):
  * no text selection, no dragging, no long-press save menu, images ignore the
  * pointer (so there is no "Save image" target), and printing shows nothing.
