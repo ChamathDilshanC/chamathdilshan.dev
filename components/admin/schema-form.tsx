@@ -6,7 +6,7 @@
  * The API owns the content model; adding a field to a backend schema adds it
  * here with no frontend change. `widget` hints in the schema choose richer
  * inputs: image / image-ref / media / gallery pickers backed by Cloudinary,
- * tags, paragraphs, textarea and project-ref.
+ * a theSVG brand-icon search, tags, paragraphs, textarea and project-ref.
  */
 
 import {
@@ -26,11 +26,13 @@ import useSWR from "swr";
 import { fetcher, type FieldErrors, type JsonSchema, type JsonSchemaRoot, type ProjectOut } from "@/lib/admin/api";
 import { defaultFor, itemLabel, joinPath, labelFor, resolve, typeOf } from "@/lib/admin/schema";
 import { cn } from "@/lib/utils";
+import { BrandIconField } from "./brand-icon-field";
 import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
 import { Button, Card, Field, IconButton, Input, Select, Switch, Textarea } from "./ui";
 
-type Ctx = { root: JsonSchemaRoot; errors: FieldErrors };
-const FormContext = createContext<Ctx>({ root: {}, errors: {} });
+/** `values` is the whole top-level value, for widgets that read a sibling field. */
+type Ctx = { root: JsonSchemaRoot; errors: FieldErrors; values: Record<string, unknown> };
+const FormContext = createContext<Ctx>({ root: {}, errors: {}, values: {} });
 
 type NodeProps = {
   schema: JsonSchema;
@@ -58,7 +60,7 @@ export function SchemaForm({
   /** Split the top-level fields into titled cards. Fields not listed go last. */
   groups?: FieldGroup[];
 }) {
-  const ctx = { root: schema, errors };
+  const ctx = { root: schema, errors, values: value };
   const props = resolve(schema, schema).schema.properties ?? {};
   const set = (key: string) => (next: unknown) => onChange({ ...value, [key]: next });
 
@@ -100,7 +102,7 @@ function FieldGrid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 gap-x-4 gap-y-5 m:grid-cols-2">{children}</div>;
 }
 
-const WIDE_WIDGETS = new Set(["textarea", "paragraphs", "image", "image-ref", "media", "gallery", "tags"]);
+const WIDE_WIDGETS = new Set(["textarea", "paragraphs", "image", "image-ref", "media", "gallery", "tags", "brand-icon"]);
 
 function FieldCell({ schema, children }: { schema: JsonSchema; children: ReactNode }) {
   const { root } = useContext(FormContext);
@@ -124,6 +126,8 @@ function Node(props: NodeProps) {
   switch (schema.widget) {
     case "image":
       return <ImageUrlField {...p} nullable={nullable} />;
+    case "brand-icon":
+      return <BrandIcon {...p} nullable={nullable} />;
     case "image-ref":
       return <ImageRefField {...p} nullable={nullable} />;
     case "media":
@@ -596,6 +600,23 @@ function MediaSlot({
         onSelect={([item]) => item && onPick(item.url, item.kind, item.alt)}
       />
     </div>
+  );
+}
+
+/** theSVG search, seeded with the entity's `name` (a skill's, for example). */
+function BrandIcon({ schema, value, onChange, path, label, nullable }: NodeProps & { nullable: boolean }) {
+  const { values } = useContext(FormContext);
+  const name = typeof values.name === "string" ? values.name : undefined;
+  return (
+    <BrandIconField
+      label={label}
+      description={schema.description}
+      error={useError(path)}
+      value={value}
+      onChange={onChange}
+      nullable={nullable}
+      suggest={name}
+    />
   );
 }
 
