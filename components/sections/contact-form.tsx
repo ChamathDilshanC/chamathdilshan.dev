@@ -6,6 +6,7 @@ import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { DropdownSelect, type DropdownOption } from "@/components/ui/dropdown-select";
 import { useSiteContent } from "@/components/layout/site-content";
 import { cn } from "@/lib/cn";
+import { ContactError, sendContactMessage, type ContactField } from "@/lib/contact";
 import { EASE_SOFT } from "@/lib/motion";
 import { toast } from "@/lib/toast";
 
@@ -38,12 +39,19 @@ function Field({ label, children, delay }: { label: string; children: ReactNode;
   );
 }
 
-type FieldName = "firstName" | "lastName" | "email" | "category";
+type FieldName = ContactField;
+
+const problems: Record<FieldName, [title: string, description: string]> = {
+  firstName: ["First name missing", "Tell me what to call you."],
+  lastName: ["Last name missing", "Add your last name so I know who is writing."],
+  email: ["Check your email", "I need a valid address to reply to you."],
+  category: ["Pick a category", "Choose what you need help with."],
+};
 
 /**
- * Contact form. There is no contact endpoint on the backend yet, so a valid
- * submission opens the visitor's mail app with the message filled in, and a
- * toast confirms it. Wire it to an API route when one exists.
+ * Contact form. A valid submission goes to the API, which emails it to me
+ * through Resend with the visitor as Reply-To. Nothing opens on the visitor's
+ * side; a toast confirms the message was sent.
  */
 export function ContactForm() {
   const { site, "page.contact": contact } = useSiteContent();
@@ -55,8 +63,12 @@ export function ContactForm() {
   }));
   const formRef = useRef<HTMLFormElement>(null);
   const [invalid, setInvalid] = useState<FieldName | null>(null);
+  const [sending, setSending] = useState(false);
+  // Bumped after a successful send to remount (and so clear) the category picker.
+  const [round, setRound] = useState(0);
 
-  const fail = (name: FieldName, title: string, description: string) => {
+  const fail = (name: FieldName) => {
+    const [title, description] = problems[name];
     setInvalid(name);
     toast.error(title, { description });
     const target =
@@ -66,11 +78,11 @@ export function ContactForm() {
     target?.focus();
   };
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (sending) return;
     const form = event.currentTarget;
     const data = new FormData(form);
-    if (data.get("website")) return; // Honeypot: real visitors never fill this in.
 
     const firstName = String(data.get("firstName") ?? "").trim();
     const lastName = String(data.get("lastName") ?? "").trim();
@@ -79,26 +91,42 @@ export function ContactForm() {
     const message = String(data.get("message") ?? "").trim();
     const emailInput = form.querySelector<HTMLInputElement>('[name="email"]');
 
-    if (!firstName) return fail("firstName", "First name missing", "Tell me what to call you.");
-    if (!lastName) return fail("lastName", "Last name missing", "Add your last name so I know who is writing.");
-    if (!email || (emailInput && !emailInput.validity.valid))
-      return fail("email", "Check your email", "I need a valid address to reply to you.");
+    if (!firstName) return fail("firstName");
+    if (!lastName) return fail("lastName");
+    if (!email || (emailInput && !emailInput.validity.valid)) return fail("email");
     const category = categories.find((option) => option.value === categoryValue);
-    if (!category) return fail("category", "Pick a category", "Choose what you need help with.");
+    if (!category) return fail("category");
 
     setInvalid(null);
-    const name = `${firstName} ${lastName}`;
-    const subject = `${category.title} enquiry from ${name}`;
-    const body = `${message}\n\n${name}\n${email}`;
-    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSending(true);
+    try {
+      await sendContactMessage({
+        firstName,
+        lastName,
+        email,
+        category: category.title,
+        message,
+        website: String(data.get("website") ?? ""),
+      });
+    } catch (err) {
+      if (err instanceof ContactError && err.field) return fail(err.field);
+      toast.error("Message not sent", {
+        description: err instanceof Error ? err.message : "Something went wrong. Try again shortly.",
+        action: {
+          label: "Copy my email",
+          onClick: () => void navigator.clipboard?.writeText(site.email),
+          successLabel: "Copied",
+        },
+      });
+      return;
+    } finally {
+      setSending(false);
+    }
 
+    form.reset();
+    setRound((n) => n + 1);
     toast.success(`Thanks, ${firstName}!`, {
-      description: "Your email app is opening with your message. Press send and I will reply within one working day.",
-      action: {
-        label: "Copy email instead",
-        onClick: () => void navigator.clipboard?.writeText(site.email),
-        successLabel: "Copied",
-      },
+      description: "Your message is in my inbox. I will reply to you by email within one working day.",
     });
   };
 
@@ -163,6 +191,7 @@ export function ContactForm() {
           Category*
         </span>
         <DropdownSelect
+          key={round}
           id="contact-category"
           name="category"
           labelId="contact-category-label"
@@ -190,9 +219,11 @@ export function ContactForm() {
       <motion.div className="h-10 w-full" {...reveal(0.75)}>
         <button
           type="submit"
-          className="flex h-full w-full cursor-pointer items-center justify-center rounded-[10px] bg-white-a16 transition-colors duration-200 hover:bg-white-a50"
+          disabled={sending}
+          aria-busy={sending}
+          className="flex h-full w-full cursor-pointer items-center justify-center rounded-[10px] bg-white-a16 transition-colors duration-200 hover:bg-white-a50 disabled:cursor-wait disabled:opacity-60 disabled:hover:bg-white-a16"
         >
-          <span className="type-body-3 select-none">Submit</span>
+          <span className="type-body-3 select-none">{sending ? "Sending…" : "Submit"}</span>
         </button>
       </motion.div>
     </form>
