@@ -10,7 +10,8 @@ import type { Skill } from "@/lib/types/content";
 /**
  * Grey tile with a skill's name and, centred under it, its logo when one is
  * set (usually a theSVG icon). The logo blurs into focus when the tile comes
- * into view and sits on a soft glow of its own colours that grows on hover.
+ * into view and sits on a soft glow of its own colours that grows on hover
+ * (on touch screens, while the tile crosses the middle of the screen).
  * A logo that fails to load is dropped rather than shown broken.
  */
 export function SkillTile({ skill, className }: { skill: Skill; className?: string }) {
@@ -39,14 +40,14 @@ export function SkillTile({ skill, className }: { skill: Skill; className?: stri
         >
           <span
             aria-hidden
-            className="absolute inset-0 scale-125 opacity-25 blur-md transition-[opacity,scale] duration-500 ease-out group-hover/skill:scale-160 group-hover/skill:opacity-55"
+            className="touch-glow absolute inset-0 scale-125 opacity-25 blur-md transition-[opacity,scale] duration-500 ease-out group-hover/skill:scale-160 group-hover/skill:opacity-55"
           >
             <Image {...image} alt="" className="object-contain" />
           </span>
           <Image
             {...image}
             alt=""
-            className="object-contain transition-[scale] duration-500 ease-out group-hover/skill:scale-110"
+            className="touch-pop object-contain transition-[scale] duration-500 ease-out group-hover/skill:scale-110"
             onError={() => setBroken(true)}
           />
         </motion.span>

@@ -221,7 +221,7 @@ export function ContactForm() {
           type="submit"
           disabled={sending}
           aria-busy={sending}
-          className="flex h-full w-full cursor-pointer items-center justify-center rounded-[10px] bg-white-a16 transition-colors duration-200 hover:bg-white-a50 disabled:cursor-wait disabled:opacity-60 disabled:hover:bg-white-a16"
+          className="touch-press flex h-full w-full cursor-pointer items-center justify-center rounded-[10px] bg-white-a16 transition-colors duration-200 hover:bg-white-a50 disabled:cursor-wait disabled:opacity-60 disabled:hover:bg-white-a16"
         >
           <span className="type-body-3 select-none">{sending ? "Sending…" : "Submit"}</span>
         </button>

@@ -10,7 +10,7 @@ export function WorkGrid({ projects, className }: { projects: readonly Project[]
   return (
     <div className={cn("grid w-full grid-cols-1 gap-x-2.5 gap-y-10 m:grid-cols-2", className)}>
       {projects.map((project, i) => (
-        <Link key={project.slug} href={`/projects/${project.slug}`} className="block">
+        <Link key={project.slug} href={`/projects/${project.slug}`} className="touch-press block">
           <Reveal duration={0.8} delay={0.1 * (i % 2)}>
             <WorkCard project={project} sizes="(min-width: 810px) 50vw, 100vw" />
           </Reveal>
@@ -31,7 +31,7 @@ export function PostGrid({ posts, columns = 2, className }: { posts: readonly Po
       )}
     >
       {posts.map((post, i) => (
-        <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
+        <Link key={post.slug} href={`/blog/${post.slug}`} className="touch-press block">
           <Reveal duration={0.8} delay={0.1 * (i % columns)}>
             <BlogCard
               post={post}

@@ -23,15 +23,15 @@ function StackCard({
   // Each card shrinks a little more the earlier it sits in the pile.
   const scale = useTransform(progress, [index / total, 1], [1, 1 - (total - 1 - index) * 0.05]);
   return (
-    <motion.div className="w-full origin-top l:sticky" style={stacked ? { scale, top: 50 + 40 * index } : undefined}>
-      <Link href={`/projects/${project.slug}`} className="block bg-white-token">
+    <motion.div className="stack-rise w-full origin-top l:sticky" style={stacked ? { scale, top: 50 + 40 * index } : undefined}>
+      <Link href={`/projects/${project.slug}`} className="touch-press block bg-white-token">
         <WorkCard project={project} sizes="(min-width: 1200px) 800px, 100vw" />
       </Link>
     </motion.div>
   );
 }
 
-/** Case studies that pile up on top of each other while the list scrolls (desktop). */
+/** Case studies that pile up on top of each other while the list scrolls (desktop); below desktop each grows into place. */
 export function WorkStack({ projects }: { projects: readonly Project[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const stacked = useMediaQuery(DESKTOP);

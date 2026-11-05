@@ -5,10 +5,11 @@ import { Media } from "./media";
 
 /**
  * Slow zoom-in while the nearest `group/hero` is hovered, easing back out on
- * leave. Hover-capable pointers only, and never for reduced motion.
+ * leave. Hover-capable pointers only, and never for reduced motion. Touch
+ * screens get a slow ambient drift instead (`hero-drift` in globals.css).
  */
 export const heroZoom =
-  "transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/hero:scale-[1.06]";
+  "hero-drift transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/hero:scale-[1.06]";
 
 type Props = {
   /** The sharp photo or video; it fills the 16:9 frame. */
@@ -32,7 +33,7 @@ export function HeroPhoto({ children, fill, zoom = false, className }: Props) {
   return (
     <div className={cn("absolute inset-0 overflow-clip", className)}>
       <div className="animate-enter absolute inset-0" style={heroImageEnter}>
-        <div className={cn("absolute inset-0", zoom && heroZoom)}>
+        <div className={cn("absolute inset-0", zoom ? heroZoom : "hero-drift")}>
           {/* Stretched rather than cropped, so its floor and horizon line up with the photo's. */}
           {fill && (
             <div aria-hidden className="absolute -inset-[4%] hidden blur-2xl [@media(min-aspect-ratio:16/9)]:block">

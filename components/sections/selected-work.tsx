@@ -10,7 +10,7 @@ function SeeAllPill({ count, image }: { count: number; image: string }) {
   return (
     <Link
       href="/projects"
-      className="group flex h-min w-min cursor-pointer items-center justify-start gap-4 overflow-clip rounded-[5px] bg-neutral-50 py-0.75 pr-4 pl-0.75"
+      className="touch-press group flex h-min w-min cursor-pointer items-center justify-start gap-4 overflow-clip rounded-[5px] bg-neutral-50 py-0.75 pr-4 pl-0.75"
     >
       <span className="relative flex h-16 w-16 flex-none overflow-hidden rounded-[2.5px] bg-black-token">
         <span className="absolute inset-0 transition-[scale,opacity] duration-400 ease-[cubic-bezier(0.64,0.03,0.21,1)] group-hover:scale-110 group-hover:opacity-90">

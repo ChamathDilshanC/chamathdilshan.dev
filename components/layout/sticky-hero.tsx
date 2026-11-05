@@ -68,6 +68,7 @@ export function StickyHero({ children, className, speed = 110 }: Props) {
   return (
     <motion.section
       ref={ref}
+      data-sticky-hero
       className={cn(
         "sticky top-0 z-1 flex h-svh w-full flex-none flex-col items-center overflow-clip will-change-[transform,opacity]",
         className,

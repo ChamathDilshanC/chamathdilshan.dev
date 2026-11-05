@@ -15,7 +15,7 @@ export function Journal({ journal, posts }: { journal: HomeJournal; posts: Post[
       </div>
       <div className="grid w-full max-w-360 grid-cols-1 gap-x-2.5 gap-y-10 m:grid-cols-2 l:grid-cols-4">
         {posts.slice(0, 4).map((post, i) => (
-          <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
+          <Link key={post.slug} href={`/blog/${post.slug}`} className="touch-press block">
             <Reveal duration={0.8} delay={0.1 * i}>
               <BlogCard post={post} sizes="(min-width: 1200px) 25vw, (min-width: 810px) 50vw, 100vw" />
             </Reveal>

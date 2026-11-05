@@ -60,13 +60,13 @@ function ReelCard() {
       href={reel.href}
       target="_blank"
       rel="noreferrer"
-      className="group flex h-50.75 w-76.5 cursor-pointer flex-col items-center justify-center gap-3.5 overflow-clip rounded-[5px] bg-neutral-50 p-1"
+      className="touch-press group flex h-50.75 w-76.5 cursor-pointer flex-col items-center justify-center gap-3.5 overflow-clip rounded-[5px] bg-neutral-50 p-1"
     >
-      <span className="relative flex w-full flex-1 overflow-hidden rounded-[2.5px] bg-black-token">
+      <span className="touch-frame relative flex w-full flex-1 overflow-hidden rounded-[2.5px] bg-black-token">
         <Media
           src={reel.image}
           sizes="306px"
-          className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+          className="touch-settle transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
         />
       </span>
       <span className="flex w-full items-center justify-between px-2.5 pb-2.5">
