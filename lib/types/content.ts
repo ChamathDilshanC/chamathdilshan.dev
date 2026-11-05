@@ -131,6 +131,9 @@ export type ListPage = {
 
 export type AboutPage = { title: string; image: string; imageAlt: string; label: string; blurb: string };
 
+/** Heading for the work timeline; the roles come from /api/experience. */
+export type AboutExperience = { title: string; aside: string };
+
 export type ProcessStep = { number: string; title: string; body: string; included: string[] };
 export type AboutProcess = {
   title: string;
@@ -179,6 +182,7 @@ export type SiteContent = {
   "page.projects": ListPage;
   "page.blog": ListPage;
   "page.about": AboutPage;
+  "about.experience": AboutExperience;
   "about.process": AboutProcess;
   "about.toolbox": AboutToolbox;
   "about.recognition": AboutRecognition;
@@ -240,4 +244,24 @@ export type Skill = {
   featured: boolean;
   /** In the Stack grid on the about page. */
   visible: boolean;
+};
+
+/** One position at a company. Months are "YYYY-MM"; no end month means current. */
+export type ExperienceRole = {
+  title: string;
+  employmentType: string;
+  start: string;
+  end: string | null;
+  summary: string;
+  highlights: string[];
+  skills: string[];
+};
+
+/** An employer and every role held there, newest role first (as the API sends it). */
+export type Experience = {
+  company: string;
+  companyUrl: string | null;
+  logo: string | null;
+  location: string;
+  roles: ExperienceRole[];
 };

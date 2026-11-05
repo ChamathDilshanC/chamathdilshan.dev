@@ -11,6 +11,7 @@ import {
   IconMenu2,
   IconPhoto,
   IconStack2,
+  IconTimeline,
   IconX,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -29,6 +30,7 @@ const NAV = [
   { href: `${ADMIN}/sections`, label: "Sections", icon: IconLayoutGrid },
   { href: `${ADMIN}/projects`, label: "Projects", icon: IconBriefcase },
   { href: `${ADMIN}/blog`, label: "Journal", icon: IconArticle },
+  { href: `${ADMIN}/experience`, label: "Experience", icon: IconTimeline },
   { href: `${ADMIN}/skills`, label: "Skills", icon: IconStack2 },
   { href: `${ADMIN}/media`, label: "Media", icon: IconPhoto },
   { href: `${ADMIN}/audit-logs`, label: "Activity", icon: IconHistory },

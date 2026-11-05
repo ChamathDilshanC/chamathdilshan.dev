@@ -6,29 +6,31 @@ import { Parallax } from "@/components/motion/parallax";
 import { Reveal } from "@/components/motion/reveal";
 import { ScrollShift } from "@/components/motion/scroll-shift";
 import { Ticker } from "@/components/motion/ticker";
+import { ExperienceTimeline } from "@/components/sections/experience";
 import { Journal } from "@/components/sections/journal";
 import { Numbers } from "@/components/sections/numbers";
 import { Media } from "@/components/ui/media";
 import { PlusList } from "@/components/ui/plus-list";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SkillTile } from "@/components/ui/skill-tile";
-import { getPosts, getSiteContent, getSkills } from "@/lib/content";
+import { getExperience, getPosts, getSiteContent, getSkills } from "@/lib/content";
 import type { AboutProcess, AboutRecognition, AboutStack, AboutToolbox, Skill } from "@/lib/types/content";
 import { STATEMENT } from "@/lib/typography";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Who I am, how I work and the tools I use.",
+  description: "Who I am, where I have worked, how I work and the tools I use.",
   alternates: { canonical: "/about" },
 };
 
-function Process({ process }: { process: AboutProcess }) {
+/** `curtain`: slide over the sticky hero (only when this is the first section after it). */
+function Process({ process, curtain = true }: { process: AboutProcess; curtain?: boolean }) {
   return (
     <section
       id="about"
       className="relative z-1 flex w-full flex-none flex-col items-center justify-start gap-12.5 bg-white-token px-6 py-20 m:pb-25"
     >
-      <Curtain className="bg-white-token" />
+      {curtain && <Curtain className="bg-white-token" />}
       <div className="relative flex w-full max-w-360 flex-col items-center justify-center gap-15 m:gap-20">
         <SectionTitle title={process.title} aside={process.aside} />
         <LineReveal text={process.statement} className={`${STATEMENT} text-black-token [--indent:22%] l:[--indent:37.5%]`} />
@@ -158,12 +160,19 @@ function StackGrid({ stack, skills }: { stack: AboutStack; skills: Skill[] }) {
 }
 
 export default async function AboutPage() {
-  const [content, skills, posts] = await Promise.all([getSiteContent(), getSkills(), getPosts()]);
+  const [content, skills, posts, experience] = await Promise.all([
+    getSiteContent(),
+    getSkills(),
+    getPosts(),
+    getExperience(),
+  ]);
   const about = content["page.about"];
+  const hasExperience = experience.some((company) => company.roles.length > 0);
   return (
     <>
       <AboutHero title={about.title} label={about.label} blurb={about.blurb} image={about.image} imageAlt={about.imageAlt} />
-      <Process process={content["about.process"]} />
+      <ExperienceTimeline heading={content["about.experience"]} experience={experience} curtain />
+      <Process process={content["about.process"]} curtain={!hasExperience} />
       <Toolbox toolbox={content["about.toolbox"]} />
       <Recognition recognition={content["about.recognition"]} />
       <StackGrid stack={content["about.stack"]} skills={skills} />

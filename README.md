@@ -52,7 +52,7 @@ hooks/         client-side hooks
 The public site follows an editorial agency layout: Geist type, a black and
 white palette with an orange glow, and slow inertial scrolling.
 
-- **Copy, images, projects, articles and skills** are edited in the admin
+- **Copy, images, projects, articles, work experience and skills** are edited in the admin
   panel at `/ChamathDilshanC` and read from the API (`lib/content.ts`).
   `content/*.ts` holds the defaults: the build-time fallback when the API is
   unreachable and the database seed (`npm run export:seed`). Setup:

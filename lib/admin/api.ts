@@ -140,6 +140,28 @@ export type SkillOut = {
   sortOrder: number;
 };
 
+export type ExperienceRoleOut = {
+  title: string;
+  employmentType: string;
+  start: string;
+  end: string | null;
+  summary: string;
+  highlights: string[];
+  skills: string[];
+};
+
+export type ExperienceOut = {
+  id: number;
+  company: string;
+  companyUrl: string | null;
+  logo: string | null;
+  location: string;
+  roles: ExperienceRoleOut[];
+  published: boolean;
+  updatedAt: string;
+  [key: string]: unknown;
+};
+
 export type AuditEntry = { id: number; at: string; actor: string; action: string; target: string; ip: string };
 
 export type Overview = {

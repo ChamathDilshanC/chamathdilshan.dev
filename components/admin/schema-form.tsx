@@ -172,6 +172,8 @@ function TextField({ schema, value, onChange, path, label, nullable, multiline }
         <Textarea {...common} rows={text.length > 240 ? 6 : 3} onChange={(e) => set(e.target.value)} />
       ) : schema.format === "date" ? (
         <Input {...common} type="date" onChange={(e) => set(e.target.value)} />
+      ) : schema.format === "month" ? (
+        <Input {...common} type="month" placeholder="YYYY-MM" onChange={(e) => set(e.target.value)} />
       ) : (
         <Input {...common} type="text" onChange={(e) => set(e.target.value)} />
       )}

@@ -315,6 +315,11 @@ export const defaultContent: SiteContent = {
     blurb: "An independent engineer building web products for clients worldwide.",
   },
 
+  "about.experience": {
+    title: "Experience",
+    aside: "Roles, teams and promotions",
+  },
+
   "about.process": {
     title: "Process",
     aside: "Three steps, one engineer",

@@ -12,13 +12,14 @@
  *    good version of the page instead of replacing real content with defaults.
  */
 
+import { defaultExperience } from "@/content/experience";
 import { defaultPosts } from "@/content/posts";
 import { defaultProjects } from "@/content/projects";
 import { defaultContent } from "@/content/site";
 import { defaultSkills } from "@/content/skills";
 import { ApiError, apiGet } from "@/lib/api";
 import { TAG, TTL, post as postTag, project as projectTag } from "@/lib/cache-tags";
-import type { Post, Project, SiteContent, Skill } from "@/lib/types/content";
+import type { Experience, Post, Project, SiteContent, Skill } from "@/lib/types/content";
 
 const canUseDefaults = () =>
   process.env.NEXT_PHASE === "phase-production-build" || process.env.NODE_ENV !== "production";
@@ -92,4 +93,9 @@ export async function getPost(slug: string): Promise<Post | null> {
 
 export async function getSkills(): Promise<Skill[]> {
   return read("/api/skills", [TAG.skills], TTL.content, () => defaultSkills);
+}
+
+/** Companies with their roles, most recent first. */
+export async function getExperience(): Promise<Experience[]> {
+  return read("/api/experience", [TAG.experience], TTL.content, () => defaultExperience);
 }

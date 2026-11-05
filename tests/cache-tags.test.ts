@@ -25,6 +25,8 @@ describe("cache tags", () => {
       projects: "projects",
       blog: "blog",
       research: "research",
+      skills: "skills",
+      experience: "experience",
     });
   });
 });

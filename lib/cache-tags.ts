@@ -14,6 +14,7 @@ export const TAG = {
   blog: "blog",
   research: "research",
   skills: "skills",
+  experience: "experience",
 } as const;
 
 export const project = (slug: string) => `project:${slug}`;

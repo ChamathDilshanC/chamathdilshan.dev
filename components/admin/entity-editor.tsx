@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import useSWR from "swr";
 import { adminFetch, errorMessage, type JsonSchemaRoot } from "@/lib/admin/api";
 import { defaultFor, withDefaults } from "@/lib/admin/schema";
@@ -10,9 +11,27 @@ import type { FieldGroup } from "./schema-form";
 import { ADMIN } from "./shell";
 import { Badge, ErrorBanner, PageHeader, Spinner } from "./ui";
 
-type Kind = "project" | "post";
+type Kind = "project" | "post" | "experience";
 
-const CONFIG: Record<Kind, { api: string; list: string; listLabel: string; noun: string; site: string; groups: FieldGroup[] }> = {
+type Config = {
+  api: string;
+  list: string;
+  listLabel: string;
+  noun: string;
+  /** Public URL: the prefix before the slug, or the page itself for records without a slug. */
+  site: string;
+  groups: FieldGroup[];
+  /** The field that names a record (default "title"). */
+  titleKey?: string;
+  /** Badge labels for published / not published. */
+  badge?: [string, string];
+  /** Header text for records without a slug. */
+  intro?: string;
+  /** The API reorders what is saved, so reload the form from the saved record. */
+  reloadOnSave?: boolean;
+};
+
+const CONFIG: Record<Kind, Config> = {
   project: {
     api: "/api/admin/projects",
     list: `${ADMIN}/projects`,
@@ -43,6 +62,22 @@ const CONFIG: Record<Kind, { api: string; list: string; listLabel: string; noun:
       { title: "Visibility", fields: ["published"] },
     ],
   },
+  experience: {
+    api: "/api/admin/experience",
+    list: `${ADMIN}/experience`,
+    listLabel: "Experience",
+    noun: "company",
+    site: "/about",
+    titleKey: "company",
+    badge: ["Visible", "Hidden"],
+    intro: "Shown on /about. Roles are listed newest first, joined into one path.",
+    reloadOnSave: true,
+    groups: [
+      { title: "Company", fields: ["company", "location", "companyUrl", "logo"] },
+      { title: "Roles", fields: ["roles"] },
+      { title: "Visibility", fields: ["published"] },
+    ],
+  },
 };
 
 const META = new Set(["id", "sortOrder", "createdAt", "updatedAt"]);
@@ -57,6 +92,8 @@ export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
   const router = useRouter();
   const schema = useSWR<JsonSchemaRoot>(`/api/admin/schemas/${kind}`, { revalidateOnFocus: false });
   const record = useSWR<Record<string, unknown>>(id ? `${cfg.api}/${id}` : null, { revalidateOnFocus: false });
+  // Bumped after a save when the API reorders what it stores, to remount the form from the saved record.
+  const [saves, setSaves] = useState(0);
 
   const back = { href: cfg.list, label: cfg.listLabel };
   const failure = schema.error ?? record.error;
@@ -78,28 +115,32 @@ export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
 
   const slug = typeof record.data?.slug === "string" ? record.data.slug : null;
   const published = record.data?.published === true;
+  const name = record.data?.[cfg.titleKey ?? "title"];
+  const [shown, hidden] = cfg.badge ?? ["Published", "Draft"];
+  const page = slug ? `${cfg.site}/${slug}` : cfg.intro && record.data ? cfg.site : null;
 
   return (
     <FormEditor
-      key={id ?? "new"}
+      key={`${id ?? "new"}-${saves}`}
       back={back}
       title={
         <span className="flex flex-wrap items-center gap-3">
-          {(record.data?.title as string | undefined) || `New ${cfg.noun}`}
-          {record.data && <Badge tone={published ? "success" : "neutral"}>{published ? "Published" : "Draft"}</Badge>}
+          {(typeof name === "string" && name) || `New ${cfg.noun}`}
+          {record.data && <Badge tone={published ? "success" : "neutral"}>{published ? shown : hidden}</Badge>}
         </span>
       }
-      description={slug ? `${cfg.site}/${slug}` : `Fill in the basics and save. It stays a draft until you publish it.`}
+      description={cfg.intro ?? (slug ? `${cfg.site}/${slug}` : `Fill in the basics and save. It stays a draft until you publish it.`)}
       schema={root}
       initial={initial}
       groups={cfg.groups}
       saveLabel={id ? "Save changes" : `Create ${cfg.noun}`}
-      viewHref={slug && published ? `${cfg.site}/${slug}` : null}
+      viewHref={page && published ? page : null}
       deleteLabel={`Delete ${cfg.noun}`}
       onSave={async (value) => {
         if (id) {
           const saved = await adminFetch<Record<string, unknown>>(`${cfg.api}/${id}`, { method: "PUT", body: value });
           await record.mutate(saved, { revalidate: false });
+          if (cfg.reloadOnSave) setSaves((n) => n + 1);
         } else {
           const created = await adminFetch<{ id: number }>(cfg.api, { method: "POST", body: value });
           router.replace(`${cfg.list}/${created.id}`);
