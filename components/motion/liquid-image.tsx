@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
+import { cloudinaryLoader, isCloudinary } from "@/lib/media";
 
 /*
  * Liquid hover: a small GPU fluid simulation (stable fluids) that drives the
@@ -165,6 +166,18 @@ void main() {
   float alpha = frameAlpha((vUv - 0.5) / u_inner + 0.5 - push);
   gl_FragColor = vec4(color * alpha, alpha);
 }`;
+
+// next/image's default device widths. Picking the one the browser picked for
+// the <img> underneath reuses its cached copy instead of fetching the original.
+const WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048, 3840];
+
+/** A resized, compressed Cloudinary rendition at about the drawn size; other images as they are. */
+function textureSrc(src: string, cssWidth: number): string {
+  if (!isCloudinary(src)) return src;
+  const needed = cssWidth * (window.devicePixelRatio || 1);
+  const width = WIDTHS.find((w) => w >= needed) ?? 3840;
+  return cloudinaryLoader({ src, width });
+}
 
 type GL = WebGLRenderingContext | WebGL2RenderingContext;
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
@@ -464,22 +477,36 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
 
       const img = new Image();
       img.decoding = "async";
+      // Cross-origin pixels (Cloudinary) are off-limits to WebGL unless the
+      // image is fetched in CORS mode; Cloudinary answers with
+      // Access-Control-Allow-Origin: *. Without this the texture upload
+      // throws and the canvas paints black over the photo.
+      img.crossOrigin = "anonymous";
       img.onload = () => {
         if (disposed || !gl) return;
+        const texture = gl.createTexture();
+        try {
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        } catch {
+          // Never draw an empty texture: leave the plain image showing.
+          gl.deleteTexture(texture);
+          return fail();
+        } finally {
+          gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        }
         imageRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
-        image = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, image);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        image = texture;
         lastMove = performance.now();
         kick();
       };
-      img.src = src;
+      img.onerror = fail;
+      img.src = textureSrc(src, box.clientWidth);
     };
 
     const onMove = (event: PointerEvent) => {
