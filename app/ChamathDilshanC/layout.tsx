@@ -7,6 +7,8 @@
  * Route protection here is UX only — the real authorization boundary is the
  * server-side check on /api/admin/* in the backend.
  */
+import { Toaster } from "@/components/layout/toaster";
+
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 export const revalidate = 0;
@@ -17,5 +19,10 @@ export const metadata = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <div className="admin-shell">{children}</div>;
+  return (
+    <div className="admin-shell min-h-svh bg-neutral-50 font-inter text-black-token antialiased">
+      <Toaster />
+      {children}
+    </div>
+  );
 }

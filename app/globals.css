@@ -329,3 +329,10 @@ html.lenis body {
     transform: none;
   }
 }
+
+/* Admin panel: light surfaces, so focus rings are dark. */
+.admin-shell :focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+  box-shadow: none;
+}
