@@ -1,5 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Geist, Inter } from "next/font/google";
 import "./globals.css";
+
+const geist = Geist({ subsets: ["latin"], variable: "--ff-geist", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--ff-inter", display: "swap" });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chamathdilshan.dev";
 
@@ -20,9 +24,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${geist.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   );

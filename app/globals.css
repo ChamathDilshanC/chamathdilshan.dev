@@ -1,11 +1,331 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light dark;
+/*
+ * Design tokens.
+ * Breakpoints: m = tablet (810px), l = desktop (1200px).
+ */
+@theme {
+  --breakpoint-m: 810px;
+  --breakpoint-l: 1200px;
+
+  --color-white-token: #fff;
+  --color-white-token-2: #fff;
+  --color-white-a85: #ffffffd9;
+  --color-white-a50: #ffffff80;
+  --color-white-a16: #ffffff29;
+  --color-white-a10: #ffffff1a;
+  --color-black-token: #000;
+  --color-black-a60: #0009;
+  --color-black-a16: #00000029;
+  --color-black-a10: #0000001a;
+  --color-neutral-50: #f7f7f7;
+  --color-neutral-900: #111;
+
+  --color-glow-orange: #f74d04;
+  --color-glow-red: #cb2602;
+  --color-glow-deep: #870f01;
+  --color-glow-maroon: #400903;
+  --color-glow-teal: #017e99;
+  --color-glow-navy: #011e2d;
+
+  --font-geist: var(--ff-geist), sans-serif;
+  --font-inter: var(--ff-inter), sans-serif;
+
+  --ease-hero: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swap: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-soft: cubic-bezier(0.44, 0, 0.34, 0.98);
 }
 
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
+:root {
+  --hero-duration: 1.3s;
+  --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  body {
+    font-family: var(--ff-inter), sans-serif;
+    color: #000;
+    background: var(--color-black-token);
+    font-size: 16px;
+    line-height: 1.2;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  img {
+    max-width: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #000;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/*
+ * Content protection for the public site (see components/layout/content-guard.tsx):
+ * no text selection, no dragging, no long-press save menu, images ignore the
+ * pointer (so there is no "Save image" target), and printing shows nothing.
+ * Form fields stay selectable and editable.
+ */
+.protected {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.protected img,
+.protected a,
+.protected canvas,
+.protected video {
+  -webkit-user-drag: none;
+}
+.protected img {
+  pointer-events: none;
+}
+.protected :is(input, textarea, select, [contenteditable="true"]) {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+@media print {
+  .protected {
+    display: none !important;
+  }
+}
+
+/*
+ * Type scale. Kept in the components layer so colour and size utilities
+ * always win when they are combined with a type class.
+ */
+@layer components {
+  .type-heading-1 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-black-token);
+    font-size: 195px;
+    line-height: 196px;
+    font-weight: 500;
+    letter-spacing: -7.8px;
+  }
+
+  .type-heading-2 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-white-token);
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 500;
+    letter-spacing: -2.1px;
+
+    @media (width >= 810px) {
+      font-size: 70px;
+      line-height: 70px;
+      letter-spacing: -3px;
+    }
+    @media (width >= 1200px) {
+      font-size: 100px;
+      line-height: 100px;
+    }
+  }
+
+  .type-heading-3 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-black-token);
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: 500;
+    letter-spacing: -2.1px;
+
+    @media (width >= 810px) {
+      font-size: 56px;
+      line-height: 56px;
+    }
+    @media (width >= 1200px) {
+      font-size: 70px;
+      line-height: 70px;
+    }
+  }
+
+  .type-heading-4 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-black-token);
+    font-size: 40px;
+    line-height: 40px;
+    font-weight: 500;
+    letter-spacing: -1.7px;
+
+    @media (width >= 810px) {
+      font-size: 56px;
+      line-height: 56px;
+    }
+  }
+
+  .type-body-1 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-white-token);
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+
+  /* Long-form copy on light backgrounds. */
+  .type-body-2 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-black-a60);
+    font-size: 17px;
+    line-height: 22px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+  }
+
+  .type-body-3 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-white-token);
+    font-size: 15px;
+    line-height: 20.5px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+  }
+
+  /* Small copy on dark backgrounds. */
+  .type-body-4 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-white-a50);
+    font-size: 15px;
+    line-height: 20.5px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+  }
+
+  .type-body-6 {
+    font-family: var(--ff-geist), sans-serif;
+    color: var(--color-white-a50);
+    font-size: 12.5px;
+    line-height: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .type-link-1 {
+    color: var(--color-white-token);
+    transition: color 0.2s ease;
+  }
+  .type-link-1:hover {
+    color: var(--color-white-a85);
+  }
+
+  /* Paragraph rhythm for long-form copy. */
+  .prose-flow > * + * {
+    margin-top: 20px;
+  }
+
+  /* Pseudo-element border that follows border-radius. */
+  .bordered::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+
+  /* Footer glow: grain over an orange/red radial with a teal accent. */
+  .glow-gradient {
+    background-color: var(--color-neutral-900);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      radial-gradient(140% 105% at 70% 120%, var(--color-glow-orange) 0%, var(--color-glow-red) 24%, var(--color-glow-deep) 44%, color-mix(in srgb, var(--color-glow-maroon) 75%, transparent) 64%, transparent 86%),
+      radial-gradient(60% 60% at 4% 108%, color-mix(in srgb, var(--color-glow-teal) 50%, transparent) 0%, color-mix(in srgb, var(--color-glow-navy) 45%, transparent) 45%, transparent 75%);
+  }
+
+  .glow-grain {
+    background-color: var(--color-neutral-900);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/*
+ * Entrance animation driven by CSS variables, so server-rendered markup can
+ * animate in before hydration:
+ *   --enter-y, --enter-scale, --enter-opacity, --enter-delay,
+ *   --enter-duration, --enter-ease
+ */
+@keyframes enter {
+  0% {
+    opacity: var(--enter-opacity, 0.001);
+    transform: translate3d(0, var(--enter-y, 0), 0) scale(var(--enter-scale, 1));
+  }
+}
+
+@keyframes letter-rise {
+  0% {
+    transform: translateY(105%);
+  }
+}
+
+@layer utilities {
+  .animate-enter {
+    animation: enter var(--enter-duration, 0.5s) var(--enter-ease, cubic-bezier(0.44, 0, 0.34, 0.98))
+      var(--enter-delay, 0s) both;
+  }
+
+  .wordmark-letter {
+    display: inline-block;
+    animation: letter-rise var(--hero-duration) var(--hero-ease) both;
+    animation-delay: calc(var(--wordmark-delay, 0.6s) + var(--i) * 80ms);
+  }
+
+  /* Letter-by-letter reveal (LetterReveal). */
+  .letter-in {
+    display: inline-block;
+    text-indent: 0;
+    opacity: 0.001;
+    transform: translateY(10px);
+  }
+  [data-in] .letter-in {
+    animation: letter-in 0.6s var(--hero-ease) forwards;
+    animation-delay: calc(var(--i) * var(--stagger, 12ms));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .letter-in {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@keyframes letter-in {
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

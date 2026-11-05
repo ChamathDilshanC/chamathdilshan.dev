@@ -1,0 +1,56 @@
+import { Curtain } from "@/components/motion/curtain";
+import { LineReveal } from "@/components/motion/line-reveal";
+import { Parallax } from "@/components/motion/parallax";
+import { Reveal } from "@/components/motion/reveal";
+import { ArrowLink } from "@/components/ui/arrow-link";
+import { Media } from "@/components/ui/media";
+import { SectionTitle } from "@/components/ui/section-title";
+import type { HomeAbout as HomeAboutContent } from "@/lib/types/content";
+import { STATEMENT } from "@/lib/typography";
+import { LabelledRow, StatRows } from "./stat-rows";
+
+export function HomeAbout({ about }: { about: HomeAboutContent }) {
+  return (
+    <section
+      id="about"
+      className="relative z-1 flex w-full flex-none flex-col items-center justify-start bg-white-token px-6 pt-6 pb-2"
+    >
+      <Curtain className="bg-white-token" />
+
+      <div className="relative flex w-full max-w-360 flex-none flex-col items-center justify-center gap-15 m:gap-20">
+        <SectionTitle title={about.title} aside={about.aside} />
+        <LineReveal text={about.statement} className={`${STATEMENT} text-black-token [--indent:22%] l:[--indent:37.5%]`} />
+      </div>
+
+      <div className="h-10 w-full flex-none m:h-12.5 l:h-27.5" />
+
+      <div className="relative flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:justify-between l:gap-0">
+        <Reveal duration={0.6} className="relative h-110 w-full flex-none m:h-svh l:h-110 l:w-82">
+          <Parallax className="relative h-full w-full rounded-[5px]">
+            <Media src={about.image} alt={about.imageAlt} sizes="(min-width: 1200px) 328px, 100vw" />
+          </Parallax>
+        </Reveal>
+
+        <div className="hidden w-57.25 flex-none self-stretch l:block" />
+
+        <Reveal className="flex w-full max-w-208.75 flex-none flex-col items-start justify-center gap-10 m:gap-20 l:w-px l:flex-1">
+          <LabelledRow label="(Pre)">
+            <p className="type-body-1 text-black-a60">{about.pre}</p>
+          </LabelledRow>
+          <LabelledRow label="(+Post)">
+            <p className="type-body-1 text-black-a60">{about.post}</p>
+          </LabelledRow>
+          <div className="flex w-full flex-col items-start justify-start gap-5 m:flex-row m:gap-50">
+            <p className="w-full max-w-25 type-body-1 text-black-token m:w-px m:flex-1">(=Results)</p>
+            <div className="flex w-full flex-col items-start justify-center gap-10 m:w-px m:flex-1 m:gap-20 l:gap-27.5">
+              <StatRows rows={about.results} />
+              <ArrowLink href={about.cta.href} variant="dark">
+                {about.cta.label}
+              </ArrowLink>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}

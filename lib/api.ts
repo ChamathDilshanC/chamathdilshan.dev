@@ -4,11 +4,7 @@
  * consistent.  See CACHING.md §8.1.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not set");
-}
+export const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
 
 export class ApiError extends Error {
   constructor(
@@ -29,9 +25,11 @@ type CacheOpts = {
 
 /** Cached public read. Never use for authenticated data. */
 export async function apiGet<T>(path: string, cache: CacheOpts = {}): Promise<T> {
+  if (!API_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
   const res = await fetch(`${API_URL}${path}`, {
     headers: { Accept: "application/json" },
     next: { revalidate: cache.revalidate ?? 3600, tags: cache.tags ?? [] },
+    signal: AbortSignal.timeout(10_000),
   });
   if (!res.ok) throw new ApiError(res.status, path);
   return (await res.json()) as T;
@@ -45,10 +43,7 @@ export async function apiGet<T>(path: string, cache: CacheOpts = {}): Promise<T>
  * because the API is briefly down. Pages that genuinely cannot render without
  * the data should use apiGet and let the error surface.
  */
-export async function apiGetOptional<T>(
-  path: string,
-  cache: CacheOpts = {},
-): Promise<T | null> {
+export async function apiGetOptional<T>(path: string, cache: CacheOpts = {}): Promise<T | null> {
   try {
     return await apiGet<T>(path, cache);
   } catch (err) {
@@ -61,22 +56,4 @@ export async function apiGetOptional<T>(
     console.warn(`[api] ${path} unreachable — rendering without it`);
     return null;
   }
-}
-
-/**
- * Authenticated request for the admin surface.
- * Always uncached and always forwards the session cookie.  (CACHING.md §15)
- */
-export async function apiAdmin<T>(
-  path: string,
-  init: RequestInit = {},
-): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    cache: "no-store",
-    credentials: "include",
-    headers: { Accept: "application/json", ...init.headers },
-  });
-  if (!res.ok) throw new ApiError(res.status, path);
-  return (await res.json()) as T;
 }
