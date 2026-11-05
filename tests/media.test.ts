@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { cloudinaryLoader, faceArea, faceInfoUrl, isCloudinary, videoPoster, videoSrc } from "../lib/media";
+import { cloudinaryLoader, faceArea, faceInfoUrl, isCloudinary, placeholderUrl, videoPoster, videoSrc } from "../lib/media";
 
 const image = "https://res.cloudinary.com/demo/image/upload/v1730000000/site/shot.png";
 const video = "https://res.cloudinary.com/demo/video/upload/v1730000000/site/demo.mp4";
@@ -22,6 +22,14 @@ describe("cloudinary helpers", () => {
       "https://res.cloudinary.com/demo/video/upload/so_0,f_jpg,q_auto,c_limit,w_1600/v1730000000/site/demo.jpg",
     );
     expect(videoPoster("/local.mp4")).toBeUndefined();
+  });
+
+  it("asks for a tiny JPEG preview of Cloudinary images only", () => {
+    expect(placeholderUrl(image)).toBe(
+      "https://res.cloudinary.com/demo/image/upload/f_jpg,q_60,w_32/v1730000000/site/shot.png",
+    );
+    expect(placeholderUrl(video)).toBeNull();
+    expect(placeholderUrl("/images/placeholders/a.jpg")).toBeNull();
   });
 
   it("streams videos with automatic quality and codec", () => {

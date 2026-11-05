@@ -5,10 +5,12 @@ import { Curtain } from "@/components/motion/curtain";
 import { Reveal } from "@/components/motion/reveal";
 import { PostGrid } from "@/components/sections/card-grids";
 import { Media } from "@/components/ui/media";
+import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
 import { formatPostDate } from "@/content/posts";
 import { cn } from "@/lib/cn";
 import { getPost, getPosts } from "@/lib/content";
+import { placeholders } from "@/lib/placeholders";
 import type { Post, PostSection } from "@/lib/types/content";
 
 // Articles published in the admin panel are rendered on first visit, then cached.
@@ -53,6 +55,7 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
   const { slug } = await props.params;
   const [post, posts] = await Promise.all([getPost(slug), getPosts()]);
   if (!post) notFound();
+  const previews = await placeholders([post.cover.url]);
 
   const index = Math.max(0, posts.findIndex((p) => p.slug === post.slug));
   const more = [1, 2, 3]
@@ -62,14 +65,16 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <>
-      <PostHero
-        title={post.title}
-        category={post.category}
-        excerpt={post.excerpt}
-        date={formatPostDate(post.date)}
-        image={post.cover.url}
-        imageAlt={post.cover.alt}
-      />
+      <PlaceholderProvider value={previews}>
+        <PostHero
+          title={post.title}
+          category={post.category}
+          excerpt={post.excerpt}
+          date={formatPostDate(post.date)}
+          image={post.cover.url}
+          imageAlt={post.cover.alt}
+        />
+      </PlaceholderProvider>
 
       <article className="relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:pr-32.75 l:pl-62">
         <Curtain className="bg-white-token" />

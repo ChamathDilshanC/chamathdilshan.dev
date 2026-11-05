@@ -40,6 +40,16 @@ export function videoPoster(src: string): string | undefined {
 }
 
 /**
+ * A 32px JPEG of a Cloudinary image (well under 1 KB), inlined as the blurred
+ * preview shown while the real image loads. Null when the image is not on
+ * Cloudinary.
+ */
+export function placeholderUrl(src: string): string | null {
+  if (!isCloudinary(src) || !src.includes("/image/upload/")) return null;
+  return transform(src, "image", "f_jpg,q_60,w_32");
+}
+
+/**
  * Cloudinary's face detection for an image, as JSON instead of pixels
  * (`fl_getinfo` with a face crop). Null when the image is not on Cloudinary.
  */

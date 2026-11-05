@@ -9,8 +9,10 @@ import { WorkGrid } from "@/components/sections/card-grids";
 import { LabelledRow, StatRows } from "@/components/sections/stat-rows";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { MediaAsset } from "@/components/ui/media-asset";
+import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getProject, getProjects } from "@/lib/content";
+import { placeholders } from "@/lib/placeholders";
 import type { Project } from "@/lib/types/content";
 
 // Projects added in the admin panel are rendered on first visit, then cached.
@@ -37,6 +39,7 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
   const { slug } = await props.params;
   const [project, projects] = await Promise.all([getProject(slug), getProjects()]);
   if (!project) notFound();
+  const previews = await placeholders([project.hero.kind === "image" ? project.hero.url : null]);
 
   const index = projects.findIndex((p) => p.slug === project.slug);
   const more =
@@ -49,7 +52,9 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
   return (
     <>
-      <CaseHero title={project.title} category={project.category} summary={project.summary} media={project.hero} />
+      <PlaceholderProvider value={previews}>
+        <CaseHero title={project.title} category={project.category} summary={project.summary} media={project.hero} />
+      </PlaceholderProvider>
 
       <section className="relative z-1 flex w-full flex-none flex-col items-center justify-start bg-white-token px-6 pt-6 pb-20 m:pb-30">
         <Curtain className="bg-white-token" />
