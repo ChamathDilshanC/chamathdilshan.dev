@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
-import { cloudinaryLoader, isCloudinary } from "@/lib/media";
+import { cloudinaryLoader, faceArea, faceInfoUrl, isCloudinary, type FaceInfo } from "@/lib/media";
 
 /*
  * Liquid hover: a small GPU fluid simulation (stable fluids) that drives the
@@ -18,12 +18,20 @@ import { cloudinaryLoader, isCloudinary } from "@/lib/media";
  *   4. The image is drawn with every pixel pushed along the local flow
  *      direction by the amount of ink there. Direction flips inside swirls
  *      give the sharp, folded "melted" look.
+ *
+ * Faces are left alone: Cloudinary's face detection marks an ellipse that is
+ * never pushed or dragged out, and moving over it stirs nothing.
  */
 
 const OVERSCAN = 1.2; // canvas is 20% larger than the image so swirls never expose edges
 const INNER = 1 / OVERSCAN;
 const PRESSURE_STEPS = 16;
 const KEEP_RUNNING_MS = 4500; // keep simulating after the last movement while the ink fades
+// The still ellipse is Cloudinary's box around the faces, widened by this.
+// The shader fades the effect back in between 1x and 1.5x that ellipse, and
+// cursor movement inside 1.25x adds no ink.
+const FACE_MARGIN = 1.15;
+const FACE_STILL = 1.25;
 
 const VERT = `
 precision highp float;
@@ -131,7 +139,14 @@ uniform float u_ratio;
 uniform float u_image_ratio;
 uniform float u_power;
 uniform float u_inner;
+uniform vec4 u_face; // still ellipse in image uv: centre xy, radii zw (z = 0: no face)
 varying vec2 vUv;
+
+// 1 over the face, fading to 0 around it; 0 everywhere when there is no face.
+float faceMask(vec2 uv) {
+  if (u_face.z <= 0.0) return 0.0;
+  return 1.0 - smoothstep(1.0, 1.5, length((uv - u_face.xy) / u_face.zw));
+}
 
 // Canvas uv -> image uv, with object-fit: cover inside the inner rectangle.
 vec2 imageUv(vec2 uv) {
@@ -161,8 +176,11 @@ float frameAlpha(vec2 uv) {
 void main() {
   float ink = texture2D(u_ink, vUv).r;
   vec2 direction = normalize(texture2D(u_velocity, vUv).xy + 0.001);
-  vec2 push = u_power * direction * ink;
-  vec3 color = sampleImage(imageUv(vUv) - 2.0 * push);
+  vec2 uv = imageUv(vUv);
+  // The face never moves, and is never dragged out over its surroundings.
+  vec2 push = u_power * direction * ink * (1.0 - faceMask(uv));
+  push *= 1.0 - faceMask(uv - 2.0 * push);
+  vec3 color = sampleImage(uv - 2.0 * push);
   float alpha = frameAlpha((vUv - 0.5) / u_inner + 0.5 - push);
   gl_FragColor = vec4(color * alpha, alpha);
 }`;
@@ -179,7 +197,30 @@ function textureSrc(src: string, cssWidth: number): string {
   return cloudinaryLoader({ src, width });
 }
 
-type GL = WebGLRenderingContext | WebGL2RenderingContext;
+/** The still ellipse in image uv (y up): centre x, centre y, radius x, radius y. */
+type Face = [number, number, number, number];
+const NO_FACE: Face = [0, 0, 0, 0];
+
+/**
+ * Where the face is, from Cloudinary's face detection. NO_FACE for images
+ * elsewhere or with no face in them; rejects when the lookup itself fails.
+ */
+async function findFace(src: string, signal: AbortSignal): Promise<Face> {
+  const url = faceInfoUrl(src);
+  if (!url) return NO_FACE;
+  const response = await fetch(url, { signal });
+  if (!response.ok) throw new Error(`face lookup: ${response.status}`);
+  const area = faceArea((await response.json()) as FaceInfo);
+  if (!area) return NO_FACE;
+  return [
+    area.x + area.width / 2,
+    1 - (area.y + area.height / 2),
+    (area.width / 2) * FACE_MARGIN,
+    (area.height / 2) * FACE_MARGIN,
+  ];
+}
+
+type GL =WebGLRenderingContext | WebGL2RenderingContext;
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
 type Target = { fbo: WebGLFramebuffer; texture: WebGLTexture; width: number; height: number };
 type DoubleTarget = { read: Target; write: Target; swap: () => void };
@@ -224,6 +265,8 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
     let gl: GL | null = null;
     let image: WebGLTexture | null = null;
     let imageRatio = 1;
+    let face = NO_FACE;
+    const lookup = new AbortController();
     let programs: Record<"splat" | "advect" | "divergence" | "pressure" | "gradient" | "display", Program> | null = null;
     let velocity: DoubleTarget | null = null;
     let ink: DoubleTarget | null = null;
@@ -355,6 +398,19 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
       v: 1 - (pointer.y + 0.1 * box.clientHeight) / (OVERSCAN * box.clientHeight),
     });
 
+    // Whether the pointer is over the face, mapped like imageUv() in the shader.
+    const onFace = () => {
+      if (!face[2]) return false;
+      const width = Math.max(1, box.clientWidth);
+      const height = Math.max(1, box.clientHeight);
+      const ratio = width / height;
+      const fitX = ratio > imageRatio ? 1 : ratio / imageRatio;
+      const fitY = ratio > imageRatio ? imageRatio / ratio : 1;
+      const u = (pointer.x / width - 0.5) * fitX + 0.5;
+      const v = (0.5 - pointer.y / height) * fitY + 0.5;
+      return Math.hypot((u - face[0]) / face[2], (v - face[1]) / face[3]) < FACE_STILL;
+    };
+
     const step = (now: number) => {
       if (!gl || !programs || !velocity || !ink || !pressure || !divergence || !image) return;
       // Normalise to 60fps so 120Hz screens look the same.
@@ -365,19 +421,22 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
 
       if (pointer.pending) {
         pointer.pending = false;
-        const { u, v } = toUv();
-        gl.useProgram(splat.program);
-        gl.uniform1f(splat.uniforms.u_aspect ?? null, aspect);
-        gl.uniform2f(splat.uniforms.u_point ?? null, u, v);
-        gl.uniform1f(splat.uniforms.u_radius ?? null, radius);
-        gl.uniform1i(splat.uniforms.u_target ?? null, bind(1, velocity.read.texture));
-        gl.uniform3f(splat.uniforms.u_value ?? null, 6 * pointer.dx, -6 * pointer.dy, 0);
-        draw(velocity.write);
-        velocity.swap();
-        gl.uniform1i(splat.uniforms.u_target ?? null, bind(1, ink.read.texture));
-        gl.uniform3f(splat.uniforms.u_value ?? null, inkAmount, 0, 0);
-        draw(ink.write);
-        ink.swap();
+        // Moving over the face leaves it alone instead of stirring it.
+        if (!onFace()) {
+          const { u, v } = toUv();
+          gl.useProgram(splat.program);
+          gl.uniform1f(splat.uniforms.u_aspect ?? null, aspect);
+          gl.uniform2f(splat.uniforms.u_point ?? null, u, v);
+          gl.uniform1f(splat.uniforms.u_radius ?? null, radius);
+          gl.uniform1i(splat.uniforms.u_target ?? null, bind(1, velocity.read.texture));
+          gl.uniform3f(splat.uniforms.u_value ?? null, 6 * pointer.dx, -6 * pointer.dy, 0);
+          draw(velocity.write);
+          velocity.swap();
+          gl.uniform1i(splat.uniforms.u_target ?? null, bind(1, ink.read.texture));
+          gl.uniform3f(splat.uniforms.u_value ?? null, inkAmount, 0, 0);
+          draw(ink.write);
+          ink.swap();
+        }
         pointer.dx = 0;
         pointer.dy = 0;
       }
@@ -428,6 +487,7 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
       gl.uniform1f(display.uniforms.u_image_ratio ?? null, imageRatio);
       gl.uniform1f(display.uniforms.u_power ?? null, distortion);
       gl.uniform1f(display.uniforms.u_inner ?? null, INNER);
+      gl.uniform4f(display.uniforms.u_face ?? null, face[0], face[1], face[2], face[3]);
       draw(null);
       canvas.style.opacity = "1";
     };
@@ -475,14 +535,22 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
         return fail();
       }
 
-      const img = new Image();
-      img.decoding = "async";
-      // Cross-origin pixels (Cloudinary) are off-limits to WebGL unless the
-      // image is fetched in CORS mode; Cloudinary answers with
-      // Access-Control-Allow-Origin: *. Without this the texture upload
-      // throws and the canvas paints black over the photo.
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
+      const loaded = new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        img.decoding = "async";
+        // Cross-origin pixels (Cloudinary) are off-limits to WebGL unless the
+        // image is fetched in CORS mode; Cloudinary answers with
+        // Access-Control-Allow-Origin: *. Without this the texture upload
+        // throws and the canvas paints black over the photo.
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = textureSrc(src, box.clientWidth);
+      });
+
+      // Nothing is drawn until the face is known, so it never moves even
+      // once. If the lookup fails the plain photo stays instead.
+      const ready = ([img, found]: [HTMLImageElement, Face]) => {
         if (disposed || !gl) return;
         const texture = gl.createTexture();
         try {
@@ -501,12 +569,12 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
           gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         }
         imageRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
+        face = found;
         image = texture;
         lastMove = performance.now();
         kick();
       };
-      img.onerror = fail;
-      img.src = textureSrc(src, box.clientWidth);
+      Promise.all([loaded, findFace(src, lookup.signal)]).then(ready, fail);
     };
 
     const onMove = (event: PointerEvent) => {
@@ -565,6 +633,7 @@ export function LiquidImage({ src, className, cursorSize = 0.5, cursorPower = 1,
 
     return () => {
       disposed = true;
+      lookup.abort();
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       visibility.disconnect();

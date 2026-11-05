@@ -39,6 +39,34 @@ export function videoPoster(src: string): string | undefined {
   return `${transform(withoutExt, "video", "so_0,f_jpg,q_auto,c_limit,w_1600")}.jpg`;
 }
 
+/**
+ * Cloudinary's face detection for an image, as JSON instead of pixels
+ * (`fl_getinfo` with a face crop). Null when the image is not on Cloudinary.
+ */
+export function faceInfoUrl(src: string): string | null {
+  if (!isCloudinary(src) || !src.includes("/image/upload/")) return null;
+  return transform(src, "image", "c_crop,g_faces,fl_getinfo");
+}
+
+type Box = { x: number; y: number; width: number; height: number };
+
+export type FaceInfo = {
+  input?: { width?: number; height?: number };
+  /** One list of faces; `[[]]` when none was found. */
+  landmarks?: unknown[][];
+  /** The crop around every face (the whole image when there is none). */
+  resize?: Box[];
+};
+
+/** The box around every face, as fractions of the image from its top-left corner, or null when there is no face. */
+export function faceArea(info: FaceInfo): Box | null {
+  const width = info.input?.width;
+  const height = info.input?.height;
+  const box = info.resize?.[0];
+  if (!info.landmarks?.[0]?.length || !box || !width || !height) return null;
+  return { x: box.x / width, y: box.y / height, width: box.width / width, height: box.height / height };
+}
+
 /** A small preview thumbnail for the admin panel. */
 export function thumbnail(src: string, width = 320): string {
   if (!isCloudinary(src)) return src;
