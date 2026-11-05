@@ -1,5 +1,7 @@
+import { HeroPhoto, heroZoom } from "@/components/ui/hero-photo";
 import { Media } from "@/components/ui/media";
 import { MediaAsset } from "@/components/ui/media-asset";
+import { videoPoster } from "@/lib/media";
 import type { MediaItem, NavKey } from "@/lib/types/content";
 import { enter, heroImageEnter } from "@/lib/enter";
 import { SiteHeader } from "./site-header";
@@ -7,8 +9,8 @@ import { StickyHero } from "./sticky-hero";
 
 type ImageProps = { image: string; imageAlt: string };
 
-/** Full-bleed, slightly oversized and dimmed backdrop that zooms out on load. */
-function Backdrop({ image, imageAlt, className = "opacity-70" }: ImageProps & { className?: string }) {
+/** Full-bleed, slightly oversized blurred backdrop that zooms out on load (About). */
+function Backdrop({ image, imageAlt, className }: ImageProps & { className?: string }) {
   return (
     <div className={`absolute -inset-[5%] ${className}`}>
       <div className="animate-enter absolute inset-0" style={heroImageEnter}>
@@ -28,8 +30,10 @@ export function ListHero({
   imageAlt,
 }: ImageProps & { active: NavKey; title: readonly string[]; count: number; description: string }) {
   return (
-    <StickyHero className="justify-between p-6">
-      <Backdrop image={image} imageAlt={imageAlt} />
+    <StickyHero className="group/hero justify-between p-6">
+      <HeroPhoto fill={image} zoom className="opacity-70">
+        <Media src={image} alt={imageAlt} sizes="100vw" preload />
+      </HeroPhoto>
       <SiteHeader active={active} />
       <div className="h-17.5 w-full flex-none" />
       <div className="relative flex w-full max-w-360 items-end justify-start gap-2.5 m:justify-between m:gap-0">
@@ -69,12 +73,10 @@ export function CaseHero({
   media: MediaItem;
 }) {
   return (
-    <StickyHero className="justify-start p-6">
-      <div className="absolute -inset-[5%] opacity-70">
-        <div className="animate-enter absolute inset-0" style={heroImageEnter}>
-          <MediaAsset item={media} sizes="110vw" preload />
-        </div>
-      </div>
+    <StickyHero className="group/hero justify-start p-6">
+      <HeroPhoto fill={media.kind === "video" ? (media.poster ?? videoPoster(media.url)) : media.url} zoom className="opacity-70">
+        <MediaAsset item={media} sizes="100vw" preload />
+      </HeroPhoto>
       <SiteHeader active="projects" />
       <div className="h-17.5 w-full flex-none" />
       <div className="relative flex w-full flex-1 flex-col items-center justify-between l:max-w-360">
@@ -116,8 +118,10 @@ export function AboutHero({
         className="animate-enter relative flex h-[66%] w-full flex-col items-center justify-center gap-2.5 m:h-[70%] l:h-[66%] l:max-w-231"
         style={enter(0.7, { y: "40px" })}
       >
-        <div className="relative flex h-88.5 w-full flex-none flex-col items-center justify-center overflow-hidden rounded-[5px] m:h-91 l:h-auto l:flex-1">
-          <Media src={image} alt={imageAlt} sizes="(min-width: 1200px) 924px, 100vw" />
+        <div className="group/hero relative flex h-88.5 w-full flex-none flex-col items-center justify-center overflow-hidden rounded-[5px] m:h-91 l:h-auto l:flex-1">
+          <div className={`absolute inset-0 ${heroZoom}`}>
+            <Media src={image} alt={imageAlt} sizes="(min-width: 1200px) 924px, 100vw" />
+          </div>
           <h1 className="relative text-center type-heading-2">{title}</h1>
         </div>
         <div className="flex w-full items-start justify-between gap-6 m:max-w-112.5 l:max-w-157.5">
@@ -143,10 +147,10 @@ export function PostHero({
       <SiteHeader active="journal" />
       <div className="h-17.5 w-full flex-none" />
       <div
-        className="animate-enter relative flex h-[70%] w-full flex-col items-center justify-between overflow-hidden rounded-[5px] p-6 l:max-w-360"
+        className="group/hero animate-enter relative flex h-[70%] w-full flex-col items-center justify-between overflow-hidden rounded-[5px] p-6 l:max-w-360"
         style={enter(0.6, { y: "40px" })}
       >
-        <div className="absolute inset-0 opacity-70">
+        <div className={`absolute inset-0 opacity-70 ${heroZoom}`}>
           <Media src={image} alt={imageAlt} sizes="(min-width: 1200px) 1440px, 100vw" preload />
         </div>
         <div className="hidden h-4 w-full m:block" />

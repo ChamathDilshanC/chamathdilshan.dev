@@ -1,0 +1,49 @@
+import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
+import { heroImageEnter } from "@/lib/enter";
+import { Media } from "./media";
+
+/**
+ * Slow zoom-in while the nearest `group/hero` is hovered, easing back out on
+ * leave. Hover-capable pointers only, and never for reduced motion.
+ */
+export const heroZoom =
+  "transition-transform duration-[1600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/hero:scale-[1.06]";
+
+type Props = {
+  /** The sharp photo or video; it fills the 16:9 frame. */
+  children: ReactNode;
+  /** Image blurred into the space beside the frame on screens wider than 16:9. */
+  fill?: string | null;
+  /** Zoom in while the hero (marked `group/hero`) is hovered. */
+  zoom?: boolean;
+  className?: string;
+};
+
+/**
+ * Full-screen hero backdrop that shows a whole 16:9 photo.
+ *
+ * The frame is always as tall as the hero and 16:9 wide. On screens wider
+ * than 16:9 it sits in the middle and its edges fade into a soft blur of the
+ * same photo; on narrower screens it overflows and only the sides are
+ * trimmed, so heads and feet are never cut off. Zooms out on load.
+ */
+export function HeroPhoto({ children, fill, zoom = false, className }: Props) {
+  return (
+    <div className={cn("absolute inset-0 overflow-clip", className)}>
+      <div className="animate-enter absolute inset-0" style={heroImageEnter}>
+        <div className={cn("absolute inset-0", zoom && heroZoom)}>
+          {/* Stretched rather than cropped, so its floor and horizon line up with the photo's. */}
+          {fill && (
+            <div aria-hidden className="absolute -inset-[4%] hidden blur-2xl [@media(min-aspect-ratio:16/9)]:block">
+              <Media src={fill} sizes="25vw" className="object-fill!" />
+            </div>
+          )}
+          <div className="absolute top-0 left-1/2 aspect-video h-full -translate-x-1/2 [@media(min-aspect-ratio:16/9)]:[mask-image:linear-gradient(to_right,transparent,#000_10%,#000_90%,transparent)]">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

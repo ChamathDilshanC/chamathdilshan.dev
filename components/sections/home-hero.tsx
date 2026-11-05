@@ -7,9 +7,10 @@ import { Wordmark } from "@/components/layout/wordmark";
 import { LiquidImage } from "@/components/motion/liquid-image";
 import { usePageParallax } from "@/components/motion/parallax";
 import { ArrowLink } from "@/components/ui/arrow-link";
+import { HeroPhoto } from "@/components/ui/hero-photo";
 import { Media } from "@/components/ui/media";
 import { useSiteContent } from "@/components/layout/site-content";
-import { enter, heroImageEnter } from "@/lib/enter";
+import { enter } from "@/lib/enter";
 
 export function HomeHero() {
   const { site, "home.hero": hero } = useSiteContent();
@@ -17,10 +18,11 @@ export function HomeHero() {
 
   return (
     <StickyHero className="justify-between p-6">
-      <div className="animate-enter absolute inset-0 overflow-clip" style={heroImageEnter}>
+      {/* The liquid effect is the hover here, so no zoom. */}
+      <HeroPhoto fill={hero.image}>
         <Media src={hero.image} alt={hero.imageAlt} sizes="100vw" preload />
         <LiquidImage src={hero.image} className="hidden l:block" />
-      </div>
+      </HeroPhoto>
 
       <SiteHeader active="home" />
 
