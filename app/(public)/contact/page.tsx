@@ -26,10 +26,6 @@ export default async function ContactPage() {
           <Parallax overscan={10} className="absolute inset-0 rounded-[5px]">
             <Media src={page.image} alt={page.imageAlt} sizes="(min-width: 1200px) 574px, 100vw" preload />
           </Parallax>
-          <span
-            aria-hidden
-            className="absolute top-1/2 left-1/2 z-1 block aspect-square w-[9%] min-w-8 -translate-1/2 rounded-full bg-white-token [mask:radial-gradient(circle_at_72%_28%,transparent_34%,#000_35%)]"
-          />
         </div>
         <div className="order-0 flex w-full flex-col items-start justify-center gap-12.5 l:order-0 l:gap-20 l:pt-20">
           <div className="flex w-full flex-col items-start justify-center gap-5 l:gap-12.5">
