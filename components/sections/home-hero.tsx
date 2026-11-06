@@ -17,9 +17,9 @@ export function HomeHero() {
   const bottomY = usePageParallax(107);
 
   return (
-    <StickyHero className="justify-between p-6">
+    <StickyHero className="justify-between">
       {/* The liquid effect is the hover here, so no zoom. */}
-      <HeroPhoto fill={hero.image}>
+      <HeroPhoto fill={hero.image} scrollZoom>
         <Media src={hero.image} alt={hero.imageAlt} sizes="100vw" preload />
         <LiquidImage src={hero.image} className="hidden l:block" />
       </HeroPhoto>
@@ -28,7 +28,7 @@ export function HomeHero() {
 
       <div className="h-17.5 w-full flex-none" />
 
-      <div className="relative z-1 flex w-full max-w-360 flex-none flex-col items-start justify-center gap-10 l:absolute l:top-48.25 l:left-6 l:w-min">
+      <div className="relative z-1 flex w-full max-w-360 flex-none flex-col items-start justify-center gap-10 px-6 l:absolute l:top-48.25 l:left-6 l:w-min l:px-0">
         <div className="relative flex w-full flex-none flex-col items-start justify-center l:w-auto l:self-stretch">
           <p className="animate-enter w-full max-w-75 type-body-1" style={enter(0.8)}>
             {hero.intro.line1}
@@ -49,7 +49,7 @@ export function HomeHero() {
       </div>
 
       <motion.div
-        className="relative flex w-full max-w-360 flex-none flex-col items-start justify-center gap-14 m:gap-6.5"
+        className="relative flex w-full max-w-360 flex-none flex-col items-start justify-center gap-14 px-6 m:gap-6.5 l:px-0"
         style={{ y: bottomY }}
       >
         <div className="relative flex w-min flex-none flex-col items-start justify-center gap-1.5 pt-7.5 l:pl-60">
