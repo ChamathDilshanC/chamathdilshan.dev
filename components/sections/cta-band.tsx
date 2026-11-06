@@ -1,15 +1,24 @@
+"use client";
+
 import { Parallax } from "@/components/motion/parallax";
 import { Ticker } from "@/components/motion/ticker";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Media } from "@/components/ui/media";
+import { useImageAspectRatio } from "@/hooks/use-image-aspect-ratio";
 import type { HomeCta } from "@/lib/types/content";
+import type { CSSProperties } from "react";
 
 /** Dark rounded band with a parallax backdrop, a scrolling line and a centred portrait. */
 export function CtaBand({ cta }: { cta: HomeCta }) {
+  const backgroundRatio = useImageAspectRatio(cta.background, 3 / 2);
+
   return (
     <div className="relative z-1 w-full flex-none">
       <section className="flex w-full flex-col items-center justify-start bg-white-token p-6">
-        <div className="relative flex aspect-[3/2] h-auto w-full flex-col items-center justify-center overflow-clip rounded-[5px] bg-black-token m:aspect-auto m:h-220">
+        <div
+          className="relative flex aspect-[var(--background-aspect)] h-auto w-full flex-col items-center justify-center overflow-clip rounded-[5px] bg-black-token m:aspect-auto m:h-220"
+          style={{ "--background-aspect": backgroundRatio } as CSSProperties}
+        >
           <Parallax speed={90} overscan={20} className="absolute inset-0 opacity-80">
             <Media
               src={cta.background}
