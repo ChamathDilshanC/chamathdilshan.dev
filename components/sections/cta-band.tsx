@@ -30,7 +30,7 @@ export function CtaBand({ cta }: { cta: HomeCta }) {
             <ArrowLink href={cta.action.href} variant="light">
               {cta.action.label}
             </ArrowLink>
-            <div className="absolute top-[calc(50.12%-162px)] left-[calc(50%-112px)] z-1 h-81 w-56 overflow-hidden rounded-[5px]">
+            <div className="absolute top-1/2 left-1/2 z-1 aspect-[640/930] h-auto w-[30vw] max-w-56 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[5px] m:top-[calc(50.12%-162px)] m:left-[calc(50%-112px)] m:h-81 m:w-56 m:translate-x-0 m:translate-y-0">
               <Media src={cta.portrait} alt={cta.portraitAlt} sizes="224px" />
             </div>
           </div>
