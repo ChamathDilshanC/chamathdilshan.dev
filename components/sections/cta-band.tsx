@@ -9,7 +9,7 @@ export function CtaBand({ cta }: { cta: HomeCta }) {
   return (
     <div className="relative z-1 w-full flex-none">
       <section className="flex w-full flex-col items-center justify-start bg-white-token p-6">
-        <div className="relative flex h-220 w-full flex-col items-center justify-center overflow-clip rounded-[5px] bg-black-token">
+        <div className="relative flex aspect-[3/2] h-auto w-full flex-col items-center justify-center overflow-clip rounded-[5px] bg-black-token m:aspect-auto m:h-220">
           <Parallax speed={90} overscan={20} className="absolute inset-0 opacity-80">
             <Media
               src={cta.background}
