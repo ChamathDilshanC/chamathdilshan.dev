@@ -11,7 +11,12 @@ export function CtaBand({ cta }: { cta: HomeCta }) {
       <section className="flex w-full flex-col items-center justify-start bg-white-token p-6">
         <div className="relative flex h-220 w-full flex-col items-center justify-center overflow-clip rounded-[5px] bg-black-token">
           <Parallax speed={90} overscan={20} className="absolute inset-0 opacity-80">
-            <Media src={cta.background} alt={cta.backgroundAlt} sizes="calc(100vw - 48px)" />
+            <Media
+              src={cta.background}
+              alt={cta.backgroundAlt}
+              sizes="calc(100vw - 48px)"
+              className="[@media(width<810px)]:object-fill"
+            />
           </Parallax>
 
           <div className="relative flex w-full flex-col items-center justify-center gap-30 overflow-clip pt-32.5">
