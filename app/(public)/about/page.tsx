@@ -37,7 +37,7 @@ function Process({ process, curtain = true }: { process: AboutProcess; curtain?:
       </div>
       <div className="relative flex w-full max-w-360 flex-col items-start justify-start gap-10 m:gap-12.5">
         <Reveal duration={0.6} className="w-full">
-          <Parallax className="relative h-[80vh] w-full rounded-[5px] m:h-svh l:h-[80vh]">
+          <Parallax className="relative aspect-[2400/1100] w-full rounded-[5px] m:aspect-auto m:h-svh l:h-[80vh]">
             <Media src={process.image} alt={process.imageAlt} sizes="100vw" />
           </Parallax>
         </Reveal>
