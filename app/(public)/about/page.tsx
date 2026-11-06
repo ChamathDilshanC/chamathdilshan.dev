@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { AboutHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { LineReveal } from "@/components/motion/line-reveal";
-import { Parallax } from "@/components/motion/parallax";
 import { Reveal } from "@/components/motion/reveal";
 import { ScrollShift } from "@/components/motion/scroll-shift";
 import { Ticker } from "@/components/motion/ticker";
 import { ExperienceTimeline } from "@/components/sections/experience";
 import { Journal } from "@/components/sections/journal";
 import { Numbers } from "@/components/sections/numbers";
+import { ProcessImage } from "@/components/sections/process-image";
 import { Media } from "@/components/ui/media";
 import { PlusList } from "@/components/ui/plus-list";
 import { SectionTitle } from "@/components/ui/section-title";
@@ -37,9 +37,7 @@ function Process({ process, curtain = true }: { process: AboutProcess; curtain?:
       </div>
       <div className="relative flex w-full max-w-360 flex-col items-start justify-start gap-10 m:gap-12.5">
         <Reveal duration={0.6} className="w-full">
-          <Parallax className="relative aspect-[2400/1100] w-full rounded-[5px] m:aspect-auto m:h-svh l:h-[80vh]">
-            <Media src={process.image} alt={process.imageAlt} sizes="100vw" />
-          </Parallax>
+          <ProcessImage src={process.image} alt={process.imageAlt} />
         </Reveal>
         <div className="flex w-full flex-col items-center justify-center gap-10">
           {process.steps.map((step, i) => (
