@@ -31,7 +31,7 @@ import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
 import { Button, Card, Field, IconButton, Input, Select, Switch, Textarea } from "./ui";
 
 /** `values` is the whole top-level value, for widgets that read a sibling field. */
-type Ctx = { root: JsonSchemaRoot; errors: FieldErrors; values: Record<string, unknown> };
+type Ctx = { root: JsonSchemaRoot; errors: FieldErrors; values: Record<string, unknown>; uploadFolder?: string };
 const FormContext = createContext<Ctx>({ root: {}, errors: {}, values: {} });
 
 type NodeProps = {
@@ -52,15 +52,17 @@ export function SchemaForm({
   onChange,
   errors = {},
   groups,
+  uploadFolder,
 }: {
   schema: JsonSchemaRoot;
   value: Record<string, unknown>;
   onChange: (value: Record<string, unknown>) => void;
   errors?: FieldErrors;
+  uploadFolder?: string;
   /** Split the top-level fields into titled cards. Fields not listed go last. */
   groups?: FieldGroup[];
 }) {
-  const ctx = { root: schema, errors, values: value };
+  const ctx = { root: schema, errors, values: value, uploadFolder };
   const props = resolve(schema, schema).schema.properties ?? {};
   const set = (key: string) => (next: unknown) => onChange({ ...value, [key]: next });
 
@@ -562,6 +564,7 @@ function MediaSlot({
   clearable: boolean;
   children?: ReactNode;
 }) {
+  const { uploadFolder } = useContext(FormContext);
   const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col gap-3 rounded-[8px] bg-neutral-50/70 p-3 ring-1 ring-black-a10 ring-inset m:flex-row">
@@ -597,6 +600,7 @@ function MediaSlot({
         open={open}
         onClose={() => setOpen(false)}
         kind={pick}
+        folder={uploadFolder}
         onSelect={([item]) => item && onPick(item.url, item.kind, item.alt)}
       />
     </div>
@@ -696,6 +700,7 @@ function MediaItemField({ schema, value, onChange, path, label, nullable }: Node
 }
 
 function GalleryField({ schema, value, onChange, path, label }: NodeProps) {
+  const { uploadFolder } = useContext(FormContext);
   const list = (Array.isArray(value) ? value : []) as Item[];
   const [picking, setPicking] = useState(false);
   const [dragFrom, setDragFrom] = useState<number | null>(null);
@@ -773,8 +778,8 @@ function GalleryField({ schema, value, onChange, path, label }: NodeProps) {
           ))}
         </ol>
       )}
-      <Dropzone kind="any" compact onUploaded={append} />
-      <MediaPicker open={picking} onClose={() => setPicking(false)} kind="any" multiple onSelect={append} />
+      <Dropzone kind="any" compact folder={uploadFolder} onUploaded={append} />
+      <MediaPicker open={picking} onClose={() => setPicking(false)} kind="any" multiple folder={uploadFolder} onSelect={append} />
     </div>
   );
 }
