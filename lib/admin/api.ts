@@ -102,6 +102,13 @@ export type MediaOut = {
   createdAt: string;
 };
 
+export type MediaOrganizeOut = {
+  moved: number;
+  skipped: number;
+  shared: number;
+  failed: string[];
+};
+
 export type ProjectOut = {
   id: number;
   slug: string;

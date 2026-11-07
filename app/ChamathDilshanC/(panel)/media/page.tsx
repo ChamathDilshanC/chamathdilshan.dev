@@ -1,12 +1,12 @@
 "use client";
 
-import { IconCopy, IconTrash } from "@tabler/icons-react";
+import { IconCopy, IconRefresh, IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
 import { useState } from "react";
 import useSWR from "swr";
 import { Dropzone, MediaGrid, mediaFolder, useMedia } from "@/components/admin/media";
 import { Button, ConfirmDialog, Dialog, EmptyState, ErrorBanner, Field, Input, Notice, PageHeader, Select, Spinner } from "@/components/admin/ui";
-import { AdminApiError, adminFetch, errorMessage, type MediaOut, type Overview } from "@/lib/admin/api";
+import { AdminApiError, adminFetch, errorMessage, type MediaOrganizeOut, type MediaOut, type Overview } from "@/lib/admin/api";
 import { formatBytes } from "@/lib/admin/upload";
 import { thumbnail, videoSrc } from "@/lib/media";
 import { toast } from "@/lib/toast";
@@ -136,17 +136,38 @@ export default function MediaPage() {
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
   const [folderFilter, setFolderFilter] = useState("all");
   const [selected, setSelected] = useState<MediaOut | null>(null);
+  const [organizing, setOrganizing] = useState(false);
   const folders = [...new Set((data ?? []).map((item) => mediaFolder(item.publicId)))].sort();
   const items = (data ?? []).filter(
     (item) => (filter === "all" || item.kind === filter) && (folderFilter === "all" || mediaFolder(item.publicId) === folderFilter),
   );
   const total = (data ?? []).reduce((sum, item) => sum + item.bytes, 0);
+  const organize = async () => {
+    setOrganizing(true);
+    try {
+      const result = await adminFetch<MediaOrganizeOut>("/api/admin/media/organize", { method: "POST" });
+      await mutate();
+      toast.success("Cloudinary folders organized", {
+        description: `${result.moved} moved · ${result.shared} shared · ${result.failed.length} failed`,
+      });
+      if (result.failed.length) toast.error("Some files were not moved", { description: result.failed.join(" · ") });
+    } catch (err) {
+      toast.error("Could not organize folders", { description: errorMessage(err) });
+    } finally {
+      setOrganizing(false);
+    }
+  };
 
   return (
     <>
       <PageHeader
         title="Media"
         description="Images and videos stored on Cloudinary. Files are resized, compressed and converted automatically when the site shows them."
+        actions={
+          <Button variant="secondary" loading={organizing} icon={<IconRefresh className="size-4" />} onClick={() => void organize()}>
+            Organize folders
+          </Button>
+        }
       />
       {overview && !overview.mediaConfigured && (
         <Notice>Cloudinary is not configured on the API, so uploads are disabled.</Notice>

@@ -133,7 +133,7 @@ export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
       schema={root}
       initial={initial}
       groups={cfg.groups}
-      uploadFolder={kind === "post" ? `journal/${id ?? "draft"}` : undefined}
+      uploadFolder={`${kind === "post" ? "journal" : kind === "project" ? "projects" : "experience"}/${id ?? "draft"}`}
       saveLabel={id ? "Save changes" : `Create ${cfg.noun}`}
       viewHref={page && published ? page : null}
       deleteLabel={`Delete ${cfg.noun}`}
