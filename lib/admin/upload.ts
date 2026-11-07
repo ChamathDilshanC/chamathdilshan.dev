@@ -82,8 +82,12 @@ function send(url: string, form: FormData, onProgress?: (fraction: number) => vo
   });
 }
 
-export async function uploadToCloudinary(file: File, onProgress?: (fraction: number) => void): Promise<MediaOut> {
-  const sig = await adminFetch<Signature>("/api/admin/media/sign", { method: "POST" });
+export async function uploadToCloudinary(
+  file: File,
+  onProgress?: (fraction: number) => void,
+  folder?: string,
+): Promise<MediaOut> {
+  const sig = await adminFetch<Signature>("/api/admin/media/sign", { method: "POST", body: folder ? { folder } : {} });
   const form = new FormData();
   form.append("file", file);
   form.append("api_key", sig.apiKey);

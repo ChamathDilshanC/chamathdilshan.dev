@@ -22,6 +22,7 @@ type Props = {
   onDelete?: () => Promise<void>;
   deleteLabel?: string;
   aside?: ReactNode;
+  uploadFolder?: string;
 };
 
 /** A schema-driven form with save / delete, field errors and an unsaved-changes guard. */
@@ -39,6 +40,7 @@ export function FormEditor({
   onDelete,
   deleteLabel = "Delete",
   aside,
+  uploadFolder,
 }: Props) {
   const [value, setValue] = useState(initial);
   const [saved, setSaved] = useState(initial);
@@ -86,7 +88,7 @@ export function FormEditor({
     }
   };
 
-  const form = <SchemaForm schema={schema} value={value} onChange={setValue} errors={errors} groups={groups} />;
+  const form = <SchemaForm schema={schema} value={value} onChange={setValue} errors={errors} groups={groups} uploadFolder={uploadFolder} />;
 
   return (
     <form

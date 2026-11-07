@@ -50,7 +50,7 @@ export function MediaThumb({
 
 type Pending = { id: string; name: string; progress: number };
 
-export function useUploader(onUploaded: (items: MediaOut[]) => void) {
+export function useUploader(onUploaded: (items: MediaOut[]) => void, folder?: string) {
   const [pending, setPending] = useState<Pending[]>([]);
 
   const upload = useCallback(
@@ -70,8 +70,10 @@ export function useUploader(onUploaded: (items: MediaOut[]) => void) {
       await Promise.all(
         jobs.map(async ({ id, file }) => {
           try {
-            const item = await uploadToCloudinary(file, (progress) =>
-              setPending((list) => list.map((p) => (p.id === id ? { ...p, progress } : p))),
+            const item = await uploadToCloudinary(
+              file,
+              (progress) => setPending((list) => list.map((p) => (p.id === id ? { ...p, progress } : p))),
+              folder,
             );
             done.push(item);
           } catch (err) {
@@ -86,7 +88,7 @@ export function useUploader(onUploaded: (items: MediaOut[]) => void) {
         onUploaded(done);
       }
     },
-    [onUploaded],
+    [folder, onUploaded],
   );
 
   return { pending, upload };
@@ -97,15 +99,17 @@ export function Dropzone({
   multiple = true,
   onUploaded,
   compact,
+  folder,
 }: {
   kind?: MediaKind;
   multiple?: boolean;
   onUploaded: (items: MediaOut[]) => void;
   compact?: boolean;
+  folder?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
-  const { pending, upload } = useUploader(onUploaded);
+  const { pending, upload } = useUploader(onUploaded, folder);
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -229,6 +233,7 @@ export function MediaPicker({
   multiple = false,
   onSelect,
   title,
+  folder,
 }: {
   open: boolean;
   onClose: () => void;
@@ -236,6 +241,7 @@ export function MediaPicker({
   multiple?: boolean;
   onSelect: (items: MediaOut[]) => void;
   title?: string;
+  folder?: string;
 }) {
   const { data, error, isLoading, mutate } = useMedia();
   const [selected, setSelected] = useState<Map<number, MediaOut>>(new Map());
@@ -263,6 +269,8 @@ export function MediaPicker({
 
   const items = (data ?? []).filter((item) => (kind === "any" ? filter === "all" || item.kind === filter : item.kind === kind));
 
+  if (!open) return null;
+
   return (
     <Dialog
       open={open}
@@ -286,6 +294,7 @@ export function MediaPicker({
           kind={kind}
           multiple={multiple}
           compact
+          folder={folder}
           onUploaded={(uploaded) => {
             void mutate();
             if (!multiple) finish(uploaded.slice(0, 1));
