@@ -295,7 +295,8 @@ function ArrayField({ schema, value, onChange, path, label }: NodeProps) {
   const { root, errors } = useContext(FormContext);
   const list = Array.isArray(value) ? value : [];
   const items = schema.items ?? { type: "string" };
-  const itemType = typeOf(resolve(items, root).schema);
+  const resolvedItems = resolve(items, root).schema;
+  const itemType = typeOf(resolvedItems);
   const { keys, setKeys, next } = useItemKeys(list.length);
   const [open, setOpen] = useState<Set<number>>(new Set());
   const error = useError(path);
@@ -414,7 +415,11 @@ function ArrayField({ schema, value, onChange, path, label }: NodeProps) {
               </div>
               {expanded && (
                 <div className="border-t border-black-a10 p-4">
-                  <ObjectBody schema={items} value={item} onChange={set(i)} path={joinPath(path, i)} />
+                  {resolvedItems.widget === "image-ref" || resolvedItems.widget === "media" ? (
+                    <Node schema={items} value={item} onChange={set(i)} path={joinPath(path, i)} label={`${singular} ${i + 1}`} />
+                  ) : (
+                    <ObjectBody schema={items} value={item} onChange={set(i)} path={joinPath(path, i)} />
+                  )}
                 </div>
               )}
             </li>
