@@ -1,9 +1,9 @@
+import { cn } from "@/lib/cn";
 import { Media } from "@/components/ui/media";
 import type { Post } from "@/lib/types/content";
-import { cn } from "@/lib/cn";
 
 type Props = {
-  post: Pick<Post, "title" | "category" | "cover">;
+  post: Pick<Post, "title" | "excerpt" | "cover">;
   sizes: string;
   /** Aspect-ratio class for the cover. */
   aspect?: string;
@@ -17,10 +17,10 @@ export function BlogCard({ post, sizes, aspect = "aspect-[4/5]" }: Props) {
         <span className="touch-settle absolute inset-0 rounded-[5px] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105">
           <Media src={post.cover.url} alt={post.cover.alt} sizes={sizes} />
         </span>
-      </div>
-      <div className="flex w-full items-start justify-between gap-4 type-body-3">
-        <p className="line-clamp-2 min-h-[2lh] text-black-token">{post.title}</p>
-        <p className="text-right whitespace-nowrap text-black-a60">{post.category}</p>
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-start gap-1 bg-linear-to-t from-black/85 via-black/45 to-transparent px-4 pt-16 pb-4 text-left m:px-5 m:pb-5">
+          <span className="type-body-1 text-white-token">{post.title}</span>
+          <span className="line-clamp-2 max-w-[42ch] type-body-4 text-white-a85">{post.excerpt}</span>
+        </span>
       </div>
     </div>
   );
