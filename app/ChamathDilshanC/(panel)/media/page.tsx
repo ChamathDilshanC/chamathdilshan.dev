@@ -4,8 +4,8 @@ import { IconCopy, IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
 import { useState } from "react";
 import useSWR from "swr";
-import { Dropzone, MediaGrid, useMedia } from "@/components/admin/media";
-import { Button, ConfirmDialog, Dialog, EmptyState, ErrorBanner, Field, Input, Notice, PageHeader, Spinner } from "@/components/admin/ui";
+import { Dropzone, MediaGrid, mediaFolder, useMedia } from "@/components/admin/media";
+import { Button, ConfirmDialog, Dialog, EmptyState, ErrorBanner, Field, Input, Notice, PageHeader, Select, Spinner } from "@/components/admin/ui";
 import { AdminApiError, adminFetch, errorMessage, type MediaOut, type Overview } from "@/lib/admin/api";
 import { formatBytes } from "@/lib/admin/upload";
 import { thumbnail, videoSrc } from "@/lib/media";
@@ -134,8 +134,12 @@ export default function MediaPage() {
   const { data, error, isLoading, mutate } = useMedia();
   const { data: overview } = useSWR<Overview>("/api/admin/overview");
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
+  const [folderFilter, setFolderFilter] = useState("all");
   const [selected, setSelected] = useState<MediaOut | null>(null);
-  const items = (data ?? []).filter((item) => filter === "all" || item.kind === filter);
+  const folders = [...new Set((data ?? []).map((item) => mediaFolder(item.publicId)))].sort();
+  const items = (data ?? []).filter(
+    (item) => (filter === "all" || item.kind === filter) && (folderFilter === "all" || mediaFolder(item.publicId) === folderFilter),
+  );
   const total = (data ?? []).reduce((sum, item) => sum + item.bytes, 0);
 
   return (
@@ -156,6 +160,14 @@ export default function MediaPage() {
             </Button>
           ))}
         </div>
+        {folders.length > 0 && (
+          <Select
+            value={folderFilter}
+            onChange={setFolderFilter}
+            options={[{ value: "all", label: "All folders" }, ...folders.map((value) => ({ value, label: value }))]}
+            className="max-w-80"
+          />
+        )}
         {data && (
           <p className="text-[12.5px] text-black-a60">
             {data.length} file{data.length === 1 ? "" : "s"} · {formatBytes(total)}
