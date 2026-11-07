@@ -42,7 +42,7 @@ function SectionImages({ images }: { images: PostSection["images"] }) {
           key={`${i}-${image.url}`}
           duration={0.8}
           delay={0.1 * i}
-          className={cn("touch-frame relative h-105 w-full overflow-hidden rounded-[5px] m:h-130", pair && i === 1 && "m:max-w-87.5")}
+          className={cn("touch-frame relative w-full", pair && i === 1 && "m:max-w-87.5")}
         >
           <ImageLightbox
             src={image.url}

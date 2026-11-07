@@ -14,6 +14,7 @@ type Props = {
 
 export function ImageLightbox({ src, alt, sizes, className }: Props) {
   const [open, setOpen] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState("16 / 9");
 
   useEffect(() => {
     if (!open) return;
@@ -32,12 +33,13 @@ export function ImageLightbox({ src, alt, sizes, className }: Props) {
 
   return (
     <>
-      <button
-        type="button"
-        aria-label={`Open ${alt || "image"} in full view`}
-        className="absolute inset-0 size-full cursor-zoom-in"
-        onClick={() => setOpen(true)}
-      >
+      <div className="relative block w-full overflow-hidden rounded-[5px]" style={{ aspectRatio }}>
+        <button
+          type="button"
+          aria-label={`Open ${alt || "image"} in full view`}
+          className="absolute inset-0 size-full cursor-zoom-in"
+          onClick={() => setOpen(true)}
+        >
         <Image
           src={src}
           alt={alt}
@@ -45,11 +47,18 @@ export function ImageLightbox({ src, alt, sizes, className }: Props) {
           sizes={sizes}
           draggable={false}
           loader={isCloudinary(src) ? cloudinaryLoader : undefined}
+          onLoad={(event) => {
+            const image = event.currentTarget;
+            if (image.naturalWidth && image.naturalHeight) {
+              setAspectRatio(`${image.naturalWidth} / ${image.naturalHeight}`);
+            }
+          }}
           onContextMenu={preventImageAction}
           onDragStart={preventImageAction}
           className={cn("rounded-[inherit] object-contain object-center", className)}
         />
-      </button>
+        </button>
+      </div>
 
       {open && (
         <div
