@@ -4,7 +4,7 @@ import { PostHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { Reveal } from "@/components/motion/reveal";
 import { PostGrid } from "@/components/sections/card-grids";
-import { Media } from "@/components/ui/media";
+import { ImageLightbox } from "@/components/ui/image-lightbox";
 import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
 import { formatPostDate } from "@/content/posts";
@@ -44,7 +44,11 @@ function SectionImages({ images }: { images: PostSection["images"] }) {
           delay={0.1 * i}
           className={cn("touch-frame relative h-105 w-full overflow-hidden rounded-[5px] m:h-130", pair && i === 1 && "m:max-w-87.5")}
         >
-          <Media className="touch-settle" src={image.url} alt={image.alt} sizes={pair && i === 1 ? "(min-width: 810px) 350px, 100vw" : "(min-width: 1200px) 1100px, 100vw"} />
+          <ImageLightbox
+            src={image.url}
+            alt={image.alt}
+            sizes={pair && i === 1 ? "(min-width: 810px) 350px, 100vw" : "(min-width: 1200px) 1100px, 100vw"}
+          />
         </Reveal>
       ))}
     </div>
