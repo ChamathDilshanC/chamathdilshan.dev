@@ -182,7 +182,13 @@ export default function SkillsPage() {
         }
       >
         {draft && schema && (
-          <SchemaForm schema={schema} value={draft.value} onChange={(value) => setDraft({ ...draft, value })} errors={errors} />
+          <SchemaForm
+            schema={schema}
+            value={draft.value}
+            onChange={(value) => setDraft({ ...draft, value })}
+            errors={errors}
+            uploadFolder={`skills/${draft.id ?? "draft"}`}
+          />
         )}
       </Dialog>
 

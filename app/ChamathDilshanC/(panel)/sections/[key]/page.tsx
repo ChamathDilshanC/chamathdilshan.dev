@@ -44,6 +44,7 @@ export default function SectionEditorPage() {
       back={{ href: `${ADMIN}/sections`, label: "Sections" }}
       schema={data.schema}
       initial={withDefaults(data.data, data.schema, data.schema) as Record<string, unknown>}
+      uploadFolder={`sections/${key}`}
       viewHref={publicPath(data.key)}
       onSave={async (value) => {
         const saved = await adminFetch<SectionDetail>(path, { method: "PUT", body: value });
