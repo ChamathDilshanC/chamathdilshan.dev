@@ -9,9 +9,15 @@ import { ACCEPT, LIMITS, formatBytes, rejectReason, uploadToCloudinary } from "@
 import { thumbnail } from "@/lib/media";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
-import { Button, Dialog, EmptyState, Spinner } from "./ui";
+import { Button, Dialog, EmptyState, Select, Spinner } from "./ui";
 
 export type MediaKind = keyof typeof ACCEPT;
+
+export function mediaFolder(publicId: string): string {
+  const parts = publicId.split("/").filter(Boolean);
+  parts.pop();
+  return parts.join("/") || "root";
+}
 
 /* --- preview -------------------------------------------------------------- */
 
@@ -246,6 +252,7 @@ export function MediaPicker({
   const { data, error, isLoading, mutate } = useMedia();
   const [selected, setSelected] = useState<Map<number, MediaOut>>(new Map());
   const [filter, setFilter] = useState<"all" | "image" | "video">("all");
+  const [folderFilter, setFolderFilter] = useState(folder ?? "all");
 
   const close = () => {
     setSelected(new Map());
@@ -267,7 +274,12 @@ export function MediaPicker({
     });
   };
 
-  const items = (data ?? []).filter((item) => (kind === "any" ? filter === "all" || item.kind === filter : item.kind === kind));
+  const folders = [...new Set((data ?? []).map((item) => mediaFolder(item.publicId)))].sort();
+  const items = (data ?? []).filter(
+    (item) =>
+      (kind === "any" ? filter === "all" || item.kind === filter : item.kind === kind) &&
+      (folderFilter === "all" || mediaFolder(item.publicId) === folderFilter),
+  );
 
   if (!open) return null;
 
@@ -314,6 +326,14 @@ export function MediaPicker({
               </Button>
             ))}
           </div>
+        )}
+        {folders.length > 0 && (
+          <Select
+            value={folderFilter}
+            onChange={setFolderFilter}
+            options={[{ value: "all", label: "All folders" }, ...folders.map((value) => ({ value, label: value }))]}
+            className="max-w-80"
+          />
         )}
         {isLoading ? (
           <Spinner label="Loading library" />
