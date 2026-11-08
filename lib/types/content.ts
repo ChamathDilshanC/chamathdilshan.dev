@@ -232,7 +232,7 @@ export type Post = {
   /** ISO date. */
   date: string;
   excerpt: string;
-  cover: ImageRef;
+  cover: MediaItem;
   sections: PostSection[];
 };
 

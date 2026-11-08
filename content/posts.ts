@@ -6,12 +6,13 @@
  * a tall image for the first section, and wide images for the next two.
  */
 
-import type { ImageRef, Post } from "@/lib/types/content";
+import type { ImageRef, MediaItem, Post } from "@/lib/types/content";
 
 const art = (slug: string, name: string, alt: string): ImageRef => ({
   url: `/images/journal/${slug}/${name}.jpg`,
   alt,
 });
+const coverArt = (slug: string, alt: string): MediaItem => ({ ...art(slug, "cover", alt), kind: "image", poster: null });
 
 const AI = "working-with-ai-coding-agents";
 const OBS = "observability-from-day-one";
@@ -28,7 +29,7 @@ export const defaultPosts: Post[] = [
     date: "2026-10-28",
     excerpt:
       "An agent can write a feature in minutes. Getting code that is correct, readable and safe to ship still depends on how you brief it and how you review what comes back.",
-    cover: art(AI, "cover", "A violet and an amber glow overlapping above faint lines of code"),
+    cover: coverArt(AI, "A violet and an amber glow overlapping above faint lines of code"),
     sections: [
       {
         title: "Write the Brief First",
@@ -76,7 +77,7 @@ export const defaultPosts: Post[] = [
     date: "2026-10-07",
     excerpt:
       "When something breaks at two in the morning, the questions are always the same: what failed, for whom, and since when. Set up the answers before the first deploy.",
-    cover: art(OBS, "cover", "Staggered teal bars like a request trace, one long amber span"),
+    cover: coverArt(OBS, "Staggered teal bars like a request trace, one long amber span"),
     sections: [
       {
         title: "Structured Logs, Not Sentences",
@@ -124,7 +125,7 @@ export const defaultPosts: Post[] = [
     date: "2026-09-16",
     excerpt:
       "Before adding a queue, a search engine and a vector database, check what the database you already run can do. For most products, it is a lot.",
-    cover: art(PG, "cover", "Three stacked, glowing blue discs, like layers of a database"),
+    cover: coverArt(PG, "Three stacked, glowing blue discs, like layers of a database"),
     sections: [
       {
         title: "Relational First, JSON Where It Fits",
@@ -170,7 +171,7 @@ export const defaultPosts: Post[] = [
     date: "2026-08-26",
     excerpt:
       "Most breaches do not need a clever exploit. They walk through a missing check, a leaked key or an outdated package. These are the basics I put in place on every project.",
-    cover: art(SEC, "cover", "Concentric rings around a bright coral core, like layers of defence"),
+    cover: coverArt(SEC, "Concentric rings around a bright coral core, like layers of defence"),
     sections: [
       {
         title: "Authentication You Do Not Invent",
@@ -218,7 +219,7 @@ export const defaultPosts: Post[] = [
     date: "2026-08-05",
     excerpt:
       "A cache makes a site fast until it shows someone yesterday’s price. Good caching is mostly about knowing exactly when to forget.",
-    cover: art(CACHE, "cover", "Three translucent panes receding into depth, a beam of light passing through"),
+    cover: coverArt(CACHE, "Three translucent panes receding into depth, a beam of light passing through"),
     sections: [
       {
         title: "Know Every Layer",
@@ -264,7 +265,7 @@ export const defaultPosts: Post[] = [
     date: "2026-07-15",
     excerpt:
       "Big releases feel safe and are not. Small changes, merged and deployed every day, are easier to review, easier to test and easier to undo.",
-    cover: art(SHIP, "cover", "Warm orange and pink lines curving together into one bright trunk"),
+    cover: coverArt(SHIP, "Warm orange and pink lines curving together into one bright trunk"),
     sections: [
       {
         title: "Make Every Change Small",
