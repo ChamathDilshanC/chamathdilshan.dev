@@ -10,9 +10,10 @@ type Props = {
   alt: string;
   sizes: string;
   className?: string;
+  fillHeight?: boolean;
 };
 
-export function ImageLightbox({ src, alt, sizes, className }: Props) {
+export function ImageLightbox({ src, alt, sizes, className, fillHeight = false }: Props) {
   const [open, setOpen] = useState(false);
   const [aspectRatio, setAspectRatio] = useState("16 / 9");
 
@@ -33,7 +34,10 @@ export function ImageLightbox({ src, alt, sizes, className }: Props) {
 
   return (
     <>
-      <div className="relative block w-full overflow-hidden rounded-[5px]" style={{ aspectRatio }}>
+      <div
+        className={cn("relative block w-full overflow-hidden rounded-[5px]", fillHeight && "h-full")}
+        style={fillHeight ? undefined : { aspectRatio }}
+      >
         <button
           type="button"
           aria-label={`Open ${alt || "image"} in full view`}

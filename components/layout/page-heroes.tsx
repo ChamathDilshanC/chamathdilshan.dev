@@ -157,7 +157,7 @@ export function PostHero({
         <div className="relative flex w-full flex-col items-start justify-center gap-6 m:items-center">
           <p className="w-full max-w-77.5 text-left type-body-3 m:text-center">{category}</p>
           <h1 className="max-w-260 text-left type-heading-2 m:text-center">{title}</h1>
-          <p className="w-full max-w-77.5 text-left type-body-4 m:text-center">{excerpt}</p>
+          <p className="w-full max-w-77.5 text-left type-body-4 m:max-w-180 m:text-center l:max-w-220">{excerpt}</p>
         </div>
         <div className="relative flex w-full items-start justify-start gap-1">
           <p className="type-body-3">Date:</p>

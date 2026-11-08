@@ -42,12 +42,16 @@ function SectionImages({ images }: { images: PostSection["images"] }) {
           key={`${i}-${image.url}`}
           duration={0.8}
           delay={0.1 * i}
-          className={cn("touch-frame relative w-full", pair && i === 1 && "m:max-w-87.5")}
+          className={cn(
+            "touch-frame relative w-full",
+            pair && i === 1 && "m:max-w-87.5 m:self-stretch",
+          )}
         >
           <ImageLightbox
             src={image.url}
             alt={image.alt}
             sizes={pair && i === 1 ? "(min-width: 810px) 350px, 100vw" : "(min-width: 1200px) 1100px, 100vw"}
+            fillHeight={pair && i === 1}
           />
         </Reveal>
       ))}
