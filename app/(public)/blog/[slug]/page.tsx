@@ -36,18 +36,27 @@ export async function generateMetadata(props: PageProps<"/blog/[slug]">): Promis
 function SectionImages({ images }: { images: PostSection["images"] }) {
   const pair = images.length > 1;
   return (
-    <div className="flex w-full max-w-360 flex-col items-center justify-center gap-2.5 m:flex-row">
+    <div
+      className={cn(
+        "flex w-full max-w-320 flex-col items-center justify-center gap-2.5",
+        pair && "m:grid m:grid-cols-[minmax(0,1fr)_87.5] m:items-stretch",
+      )}
+    >
       {images.map((image, i) => (
         <Reveal
           key={`${i}-${image.url}`}
           duration={0.8}
           delay={0.1 * i}
-          className={cn("touch-frame relative w-full", pair && i === 1 && "m:max-w-87.5")}
+          className={cn(
+            "touch-frame relative w-full",
+            pair && i === 1 && "m:h-full",
+          )}
         >
           <ImageLightbox
             src={image.url}
             alt={image.alt}
             sizes={pair && i === 1 ? "(min-width: 810px) 350px, 100vw" : "(min-width: 1200px) 1100px, 100vw"}
+            fillHeight={pair && i === 1}
           />
         </Reveal>
       ))}
