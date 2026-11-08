@@ -131,7 +131,7 @@ export type PostOut = {
   title: string;
   category: string;
   date: string;
-  cover: { url: string; alt: string } | null;
+  cover: { kind: "image" | "video"; url: string; alt: string; poster: string | null } | null;
   published: boolean;
   updatedAt: string;
   [key: string]: unknown;

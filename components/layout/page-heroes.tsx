@@ -139,9 +139,8 @@ export function PostHero({
   category,
   excerpt,
   date,
-  image,
-  imageAlt,
-}: ImageProps & { title: string; category: string; excerpt: string; date: string }) {
+  media,
+}: { title: string; category: string; excerpt: string; date: string; media: MediaItem }) {
   return (
     <StickyHero className="justify-start bg-black-token p-6">
       <SiteHeader active="journal" />
@@ -151,7 +150,7 @@ export function PostHero({
         style={enter(0.6, { y: "40px" })}
       >
         <div className={`absolute inset-0 opacity-70 ${heroZoom}`}>
-          <Media src={image} alt={imageAlt} sizes="(min-width: 1200px) 1440px, 100vw" preload />
+          <MediaAsset item={media} sizes="(min-width: 1200px) 1440px, 100vw" preload />
         </div>
         <div className="hidden h-4 w-full m:block" />
         <div className="relative flex w-full flex-col items-start justify-center gap-6 m:items-center">

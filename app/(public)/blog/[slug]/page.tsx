@@ -68,7 +68,7 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
   const { slug } = await props.params;
   const [post, posts] = await Promise.all([getPost(slug), getPosts()]);
   if (!post) notFound();
-  const previews = await placeholders([post.cover.url]);
+  const previews = post.cover.kind === "image" ? await placeholders([post.cover.url]) : {};
 
   const index = Math.max(0, posts.findIndex((p) => p.slug === post.slug));
   const more = [1, 2, 3]
@@ -84,8 +84,7 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
           category={post.category}
           excerpt={post.excerpt}
           date={formatPostDate(post.date)}
-          image={post.cover.url}
-          imageAlt={post.cover.alt}
+          media={post.cover}
         />
       </PlaceholderProvider>
 
