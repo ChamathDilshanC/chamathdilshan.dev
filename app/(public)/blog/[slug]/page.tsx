@@ -39,7 +39,7 @@ function SectionImages({ images }: { images: PostSection["images"] }) {
     <div
       className={cn(
         "flex w-full max-w-320 flex-col items-center justify-center gap-2.5",
-        pair && "m:grid m:grid-cols-[minmax(0,1fr)_87.5] m:items-stretch",
+        pair && "m:grid m:grid-cols-[minmax(0,1fr)_32%] m:items-stretch",
       )}
     >
       {images.map((image, i) => (

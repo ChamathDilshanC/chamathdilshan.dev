@@ -163,7 +163,7 @@ export function PostHero({
           <p className="type-body-3 text-white-a50">{date}</p>
         </div>
       </div>
-      <p className="w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">{excerpt}</p>
+      <p className="mt-2.5 w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">{excerpt}</p>
     </StickyHero>
   );
 }
