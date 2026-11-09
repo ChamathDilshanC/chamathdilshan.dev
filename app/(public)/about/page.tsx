@@ -3,18 +3,16 @@ import { AboutHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { LineReveal } from "@/components/motion/line-reveal";
 import { Reveal } from "@/components/motion/reveal";
-import { ScrollShift } from "@/components/motion/scroll-shift";
-import { Ticker } from "@/components/motion/ticker";
 import { ExperienceTimeline } from "@/components/sections/experience";
 import { Journal } from "@/components/sections/journal";
 import { Numbers } from "@/components/sections/numbers";
 import { ProcessImage } from "@/components/sections/process-image";
-import { Media } from "@/components/ui/media";
+import MarqueeBrands from "@/components/shadcn-space/marquee/marquee-02";
 import { PlusList } from "@/components/ui/plus-list";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SkillTile } from "@/components/ui/skill-tile";
 import { getExperience, getPosts, getSiteContent, getSkills } from "@/lib/content";
-import type { AboutProcess, AboutRecognition, AboutStack, AboutToolbox, Skill } from "@/lib/types/content";
+import type { AboutProcess, AboutRecognition, AboutStack, Skill } from "@/lib/types/content";
 import { STATEMENT } from "@/lib/typography";
 
 export const metadata: Metadata = {
@@ -60,36 +58,6 @@ function Process({ process, curtain = true }: { process: AboutProcess; curtain?:
         </div>
       </div>
     </section>
-  );
-}
-
-function Toolbox({ toolbox }: { toolbox: AboutToolbox }) {
-  if (toolbox.items.length === 0) return null;
-  return (
-    <div className="relative z-1 w-full flex-none">
-      <section className="flex w-full flex-col items-center justify-start gap-15 overflow-hidden bg-neutral-900 pb-25">
-        <div className="flex w-full max-w-360 flex-col items-center px-6 pt-6">
-          <SectionTitle title={toolbox.title} aside={toolbox.aside} tone="light" />
-        </div>
-        <Reveal className="flex h-130.25 w-full justify-center overflow-hidden">
-          <ScrollShift className="h-full w-[400%] flex-none">
-            <Ticker speed={40} gap={10} hoverFactor={0.4}>
-              {toolbox.items.map((item, i) => (
-                <div key={`${i}-${item.name}`} className="flex h-126.25 w-85.25 flex-col items-center justify-center gap-2.5">
-                  <div className="relative w-full flex-1 overflow-hidden rounded-[5px]">
-                    <Media src={item.image} sizes="341px" />
-                  </div>
-                  <div className="flex w-full flex-col px-2.5">
-                    <p className="type-body-3">{item.name}</p>
-                    <p className="type-body-3 text-white-a50">{item.role}</p>
-                  </div>
-                </div>
-              ))}
-            </Ticker>
-          </ScrollShift>
-        </Reveal>
-      </section>
-    </div>
   );
 }
 
@@ -171,7 +139,16 @@ export default async function AboutPage() {
       <AboutHero title={about.title} label={about.label} blurb={about.blurb} image={about.image} imageAlt={about.imageAlt} />
       <ExperienceTimeline heading={content["about.experience"]} experience={experience} curtain />
       <Process process={content["about.process"]} curtain={!hasExperience} />
-      <Toolbox toolbox={content["about.toolbox"]} />
+      {content["about.toolbox"].items.length > 0 && (
+        <section aria-label={content["about.toolbox"].title || "Toolbox"} className="relative z-1 flex w-full flex-col items-center gap-12 overflow-hidden bg-neutral-900 px-6 pt-6 pb-16 m:gap-15 m:pb-20">
+          <div className="w-full max-w-360">
+            <SectionTitle title={content["about.toolbox"].title} aside={content["about.toolbox"].aside} tone="light" />
+          </div>
+          <div className="w-full max-w-360">
+            <MarqueeBrands items={content["about.toolbox"].items} />
+          </div>
+        </section>
+      )}
       <Recognition recognition={content["about.recognition"]} />
       <StackGrid stack={content["about.stack"]} skills={skills} />
       <Numbers numbers={content["home.numbers"]} />

@@ -1,0 +1,31 @@
+@keyframes marquee {
+  to { transform: translateX(calc(-100% - var(--gap))); }
+}
+
+@keyframes marqueeVertical {
+  to { transform: translateY(calc(-100% - var(--gap))); }
+}
+
+.track {
+  animation: marquee var(--duration) linear infinite;
+}
+
+.vertical { animation-name: marqueeVertical; }
+.reverse { animation-direction: reverse; }
+
+.pauseOnHover:hover .track,
+.pauseOnHover:focus-within .track,
+.root[data-paused="true"] .track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root { overflow: visible; }
+  .track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+  }
+  .duplicate { display: none; }
+}

@@ -68,6 +68,23 @@ standalone example. The listing uses a scoped slate provider and the site's
 Geist font, with local overrides in
 `components/sections/paginated-card-grid.module.css`.
 
+## About Toolbox
+
+The dark Toolbox section uses Shadcn Space's `marquee-02`, installed with:
+
+```bash
+pnpm dlx shadcn@latest add @shadcn-space/marquee-02
+```
+
+Manage this independent list under **Sections → About · Toolbox**. Each tool
+has a name, role and optional **Logo** using the same theSVG search as Skills.
+Add, remove or reorder items there; removing every item hides the section.
+The marquee supports pause/resume, pauses on hover and respects reduced motion.
+
+Old placeholder photo tiles become brand logos when read; saved custom logo
+URLs are preserved. Deploy the frontend and backend updates together. No
+database migration is required.
+
 ---
 
 ## Design and content

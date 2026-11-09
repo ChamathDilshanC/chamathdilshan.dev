@@ -24,7 +24,7 @@ import {
 import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import useSWR from "swr";
 import { fetcher, type FieldErrors, type JsonSchema, type JsonSchemaRoot, type ProjectOut } from "@/lib/admin/api";
-import { defaultFor, itemLabel, joinPath, labelFor, resolve, typeOf } from "@/lib/admin/schema";
+import { defaultFor, itemLabel, joinPath, labelFor, resolve, siblingValue, typeOf } from "@/lib/admin/schema";
 import { cn } from "@/lib/utils";
 import { BrandIconField } from "./brand-icon-field";
 import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
@@ -615,7 +615,8 @@ function MediaSlot({
 /** theSVG search, seeded with the entity's `name` (a skill's, for example). */
 function BrandIcon({ schema, value, onChange, path, label, nullable }: NodeProps & { nullable: boolean }) {
   const { values } = useContext(FormContext);
-  const name = typeof values.name === "string" ? values.name : undefined;
+  const siblingName = siblingValue(values, path, "name");
+  const name = typeof siblingName === "string" ? siblingName : undefined;
   return (
     <BrandIconField
       label={label}

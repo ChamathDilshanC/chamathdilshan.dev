@@ -121,3 +121,13 @@ export function itemLabel(value: unknown, fallback: string): string {
 }
 
 export const joinPath = (base: string, key: string | number) => (base ? `${base}.${key}` : String(key));
+
+/** Read a sibling field for both entity fields and nested array item fields. */
+export function siblingValue(values: Record<string, unknown>, path: string, key: string): unknown {
+  const parentPath = path.split(".").slice(0, -1);
+  let parent: unknown = values;
+  for (const part of parentPath) {
+    parent = parent && typeof parent === "object" ? (parent as Record<string, unknown>)[part] : undefined;
+  }
+  return parent && typeof parent === "object" ? (parent as Record<string, unknown>)[key] : undefined;
+}

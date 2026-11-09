@@ -144,7 +144,8 @@ export type AboutProcess = {
   steps: ProcessStep[];
 };
 
-export type AboutToolbox = { title: string; aside: string; items: Array<{ name: string; role: string; image: string }> };
+export type ToolboxItem = { name: string; role: string; image: string | null };
+export type AboutToolbox = { title: string; aside: string; items: ToolboxItem[] };
 
 export type AboutRecognition = {
   title: string;
