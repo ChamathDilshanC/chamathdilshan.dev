@@ -37,7 +37,7 @@ export const VARIANT_HINTS: Record<IconVariant, string> = {
   default: "The brand's own colours",
   mono: "One colour",
   dark: "Black, for light backgrounds",
-  light: "White, for dark backgrounds (it disappears on the light skill tiles)",
+  light: "White, for dark backgrounds",
 };
 
 /** CDN URL of an icon. */

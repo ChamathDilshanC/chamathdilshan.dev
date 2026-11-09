@@ -353,11 +353,11 @@ export const defaultContent: SiteContent = {
     title: "Toolbox",
     aside: "What I use every day",
     items: [
-      { name: "VS Code", role: "Editor", image: img("team-1") },
-      { name: "Figma", role: "Design", image: img("team-2") },
-      { name: "Docker", role: "Containers", image: img("team-3") },
-      { name: "GitHub Actions", role: "CI/CD", image: img("team-4") },
-      { name: "Supabase", role: "Data & Auth", image: img("detail-3") },
+      { name: "VS Code", role: "Editor", image: "https://thesvg.org/icons/visual-studio-code/default.svg" },
+      { name: "Figma", role: "Design", image: "https://thesvg.org/icons/figma/default.svg" },
+      { name: "Docker", role: "Containers", image: "https://thesvg.org/icons/docker/default.svg" },
+      { name: "GitHub Actions", role: "CI/CD", image: "https://thesvg.org/icons/github-actions/default.svg" },
+      { name: "Supabase", role: "Data & Auth", image: "https://thesvg.org/icons/supabase/default.svg" },
     ],
   },
 
