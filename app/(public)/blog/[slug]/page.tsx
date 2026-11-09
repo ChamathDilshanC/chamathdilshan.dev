@@ -88,18 +88,18 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
         />
       </PlaceholderProvider>
 
-      <article className="relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:pr-32.75 l:pl-62">
+      <article className="relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:px-32.75">
         <Curtain className="bg-white-token" />
         <div className="relative h-px w-full max-w-360 bg-black-a16" />
         {post.sections.map((section, i) => (
           <div key={`${i}-${section.title}`} className="relative flex w-full flex-col items-center gap-20">
-            <Reveal className="flex w-full max-w-360 flex-col items-start justify-center gap-7.5 m:flex-row m:gap-47.5">
-              <p className="w-full max-w-10 type-body-1 text-black-token">{String(i + 1).padStart(3, "0")}</p>
-              <div className="flex w-full flex-col items-start justify-start gap-10">
+            <Reveal className="relative flex w-full max-w-360 flex-col items-start justify-center gap-7.5 m:px-20 l:px-57.5">
+              <p className="w-full max-w-10 type-body-1 text-black-token m:absolute m:top-0 m:left-0">{String(i + 1).padStart(3, "0")}</p>
+              <div className="flex min-w-0 w-full flex-col items-start justify-start gap-10">
                 <h2 className="type-heading-4 text-black-token">{section.title}</h2>
-                <div className="prose-flow w-full max-w-177.5">
+                <div className="prose-flow w-full">
                   {section.paragraphs.map((paragraph, j) => (
-                    <p key={j} className="type-body-2">
+                    <p key={j} className="type-body-2 text-justify">
                       {paragraph}
                     </p>
                   ))}
