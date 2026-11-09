@@ -1,0 +1,6 @@
+/* Apply Reshaped tokens only to the pagination controls, using the site's font. */
+.theme[data-rs-theme] {
+  --rs-font-family-body: var(--ff-geist), sans-serif;
+  --rs-font-family-title: var(--ff-geist), sans-serif;
+  --rs-font-family-headline: var(--ff-geist), sans-serif;
+}

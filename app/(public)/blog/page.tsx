@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ListHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { PostGrid } from "@/components/sections/card-grids";
+import { PaginatedCardGrid } from "@/components/sections/paginated-card-grid";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getPosts, getSiteContent } from "@/lib/content";
+import { LIST_PAGE_SIZE } from "@/lib/pagination";
 
 export const metadata: Metadata = {
   title: "Journal",
@@ -30,7 +33,9 @@ export default async function JournalPage() {
           <SectionTitle title={page.listTitle} aside={page.listAside} />
         </div>
         <div className="relative w-full max-w-360">
-          <PostGrid posts={posts} />
+          <Suspense fallback={<PostGrid posts={posts.slice(0, LIST_PAGE_SIZE)} />}>
+            <PaginatedCardGrid kind="journal" items={posts} />
+          </Suspense>
         </div>
       </section>
     </>
