@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ListHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { WorkGrid } from "@/components/sections/card-grids";
+import { PaginatedCardGrid } from "@/components/sections/paginated-card-grid";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getProjects, getSiteContent } from "@/lib/content";
+import { LIST_PAGE_SIZE } from "@/lib/pagination";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -33,7 +36,9 @@ export default async function ProjectsPage() {
           <SectionTitle title={page.listTitle} aside={page.listAside} />
         </div>
         <div className="relative w-full max-w-360">
-          <WorkGrid projects={projects} />
+          <Suspense fallback={<WorkGrid projects={projects.slice(0, LIST_PAGE_SIZE)} />}>
+            <PaginatedCardGrid kind="projects" items={projects} />
+          </Suspense>
         </div>
       </section>
     </>

@@ -45,6 +45,29 @@ lib/           api client, cache tags, easing curves, helpers
 hooks/         client-side hooks
 ```
 
+## UI components and pagination
+
+TypeScript and Tailwind CSS v4 are already installed. Reusable UI components live
+in `components/ui`, styles and site tokens in `app/globals.css`, and imports use
+the `@/` alias. `components.json` configures these paths for the shadcn CLI, with
+the existing `cn` helper in `lib/utils.ts`. Add future shadcn components with:
+
+```bash
+npx shadcn@latest add button
+```
+
+The Projects and Journal listings show six items per page. Pagination appears
+only for more than six items and stores its current page in `?page=2` so refresh,
+shared links and browser history keep the selection. Existing homepage grids
+and related articles keep their original layout. Invalid page values fall back
+to page one; out-of-range values show the last available page.
+
+`components/ui/reshaped-pagination.tsx` re-exports the real `reshaped/bundle`
+component and precompiled CSS. `components/ui/demo.tsx` contains the supplied
+standalone example. The listing uses a scoped slate provider and the site's
+Geist font, with local overrides in
+`components/sections/paginated-card-grid.module.css`.
+
 ---
 
 ## Design and content
