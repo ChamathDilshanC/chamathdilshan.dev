@@ -223,6 +223,8 @@ export type PostSection = {
   paragraphs: string[];
   /** One full-width image or two side by side, shown after the section. */
   images: ImageRef[];
+  /** Optional for articles saved before section videos were supported. */
+  videos?: MediaItem[];
 };
 
 export type Post = {

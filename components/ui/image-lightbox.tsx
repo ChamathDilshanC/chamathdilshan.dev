@@ -51,6 +51,7 @@ export function ImageLightbox({ src, alt, sizes, className, fillHeight = false }
           sizes={sizes}
           draggable={false}
           loader={isCloudinary(src) ? cloudinaryLoader : undefined}
+          unoptimized={src.startsWith("https://") && !isCloudinary(src)}
           onLoad={(event) => {
             const image = event.currentTarget;
             if (image.naturalWidth && image.naturalHeight) {
@@ -88,6 +89,7 @@ export function ImageLightbox({ src, alt, sizes, className, fillHeight = false }
               sizes="100vw"
               draggable={false}
               loader={isCloudinary(src) ? cloudinaryLoader : undefined}
+              unoptimized={src.startsWith("https://") && !isCloudinary(src)}
               onContextMenu={preventImageAction}
               onDragStart={preventImageAction}
               className="object-contain object-center"
