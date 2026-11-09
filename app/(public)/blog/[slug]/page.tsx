@@ -107,6 +107,19 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
               </div>
             </Reveal>
             {section.images.length > 0 && <SectionImages images={section.images} />}
+            {section.videos?.map((video, j) => (
+              <Reveal key={`${j}-${video.url}`} className="touch-frame relative w-full max-w-320">
+                <video
+                  src={video.url}
+                  poster={video.poster ?? undefined}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label={video.alt || "Article video"}
+                  className="block max-h-[80vh] w-full rounded-[5px]"
+                />
+              </Reveal>
+            ))}
           </div>
         ))}
       </article>

@@ -32,6 +32,7 @@ export function Media({ src, alt = "", sizes, preload = false, className }: Prop
       preload={preload}
       draggable={false}
       loader={isCloudinary(src) ? cloudinaryLoader : undefined}
+      unoptimized={src.startsWith("https://") && !isCloudinary(src)}
       placeholder={preview ? "blur" : "empty"}
       blurDataURL={preview}
       // next/image sizes the preview from the inline objectFit, not the class.

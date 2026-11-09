@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import useSWR from "swr";
 import { adminFetch, errorMessage, type JsonSchemaRoot } from "@/lib/admin/api";
 import { defaultFor, withDefaults } from "@/lib/admin/schema";
@@ -58,7 +58,11 @@ const CONFIG: Record<Kind, Config> = {
     site: "/blog",
     groups: [
       { title: "Basics", fields: ["title", "slug", "category", "date", "excerpt", "cover"] },
-      { title: "Body", description: "Each part has a heading, paragraphs and up to two images.", fields: ["sections"] },
+      {
+        title: "Body",
+        description: "Each part has a heading, paragraphs, up to two images and up to two videos.",
+        fields: ["sections"],
+      },
       { title: "Visibility", fields: ["published"] },
     ],
   },
@@ -87,7 +91,7 @@ export function toInput(record: Record<string, unknown>): Record<string, unknown
   return Object.fromEntries(Object.entries(record).filter(([key]) => !META.has(key)));
 }
 
-export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
+export function EntityEditor({ kind, id, imported, aside }: { kind: Kind; id: number | null; imported?: Record<string, unknown>; aside?: ReactNode }) {
   const cfg = CONFIG[kind];
   const router = useRouter();
   const schema = useSWR<JsonSchemaRoot>(`/api/admin/schemas/${kind}`, { revalidateOnFocus: false });
@@ -110,7 +114,14 @@ export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
   const initial = (
     record.data
       ? withDefaults(toInput(record.data), root, root)
-      : { ...(defaultFor(root, root) as Record<string, unknown>), ...(kind === "post" ? { date: new Date().toISOString().slice(0, 10) } : {}) }
+      : withDefaults(
+          imported ?? {
+            ...(defaultFor(root, root) as Record<string, unknown>),
+            ...(kind === "post" ? { date: new Date().toISOString().slice(0, 10) } : {}),
+          },
+          root,
+          root,
+        )
   ) as Record<string, unknown>;
 
   const slug = typeof record.data?.slug === "string" ? record.data.slug : null;
@@ -132,6 +143,7 @@ export function EntityEditor({ kind, id }: { kind: Kind; id: number | null }) {
       description={cfg.intro ?? (slug ? `${cfg.site}/${slug}` : `Fill in the basics and save. It stays a draft until you publish it.`)}
       schema={root}
       initial={initial}
+      aside={aside}
       groups={cfg.groups}
       uploadFolder={`${kind === "post" ? "journal" : kind === "project" ? "projects" : "experience"}/${id ?? "draft"}`}
       saveLabel={id ? "Save changes" : `Create ${cfg.noun}`}

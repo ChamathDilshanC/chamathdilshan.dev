@@ -1,6 +1,6 @@
 "use client";
 
-import { IconExternalLink, IconPencil, IconPlus } from "@tabler/icons-react";
+import { IconExternalLink, IconPencil, IconPlus, IconUpload } from "@tabler/icons-react";
 import Link from "next/link";
 import useSWR from "swr";
 import { MediaThumb } from "@/components/admin/media";
@@ -23,7 +23,14 @@ export default function JournalAdminPage() {
       <PageHeader
         title="Journal"
         description="Articles on /blog, newest first. The latest four also appear on the home and about pages."
-        actions={newButton}
+        actions={
+          <>
+            <ButtonLink href={`${ADMIN}/blog/import`} icon={<IconUpload className="size-4" />}>
+              Import article
+            </ButtonLink>
+            {newButton}
+          </>
+        }
       />
       {error && <ErrorBanner>{errorMessage(error)}</ErrorBanner>}
       {isLoading && <Spinner />}
