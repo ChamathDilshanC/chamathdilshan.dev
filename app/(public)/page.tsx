@@ -10,7 +10,18 @@ import { Services } from "@/components/sections/services";
 import { StackStrip } from "@/components/sections/stack-strip";
 import { Testimonials } from "@/components/sections/testimonials";
 import { getPosts, getProjects, getSiteContent, getSkills } from "@/lib/content";
+import { JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 import type { HomeBlock } from "@/lib/types/content";
+
+export async function generateMetadata() {
+  const content = await getSiteContent();
+  return pageMetadata({
+    title: content.site.name,
+    description: content.site.description,
+    path: "/",
+    image: content["home.hero"].image,
+  });
+}
 
 export default async function HomePage() {
   const [content, projects, posts, skills] = await Promise.all([
@@ -47,6 +58,37 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Person",
+              "@id": `${siteUrl}/#person`,
+              name: content.site.name,
+              url: siteUrl,
+              description: content.site.description,
+              sameAs: [content.site.github],
+            },
+            {
+              "@type": "WebSite",
+              "@id": `${siteUrl}/#website`,
+              url: siteUrl,
+              name: content.site.name,
+              description: content.site.description,
+              publisher: { "@id": `${siteUrl}/#person` },
+            },
+            {
+              "@type": "WebPage",
+              "@id": `${siteUrl}/#webpage`,
+              url: siteUrl,
+              name: content.site.name,
+              isPartOf: { "@id": `${siteUrl}/#website` },
+              about: { "@id": `${siteUrl}/#person` },
+            },
+          ],
+        }}
+      />
       <HomeHero />
       {layout.map((entry) => (
         <Fragment key={entry.section}>{blocks[entry.section]()}</Fragment>

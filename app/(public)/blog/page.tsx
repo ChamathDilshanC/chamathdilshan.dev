@@ -7,18 +7,29 @@ import { PaginatedCardGrid } from "@/components/sections/paginated-card-grid";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getPosts, getSiteContent } from "@/lib/content";
 import { LIST_PAGE_SIZE } from "@/lib/pagination";
+import { JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Journal",
   description: "Notes on code, product and craft.",
-  alternates: { canonical: "/blog" },
-};
+  path: "/blog",
+});
 
 export default async function JournalPage() {
   const [content, posts] = await Promise.all([getSiteContent(), getPosts()]);
   const page = content["page.blog"];
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          name: "Journal",
+          description: "Notes on code, product and craft.",
+          url: `${siteUrl}/blog`,
+          publisher: { "@type": "Person", name: "Chamath Dilshan", url: siteUrl },
+        }}
+      />
       <ListHero
         active="journal"
         title={page.title}

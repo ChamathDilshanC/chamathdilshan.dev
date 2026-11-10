@@ -13,6 +13,7 @@ import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
 import { getProject, getProjects } from "@/lib/content";
 import { placeholders } from "@/lib/placeholders";
+import { absoluteUrl, imageUrl, JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 import type { Project } from "@/lib/types/content";
 
 // Projects added in the admin panel are rendered on first visit, then cached.
@@ -27,12 +28,12 @@ export async function generateMetadata(props: PageProps<"/projects/[slug]">): Pr
   const { slug } = await props.params;
   const project = await getProject(slug);
   if (!project) return {};
-  return {
+  return pageMetadata({
     title: project.title,
     description: project.summary,
-    alternates: { canonical: `/projects/${project.slug}` },
-    openGraph: { images: project.thumbnail.url.startsWith("https://") ? [project.thumbnail.url] : undefined },
-  };
+    path: `/projects/${project.slug}`,
+    image: project.thumbnail.url,
+  });
 }
 
 export default async function ProjectPage(props: PageProps<"/projects/[slug]">) {
@@ -52,6 +53,19 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "CreativeWork",
+          name: project.title,
+          description: project.summary,
+          url: absoluteUrl(`/projects/${project.slug}`),
+          image: imageUrl(project.thumbnail.url),
+          author: { "@type": "Person", name: "Chamath Dilshan", url: siteUrl },
+          ...(project.tech.length > 0 ? { keywords: project.tech.join(", ") } : {}),
+          ...(project.liveUrl ? { mainEntityOfPage: project.liveUrl } : {}),
+        }}
+      />
       <PlaceholderProvider value={previews}>
         <CaseHero title={project.title} category={project.category} summary={project.summary} media={project.hero} />
       </PlaceholderProvider>

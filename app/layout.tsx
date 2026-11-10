@@ -5,7 +5,7 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"], variable: "--ff-geist", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--ff-inter", display: "swap" });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chamathdilshan.dev";
+const siteUrl = "https://www.chamathdilshan.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
     url: siteUrl,
   },
   twitter: { card: "summary_large_image" },
-  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {

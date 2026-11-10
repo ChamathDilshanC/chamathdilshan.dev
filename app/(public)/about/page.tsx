@@ -12,14 +12,15 @@ import { PlusList } from "@/components/ui/plus-list";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SkillTile } from "@/components/ui/skill-tile";
 import { getExperience, getPosts, getSiteContent, getSkills } from "@/lib/content";
+import { JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 import type { AboutProcess, AboutRecognition, AboutStack, Skill } from "@/lib/types/content";
 import { STATEMENT } from "@/lib/typography";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: "Who I am, where I have worked, how I work and the tools I use.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 /** `curtain`: slide over the sticky hero (only when this is the first section after it). */
 function Process({ process, curtain = true }: { process: AboutProcess; curtain?: boolean }) {
@@ -136,6 +137,22 @@ export default async function AboutPage() {
   const hasExperience = experience.some((company) => company.roles.length > 0);
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          name: about.title,
+          description: about.blurb,
+          url: `${siteUrl}/about`,
+          mainEntity: {
+            "@type": "Person",
+            name: content.site.name,
+            url: siteUrl,
+            description: content.site.description,
+            sameAs: [content.site.github],
+          },
+        }}
+      />
       <AboutHero title={about.title} label={about.label} blurb={about.blurb} image={about.image} imageAlt={about.imageAlt} />
       <ExperienceTimeline heading={content["about.experience"]} experience={experience} curtain />
       <Process process={content["about.process"]} curtain={!hasExperience} />
