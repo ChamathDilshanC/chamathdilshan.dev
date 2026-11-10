@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getPosts, getProjects } from "@/lib/content";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://chamathdilshan.dev";
+const siteUrl = "https://www.chamathdilshan.com";
 
 export const revalidate = 3600;
 

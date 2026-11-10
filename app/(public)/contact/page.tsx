@@ -5,12 +5,13 @@ import { ContactForm } from "@/components/sections/contact-form";
 import { Media } from "@/components/ui/media";
 import { getSiteContent } from "@/lib/content";
 import { enter } from "@/lib/enter";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: "Tell me about your product and what you need.",
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 export default async function ContactPage() {
   const page = (await getSiteContent())["page.contact"];

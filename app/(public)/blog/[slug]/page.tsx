@@ -11,6 +11,7 @@ import { formatPostDate } from "@/content/posts";
 import { cn } from "@/lib/cn";
 import { getPost, getPosts } from "@/lib/content";
 import { placeholders } from "@/lib/placeholders";
+import { absoluteUrl, imageUrl, JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
 import type { Post, PostSection } from "@/lib/types/content";
 
 // Articles published in the admin panel are rendered on first visit, then cached.
@@ -25,11 +26,24 @@ export async function generateMetadata(props: PageProps<"/blog/[slug]">): Promis
   const { slug } = await props.params;
   const post = await getPost(slug);
   if (!post) return {};
-  return {
+  const coverImage = post.cover.kind === "image" ? imageUrl(post.cover.url) : undefined;
+  const metadata = pageMetadata({
     title: post.title,
     description: post.excerpt,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { type: "article", publishedTime: post.date },
+    path: `/blog/${post.slug}`,
+    image: coverImage,
+    type: "article",
+  });
+  return {
+    ...metadata,
+    openGraph: {
+      type: "article",
+      title: post.title,
+      description: post.excerpt,
+      url: absoluteUrl(`/blog/${post.slug}`),
+      ...(coverImage ? { images: [coverImage] } : {}),
+      publishedTime: post.date,
+    },
   };
 }
 
@@ -78,6 +92,20 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.excerpt,
+          url: absoluteUrl(`/blog/${post.slug}`),
+          datePublished: post.date,
+          image: post.cover.kind === "image" ? imageUrl(post.cover.url) : undefined,
+          author: { "@type": "Person", name: "Chamath Dilshan", url: siteUrl },
+          publisher: { "@type": "Person", name: "Chamath Dilshan", url: siteUrl },
+          mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
+        }}
+      />
       <PlaceholderProvider value={previews}>
         <PostHero
           title={post.title}
