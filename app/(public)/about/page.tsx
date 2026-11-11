@@ -157,7 +157,7 @@ export default async function AboutPage() {
       <ExperienceTimeline heading={content["about.experience"]} experience={experience} curtain />
       <Process process={content["about.process"]} curtain={!hasExperience} />
       {content["about.toolbox"].items.length > 0 && (
-        <section aria-label={content["about.toolbox"].title || "Toolbox"} className="relative z-1 flex w-full flex-col items-center gap-12 overflow-hidden bg-neutral-900 px-6 pt-6 pb-16 m:gap-15 m:pb-20">
+        <section aria-label={content["about.toolbox"].title || "Toolbox"} className="relative z-1 flex w-full flex-col items-center gap-12 overflow-hidden bg-neutral-900 px-6 pt-16 pb-40 m:gap-15 m:pt-20 m:pb-48">
           <div className="w-full max-w-360">
             <SectionTitle title={content["about.toolbox"].title} aside={content["about.toolbox"].aside} tone="light" />
           </div>
