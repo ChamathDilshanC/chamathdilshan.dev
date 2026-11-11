@@ -2,7 +2,7 @@
 
 import { IconFileDescription, IconLock, IconX } from "@tabler/icons-react";
 import { createPortal } from "react-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { API_URL } from "@/lib/api";
 import type { ExperienceDocument } from "@/lib/types/content";
 
@@ -11,70 +11,19 @@ function documentUrl(experienceId: number, documentId: string): string {
 }
 
 function ImageCanvas({ url, label }: { url: string; label: string }) {
-  const frame = useRef<HTMLDivElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const element = frame.current;
-    const target = canvas.current;
-    if (!element || !target) return;
-    let active = true;
-    let image: ImageBitmap | null = null;
-
-    const render = () => {
-      if (!image || !active) return;
-      const maxWidth = Math.min(element.clientWidth || image.width, image.width, 860);
-      const maxHeight = Math.max(240, window.innerHeight - 140);
-      const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
-      const width = Math.max(1, image.width * scale);
-      const height = Math.max(1, image.height * scale);
-      const density = Math.min(window.devicePixelRatio || 1, 2);
-      target.width = Math.floor(width * density);
-      target.height = Math.floor(height * density);
-      target.style.width = `${Math.floor(width)}px`;
-      target.style.height = `${Math.floor(height)}px`;
-      const context = target.getContext("2d", { alpha: false });
-      context?.setTransform(density, 0, 0, density, 0, 0);
-      context?.drawImage(image, 0, 0, width, height);
-    };
-
-    void fetch(url, { cache: "no-store" })
-      .then((response) => {
-        if (!response.ok) throw new Error("Document unavailable");
-        return response.blob();
-      })
-      .then(createImageBitmap)
-      .then((bitmap) => {
-        image = bitmap;
-        render();
-      })
-      .catch(() => active && setError(true));
-
-    const observer = new ResizeObserver(render);
-    observer.observe(element);
-    return () => {
-      active = false;
-      observer.disconnect();
-      image?.close();
-    };
-  }, [url]);
 
   if (error) return <ViewerError />;
   return (
-    <div ref={frame} className="relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)] m:my-8">
-      <canvas ref={canvas} aria-label={label} className="block max-w-full select-none" />
-      <Watermark />
-    </div>
-  );
-}
-
-function Watermark() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.14]">
-      <div className="absolute top-1/2 left-1/2 grid w-[140%] -translate-x-1/2 -translate-y-1/2 -rotate-25 grid-cols-3 gap-x-12 gap-y-20 text-center font-geist text-[13px] font-medium tracking-[0.12em] text-black-token uppercase">
-        {Array.from({ length: 18 }, (_, index) => <span key={index}>chamathdilshan.dev · view only</span>)}
-      </div>
+    <div className="mx-auto my-4 flex max-h-[calc(100vh-7rem)] w-[calc(100%-2rem)] max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)] m:my-8">
+      {/* The protected API URL is runtime-generated and must bypass Next image optimization. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt={label}
+        onError={() => setError(true)}
+        className="block max-h-[calc(100vh-7rem)] max-w-full select-none object-contain"
+      />
     </div>
   );
 }
@@ -84,39 +33,19 @@ function ViewerError() {
 }
 
 function DocumentModal({ experienceId, item, onClose }: { experienceId: number; item: ExperienceDocument; onClose: () => void }) {
-  const [obscured, setObscured] = useState(false);
   const url = documentUrl(experienceId, item.id);
 
   useEffect(() => {
     const originalOverflow = documentBody().style.overflow;
     documentBody().style.overflow = "hidden";
-    let timer = 0;
-    const brieflyObscure = () => {
-      setObscured(true);
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => setObscured(false), 1200);
-    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
-      if (event.key === "PrintScreen") brieflyObscure();
       if ((event.ctrlKey || event.metaKey) && ["p", "s", "u"].includes(event.key.toLowerCase())) event.preventDefault();
     };
-    const onVisibility = () => setObscured(document.hidden);
-    const onBlur = () => setObscured(true);
-    const onFocus = () => window.setTimeout(() => setObscured(false), 250);
     document.addEventListener("keydown", onKeyDown, true);
-    document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("blur", onBlur);
-    window.addEventListener("focus", onFocus);
-    window.addEventListener("beforeprint", brieflyObscure);
     return () => {
-      window.clearTimeout(timer);
       documentBody().style.overflow = originalOverflow;
       document.removeEventListener("keydown", onKeyDown, true);
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("blur", onBlur);
-      window.removeEventListener("focus", onFocus);
-      window.removeEventListener("beforeprint", brieflyObscure);
     };
   }, [onClose]);
 
@@ -128,8 +57,6 @@ function DocumentModal({ experienceId, item, onClose }: { experienceId: number; 
       aria-label={item.label}
       className="protected-document fixed inset-0 z-100 flex flex-col bg-neutral-950"
       onContextMenu={prevent}
-      onDragStart={prevent}
-      onCopy={prevent}
     >
       <header className="flex h-15 flex-none items-center justify-between gap-4 border-b border-white/15 px-4 text-white-token m:px-6">
         <div className="flex min-w-0 items-center gap-3">
@@ -146,11 +73,6 @@ function DocumentModal({ experienceId, item, onClose }: { experienceId: number; 
       <div className="document-scroll min-h-0 flex-1 overflow-y-auto bg-neutral-900" tabIndex={0}>
         <ImageCanvas url={url} label={item.label} />
       </div>
-      {obscured && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-950 text-center text-white-token">
-          <div className="flex flex-col items-center gap-3 px-6"><IconLock className="size-7" /><p className="type-body-2">Protected content hidden while this window is not active.</p></div>
-        </div>
-      )}
     </div>,
     document.body,
   );
