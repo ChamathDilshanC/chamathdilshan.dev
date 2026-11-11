@@ -10,6 +10,12 @@ function documentUrl(experienceId: number, documentId: string): string {
   return `${API_URL}/api/experience/${experienceId}/documents/${encodeURIComponent(documentId)}`;
 }
 
+function preloadDocument(url: string): void {
+  const image = new Image();
+  image.decoding = "async";
+  image.src = url;
+}
+
 function ImageCanvas({ url, label }: { url: string; label: string }) {
   const [error, setError] = useState(false);
 
@@ -96,6 +102,8 @@ export function ProtectedDocumentButtons({ experienceId, documents }: { experien
             key={document.id}
             type="button"
             onClick={() => setOpen(document)}
+            onPointerEnter={() => preloadDocument(documentUrl(experienceId, document.id))}
+            onFocus={() => preloadDocument(documentUrl(experienceId, document.id))}
             className="inline-flex cursor-pointer items-center gap-2 rounded-full px-3 py-2 type-body-3 text-black-token ring-1 ring-black-a16 ring-inset transition-colors hover:bg-neutral-50 hover:ring-black-a60"
           >
             <IconFileDescription className="size-4" />
