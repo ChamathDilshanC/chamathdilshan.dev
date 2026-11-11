@@ -45,32 +45,32 @@ type ProximitySidebarProps = {
   side?: Side
 }
 
-const RADIUS = 40
-const MAX_DASH_WIDTH = 110
+const RADIUS = 34
+const MAX_DASH_WIDTH = 32
 const SCROLL_IDLE_RESET_DELAY = 80
 
 const DASH_PRESETS: Record<SectionKind, DashPreset> = {
   title: {
-    base: 40,
-    bump: 70,
-    thickness: 1,
+    base: 12,
+    bump: 20,
+    thickness: 2,
     className: "bg-white-token mix-blend-difference",
   },
   subtitle: {
-    base: 36,
-    bump: 64,
+    base: 10,
+    bump: 18,
     thickness: 1,
     className: "bg-white-token mix-blend-difference",
   },
   section: {
-    base: 30,
-    bump: 56,
+    base: 8,
+    bump: 16,
     thickness: 1,
     className: "bg-white-a50 mix-blend-difference",
   },
   body: {
-    base: 24,
-    bump: 50,
+    base: 7,
+    bump: 14,
     thickness: 1,
     className: "bg-white-a50 mix-blend-difference",
   },
@@ -161,11 +161,11 @@ const Dash = ({
       aria-current={active ? "location" : undefined}
       aria-label={`Go to ${section.label}`}
       title={section.label}
-      className="group flex h-px w-[110px] items-center border-0 bg-transparent p-0 outline-none"
+      className="group relative flex h-4 w-10 items-center justify-end border-0 bg-transparent p-0 outline-none"
       onClick={() => onSelect(section.id)}
     >
       <motion.span
-        className={`block transition-colors duration-150 ease-out group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2 ${preset.className}`}
+        className={`block rounded-full transition-colors duration-150 ease-out group-focus-visible:ring-2 group-focus-visible:ring-white-token group-focus-visible:ring-offset-2 ${preset.className}`}
         style={{
           height: preset.thickness,
           scaleX,
@@ -173,6 +173,9 @@ const Dash = ({
           width: MAX_DASH_WIDTH,
         }}
       />
+      <span className="pointer-events-none absolute right-full mr-3 max-w-48 truncate text-right text-[9px] font-medium uppercase tracking-[0.18em] text-white-token opacity-0 transition-opacity duration-200 group-hover:opacity-70 group-focus-visible:opacity-70">
+        {section.label}
+      </span>
     </button>
   )
 }
@@ -349,10 +352,9 @@ const ProximitySidebar = ({
       } ${className}`}
     >
       <div
-        className={`new-home_minimap__dDggR mx-8 flex flex-col ${
+        className={`flex flex-col gap-2 ${
           side === "right" ? "items-end" : "items-start"
         }`}
-        style={{ gap: 8 }}
         onPointerMove={(event) => {
           clearPendingReset()
           pointerInside.current = true

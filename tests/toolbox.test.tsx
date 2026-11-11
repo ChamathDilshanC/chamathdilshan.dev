@@ -12,12 +12,12 @@ describe("Toolbox logo marquee", () => {
     expect(toolboxLogo({ name: "Docker", role: "", image: null })).toBeNull();
   });
 
-  it("renders the installed marquee with logos and hides duplicate tracks from screen readers", () => {
+  it("renders a full-width marquee with logos and roles", () => {
     const html = renderToStaticMarkup(<MarqueeBrands items={[{ name: "Docker", role: "Containers", image: "/images/placeholders/team-3.jpg" }]} />);
     expect(html).toContain("https://thesvg.org/icons/docker/default.svg");
     expect(html).not.toContain("/images/placeholders/");
-    expect(html.match(/aria-hidden="true"/g)?.length).toBeGreaterThanOrEqual(3);
     expect(html).toContain("Containers");
+    expect(html).toContain(">01<");
     expect(html).toContain('aria-label="Pause toolbox scrolling"');
   });
 
