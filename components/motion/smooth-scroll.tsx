@@ -63,12 +63,15 @@ export function SmoothScroll({ lerp = SMOOTH_SCROLL.lerp, wheelMultiplier = SMOO
     };
   }, [lerp, wheelMultiplier]);
 
-  // New page, new height: let Lenis re-measure and drop any leftover momentum.
+  // Route navigation should always start at the top of the new page. Reusing
+  // the previous scroll position makes links opened near the footer appear
+  // to start halfway through their content.
   useEffect(() => {
     const lenis = lenisRef.current;
     if (!lenis) return;
     lenis.resize();
-    lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    lenis.scrollTo(0, { immediate: true, force: true });
   }, [pathname]);
 
   return null;
