@@ -263,7 +263,7 @@ export type ExperienceRole = {
 export type ExperienceDocument = {
   id: string;
   label: string;
-  format: "pdf" | "jpg" | "jpeg" | "png" | "webp";
+  format: "png";
   pages: number;
 };
 

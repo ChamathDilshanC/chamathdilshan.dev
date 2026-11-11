@@ -1,130 +1,13 @@
 "use client";
 
-import { IconFileDescription, IconLoader2, IconLock, IconX } from "@tabler/icons-react";
+import { IconFileDescription, IconLock, IconX } from "@tabler/icons-react";
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
 import { API_URL } from "@/lib/api";
 import type { ExperienceDocument } from "@/lib/types/content";
 
-type PdfDocument = import("pdfjs-dist").PDFDocumentProxy;
-
 function documentUrl(experienceId: number, documentId: string): string {
   return `${API_URL}/api/experience/${experienceId}/documents/${encodeURIComponent(documentId)}`;
-}
-
-function PdfPage({ pdf, pageNumber }: { pdf: PdfDocument; pageNumber: number }) {
-  const frame = useRef<HTMLDivElement>(null);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = frame.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "500px 0px" },
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const element = frame.current;
-    const target = canvas.current;
-    if (!element || !target || !visible) return;
-    let disposed = false;
-    let renderTask: { cancel: () => void; promise: Promise<void> } | null = null;
-
-    const render = async () => {
-      const page = await pdf.getPage(pageNumber);
-      if (disposed) return;
-      renderTask?.cancel();
-      const original = page.getViewport({ scale: 1 });
-      const maxWidth = Math.min(element.clientWidth || 280, 860);
-      const maxHeight = Math.max(240, window.innerHeight - 140);
-      const scale = Math.min(maxWidth / original.width, maxHeight / original.height);
-      const viewport = page.getViewport({ scale: Math.max(0.1, scale) });
-      const density = Math.min(window.devicePixelRatio || 1, 2);
-      target.width = Math.floor(viewport.width * density);
-      target.height = Math.floor(viewport.height * density);
-      target.style.width = `${Math.floor(viewport.width)}px`;
-      target.style.height = `${Math.floor(viewport.height)}px`;
-      const context = target.getContext("2d", { alpha: false });
-      if (!context) return;
-      renderTask = page.render({
-        canvasContext: context,
-        viewport,
-        transform: density === 1 ? undefined : [density, 0, 0, density, 0, 0],
-      });
-      try {
-        await renderTask.promise;
-      } catch (error) {
-        if (!disposed && (error as Error).name !== "RenderingCancelledException") throw error;
-      }
-    };
-
-    let timer = 0;
-    const observer = new ResizeObserver(() => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => void render(), 80);
-    });
-    observer.observe(element);
-    void render();
-    return () => {
-      disposed = true;
-      window.clearTimeout(timer);
-      observer.disconnect();
-      renderTask?.cancel();
-    };
-  }, [pageNumber, pdf, visible]);
-
-  return (
-    <div
-      ref={frame}
-      className="relative flex w-full max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)]"
-      style={{ aspectRatio: visible ? "auto" : "0.707 / 1" }}
-    >
-      <canvas ref={canvas} aria-label={`Document page ${pageNumber}`} className="block max-w-full select-none" />
-      <Watermark />
-    </div>
-  );
-}
-
-function PdfCanvas({ url }: { url: string }) {
-  const [pdf, setPdf] = useState<PdfDocument | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    let loaded: PdfDocument | null = null;
-    void import("pdfjs-dist").then(async (pdfjs) => {
-      pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
-      loaded = await pdfjs.getDocument({ url, isEvalSupported: false }).promise;
-      if (active) setPdf(loaded);
-      else void loaded.destroy();
-    }).catch(() => {
-      if (active) setError(true);
-    });
-    return () => {
-      active = false;
-      if (loaded) void loaded.destroy();
-    };
-  }, [url]);
-
-  if (error) return <ViewerError />;
-  if (!pdf) return <ViewerLoading />;
-  return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5 p-4 m:p-8">
-      {Array.from({ length: pdf.numPages }, (_, index) => (
-        <PdfPage key={index + 1} pdf={pdf} pageNumber={index + 1} />
-      ))}
-    </div>
-  );
 }
 
 function ImageCanvas({ url, label }: { url: string; label: string }) {
@@ -196,10 +79,6 @@ function Watermark() {
   );
 }
 
-function ViewerLoading() {
-  return <div className="flex min-h-80 items-center justify-center text-white-token"><IconLoader2 className="size-6 animate-spin" aria-label="Loading document" /></div>;
-}
-
 function ViewerError() {
   return <div className="flex min-h-80 items-center justify-center px-6 text-center type-body-2 text-white-token">This document could not be displayed. Please try again.</div>;
 }
@@ -265,7 +144,7 @@ function DocumentModal({ experienceId, item, onClose }: { experienceId: number; 
         </button>
       </header>
       <div className="document-scroll min-h-0 flex-1 overflow-y-auto bg-neutral-900" tabIndex={0}>
-        {item.format === "pdf" ? <PdfCanvas url={url} /> : <ImageCanvas url={url} label={item.label} />}
+        <ImageCanvas url={url} label={item.label} />
       </div>
       {obscured && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-neutral-950 text-center text-white-token">

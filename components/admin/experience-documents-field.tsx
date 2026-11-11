@@ -190,7 +190,7 @@ export function ExperienceDocumentsField({
           </button>
         </p>
         <p className="text-[12px] text-black-a60">
-          PDF, JPG, PNG or WebP up to {formatBytes(DOCUMENT_LIMIT)} · stored as authenticated assets
+          PNG up to {formatBytes(DOCUMENT_LIMIT)} · stored as authenticated assets
         </p>
         <input
           ref={input}

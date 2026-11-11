@@ -44,7 +44,7 @@ export const ACCEPT = {
   any: "image/*,video/*",
 } as const;
 
-export const DOCUMENT_ACCEPT = "application/pdf,image/jpeg,image/png,image/webp";
+export const DOCUMENT_ACCEPT = "image/png";
 export const DOCUMENT_LIMIT = 15 * 1024 * 1024;
 
 export function formatBytes(bytes: number): string {
@@ -68,9 +68,9 @@ export function rejectReason(file: File, kind: keyof typeof ACCEPT): string | nu
 export function rejectDocumentReason(file: File): string | null {
   const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
   const acceptedType = DOCUMENT_ACCEPT.split(",").includes(file.type);
-  const acceptedExtension = ["pdf", "jpg", "jpeg", "png", "webp"].includes(extension);
+  const acceptedExtension = extension === "png";
   if (!acceptedType && !acceptedExtension) {
-    return `${file.name} must be a PDF, JPG, PNG or WebP document.`;
+    return `${file.name} must be a PNG image.`;
   }
   if (file.size > DOCUMENT_LIMIT) {
     return `${file.name} is ${formatBytes(file.size)} — the limit is ${formatBytes(DOCUMENT_LIMIT)}.`;
@@ -156,8 +156,8 @@ export async function uploadProtectedDocument(
 
   const result = await send(sig.uploadUrl, form, onProgress);
   const format = (result.format ?? file.name.split(".").pop() ?? "").toLowerCase();
-  if (!(["image", "raw"] as string[]).includes(result.resource_type) || !(["pdf", "jpg", "jpeg", "png", "webp"] as string[]).includes(format)) {
-    throw new AdminApiError(400, `${file.name} must be a PDF, JPG, PNG or WebP document.`);
+  if (result.resource_type !== "image" || format !== "png") {
+    throw new AdminApiError(400, `${file.name} must be a PNG image.`);
   }
   if (result.type !== "authenticated") {
     throw new AdminApiError(400, `${file.name} was not stored as a protected document.`);
