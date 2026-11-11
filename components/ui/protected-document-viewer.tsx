@@ -28,8 +28,10 @@ function PdfPage({ pdf, pageNumber }: { pdf: PdfDocument; pageNumber: number }) 
       if (disposed) return;
       renderTask?.cancel();
       const original = page.getViewport({ scale: 1 });
-      const cssWidth = Math.max(1, Math.min(element.clientWidth || 280, 1500));
-      const viewport = page.getViewport({ scale: cssWidth / original.width });
+      const maxWidth = Math.min(element.clientWidth || 280, 860);
+      const maxHeight = Math.max(240, window.innerHeight - 140);
+      const scale = Math.min(maxWidth / original.width, maxHeight / original.height);
+      const viewport = page.getViewport({ scale: Math.max(0.1, scale) });
       const density = Math.min(window.devicePixelRatio || 1, 2);
       target.width = Math.floor(viewport.width * density);
       target.height = Math.floor(viewport.height * density);
@@ -65,7 +67,7 @@ function PdfPage({ pdf, pageNumber }: { pdf: PdfDocument; pageNumber: number }) 
   }, [pageNumber, pdf]);
 
   return (
-    <div ref={frame} className="relative flex w-full justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)]">
+    <div ref={frame} className="relative flex w-full max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)]">
       <canvas ref={canvas} aria-label={`Document page ${pageNumber}`} className="block max-w-full select-none" />
       <Watermark />
     </div>
@@ -96,7 +98,7 @@ function PdfCanvas({ url }: { url: string }) {
   if (error) return <ViewerError />;
   if (!pdf) return <ViewerLoading />;
   return (
-    <div className="mx-auto flex w-full max-w-375 flex-col gap-5 p-4 m:p-8">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5 p-4 m:p-8">
       {Array.from({ length: pdf.numPages }, (_, index) => (
         <PdfPage key={index + 1} pdf={pdf} pageNumber={index + 1} />
       ))}
@@ -118,8 +120,11 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
 
     const render = () => {
       if (!image || !active) return;
-      const width = Math.max(1, Math.min(element.clientWidth || image.width, image.width));
-      const height = width * (image.height / image.width);
+      const maxWidth = Math.min(element.clientWidth || image.width, image.width, 860);
+      const maxHeight = Math.max(240, window.innerHeight - 140);
+      const scale = Math.min(maxWidth / image.width, maxHeight / image.height);
+      const width = Math.max(1, image.width * scale);
+      const height = Math.max(1, image.height * scale);
       const density = Math.min(window.devicePixelRatio || 1, 2);
       target.width = Math.floor(width * density);
       target.height = Math.floor(height * density);
@@ -153,7 +158,7 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
 
   if (error) return <ViewerError />;
   return (
-    <div ref={frame} className="relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-375 justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)] m:my-8">
+    <div ref={frame} className="relative mx-auto my-4 flex w-[calc(100%-2rem)] max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)] m:my-8">
       <canvas ref={canvas} aria-label={label} className="block max-w-full select-none" />
       <Watermark />
     </div>
