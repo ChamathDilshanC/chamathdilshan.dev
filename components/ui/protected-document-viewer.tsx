@@ -21,6 +21,9 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
       <img
         src={url}
         alt={label}
+        loading="eager"
+        fetchPriority="high"
+        decoding="async"
         onError={() => setError(true)}
         className="block max-h-[calc(100vh-7rem)] max-w-full select-none object-contain"
       />
