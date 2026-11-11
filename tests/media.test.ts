@@ -73,13 +73,13 @@ describe("face detection", () => {
 
 describe("protected document uploads", () => {
   it("accepts supported document formats within the size limit", () => {
-    expect(rejectDocumentReason(new File(["pdf"], "service-letter.pdf", { type: "application/pdf" }))).toBeNull();
     expect(rejectDocumentReason(new File(["image"], "certificate.png", { type: "image/png" }))).toBeNull();
   });
 
   it("rejects unsupported and oversized files", () => {
-    expect(rejectDocumentReason(new File(["text"], "notes.txt", { type: "text/plain" }))).toContain("must be a PDF");
-    const oversized = { name: "large.pdf", type: "application/pdf", size: DOCUMENT_LIMIT + 1 } as File;
+    expect(rejectDocumentReason(new File(["pdf"], "service-letter.pdf", { type: "application/pdf" }))).toContain("must be a PNG");
+    expect(rejectDocumentReason(new File(["text"], "notes.txt", { type: "text/plain" }))).toContain("must be a PNG");
+    const oversized = { name: "large.png", type: "image/png", size: DOCUMENT_LIMIT + 1 } as File;
     expect(rejectDocumentReason(oversized)).toContain("the limit is");
   });
 });

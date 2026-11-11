@@ -163,7 +163,7 @@ export type ExperienceDocumentOut = {
   publicId: string;
   version: number;
   resourceType: "image" | "raw";
-  format: "pdf" | "jpg" | "jpeg" | "png" | "webp";
+  format: "png";
   pages: number;
   bytes: number;
   originalFilename: string;
