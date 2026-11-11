@@ -101,8 +101,15 @@ html:has(.protected),
   scrollbar-width: none;
 }
 html:has(.protected)::-webkit-scrollbar,
-.protected *::-webkit-scrollbar {
+.protected *::-webkit-scrollbar,
+.protected-document::-webkit-scrollbar,
+.protected-document *::-webkit-scrollbar {
   display: none;
+}
+html:has(.protected-document),
+.protected-document,
+.protected-document * {
+  scrollbar-width: none;
 }
 
 /*
