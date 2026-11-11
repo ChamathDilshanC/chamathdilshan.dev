@@ -157,6 +157,18 @@ export type ExperienceRoleOut = {
   skills: string[];
 };
 
+export type ExperienceDocumentOut = {
+  id: string;
+  label: string;
+  publicId: string;
+  version: number;
+  resourceType: "image" | "raw";
+  format: "pdf" | "jpg" | "jpeg" | "png" | "webp";
+  pages: number;
+  bytes: number;
+  originalFilename: string;
+};
+
 export type ExperienceOut = {
   id: number;
   company: string;
@@ -164,6 +176,7 @@ export type ExperienceOut = {
   logo: string | null;
   location: string;
   roles: ExperienceRoleOut[];
+  documents: ExperienceDocumentOut[];
   published: boolean;
   updatedAt: string;
   [key: string]: unknown;

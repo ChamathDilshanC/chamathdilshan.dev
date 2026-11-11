@@ -260,11 +260,21 @@ export type ExperienceRole = {
   skills: string[];
 };
 
+export type ExperienceDocument = {
+  id: string;
+  label: string;
+  format: "pdf" | "jpg" | "jpeg" | "png" | "webp";
+  pages: number;
+};
+
 /** An employer and every role held there, newest role first (as the API sends it). */
 export type Experience = {
+  /** Optional while the frontend and API are rolling between releases. */
+  id?: number;
   company: string;
   companyUrl: string | null;
   logo: string | null;
   location: string;
   roles: ExperienceRole[];
+  documents?: ExperienceDocument[];
 };

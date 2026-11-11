@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { cloudinaryLoader, faceArea, faceInfoUrl, isCloudinary, placeholderUrl, videoPoster, videoSrc } from "../lib/media";
+import { DOCUMENT_LIMIT, rejectDocumentReason } from "../lib/admin/upload";
 
 const image = "https://res.cloudinary.com/demo/image/upload/v1730000000/site/shot.png";
 const video = "https://res.cloudinary.com/demo/video/upload/v1730000000/site/demo.mp4";
@@ -67,5 +68,18 @@ describe("face detection", () => {
     ).toBeNull();
     expect(faceArea({})).toBeNull();
     expect(faceArea({ landmarks: [[{}]], resize: [{ x: 0, y: 0, width: 1, height: 1 }] })).toBeNull();
+  });
+});
+
+describe("protected document uploads", () => {
+  it("accepts supported document formats within the size limit", () => {
+    expect(rejectDocumentReason(new File(["pdf"], "service-letter.pdf", { type: "application/pdf" }))).toBeNull();
+    expect(rejectDocumentReason(new File(["image"], "certificate.png", { type: "image/png" }))).toBeNull();
+  });
+
+  it("rejects unsupported and oversized files", () => {
+    expect(rejectDocumentReason(new File(["text"], "notes.txt", { type: "text/plain" }))).toContain("must be a PDF");
+    const oversized = { name: "large.pdf", type: "application/pdf", size: DOCUMENT_LIMIT + 1 } as File;
+    expect(rejectDocumentReason(oversized)).toContain("the limit is");
   });
 });
