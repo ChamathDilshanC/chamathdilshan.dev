@@ -12,13 +12,13 @@ describe("Toolbox logo marquee", () => {
     expect(toolboxLogo({ name: "Docker", role: "", image: null })).toBeNull();
   });
 
-  it("renders the editorial tool grid with logos and roles", () => {
+  it("renders a full-width marquee with logos and roles", () => {
     const html = renderToStaticMarkup(<MarqueeBrands items={[{ name: "Docker", role: "Containers", image: "/images/placeholders/team-3.jpg" }]} />);
     expect(html).toContain("https://thesvg.org/icons/docker/default.svg");
     expect(html).not.toContain("/images/placeholders/");
     expect(html).toContain("Containers");
     expect(html).toContain(">01<");
-    expect(html).not.toContain("Pause toolbox scrolling");
+    expect(html).toContain('aria-label="Pause toolbox scrolling"');
   });
 
   it("renders nothing when the admin removes every tool", () => {

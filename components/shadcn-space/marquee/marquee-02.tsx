@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { IconPlayerPause, IconPlayerPlay } from "@tabler/icons-react";
+import { Marquee } from "@/components/shadcn-space/animations/marquee";
 import { toolboxLogo } from "@/lib/toolbox";
 import type { ToolboxItem } from "@/lib/types/content";
 
@@ -19,28 +21,40 @@ function ToolLogo({ src, name }: { src: string | null; name: string }) {
 }
 
 export default function MarqueeBrands({ items }: { items: readonly ToolboxItem[] }) {
+  const [paused, setPaused] = useState(false);
   if (items.length === 0) return null;
 
   return (
-    <div className="grid w-full grid-cols-1 border-t border-white-a16 m:grid-cols-2 l:grid-cols-5">
-      {items.map((item, i) => {
-        const src = toolboxLogo(item);
-        return (
-          <div
-            key={`${i}-${item.name}`}
-            className="group flex min-h-32 items-center gap-4 border-b border-white-a16 py-6 pr-6 transition-colors duration-300 hover:bg-white-a10 m:min-h-36 m:pl-5 l:min-h-48 l:flex-col l:items-start l:justify-between l:gap-8 l:border-r l:py-7 l:pl-5 l:last:border-r-0"
-          >
-            <span className="font-geist text-[11px] tracking-[0.12em] text-white-a50">0{i + 1}</span>
-            <div className="flex min-w-0 items-center gap-4 l:items-end">
+    <div className="relative w-full overflow-hidden border-y border-white-a16 py-2 before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:z-1 before:w-16 before:bg-gradient-to-r before:from-neutral-900 before:to-transparent after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:z-1 after:w-16 after:bg-gradient-to-l after:from-neutral-900 after:to-transparent">
+      <Marquee
+        className="w-full p-0 [--duration:32s] [--gap:3rem] m:[--gap:5rem]"
+        pauseOnHover
+        data-paused={paused}
+      >
+        {items.map((item, i) => {
+          const src = toolboxLogo(item);
+          return (
+            <div key={`${i}-${item.name}`} className="group flex min-w-52 flex-none items-center gap-4 py-6 m:min-w-60">
+              <span className="font-geist text-[11px] tracking-[0.12em] text-white-a50">0{i + 1}</span>
               <ToolLogo src={src} name={item.name} />
               <span className="flex min-w-0 flex-col gap-1">
-                <span className="truncate type-body-1 text-white-token transition-colors group-hover:text-white-token-2">{item.name}</span>
+                <span className="truncate type-body-1 text-white-token">{item.name}</span>
                 {item.role && <span className="truncate type-body-4 text-white-a50">{item.role}</span>}
               </span>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </Marquee>
+      <button
+        type="button"
+        aria-pressed={paused}
+        aria-label="Pause toolbox scrolling"
+        onClick={() => setPaused(!paused)}
+        className="absolute bottom-1/2 right-6 z-2 hidden translate-y-1/2 items-center gap-2 bg-neutral-900/90 px-2 py-1 font-geist text-[11px] text-white-a50 transition-colors hover:text-white-token focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white-token m:flex motion-reduce:hidden"
+      >
+        {paused ? <IconPlayerPlay aria-hidden className="size-3" /> : <IconPlayerPause aria-hidden className="size-3" />}
+        {paused ? "Resume" : "Pause"}
+      </button>
     </div>
   );
 }

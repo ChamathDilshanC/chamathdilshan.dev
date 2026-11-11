@@ -161,7 +161,7 @@ export default async function AboutPage() {
           <div className="w-full max-w-360">
             <SectionTitle title={content["about.toolbox"].title} aside={content["about.toolbox"].aside} tone="light" />
           </div>
-          <div className="w-full max-w-360">
+          <div className="relative left-1/2 w-screen max-w-none -translate-x-1/2">
             <MarqueeBrands items={content["about.toolbox"].items} />
           </div>
         </section>
