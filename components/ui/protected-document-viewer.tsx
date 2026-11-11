@@ -21,21 +21,23 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
 
   if (error) return <ViewerError />;
   return (
-    <div className="relative flex max-h-[calc(100vh-7rem)] w-full justify-center bg-transparent">
-      {/* The protected API URL is runtime-generated and must bypass Next image optimization. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={url}
-        alt={label}
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-        onError={() => setError(true)}
-        className="block max-h-[calc(100vh-7rem)] max-w-full select-none object-contain"
-      />
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.16]">
-        <div className="absolute top-1/2 left-1/2 grid w-[140%] -translate-x-1/2 -translate-y-1/2 -rotate-25 grid-cols-2 gap-x-16 gap-y-20 text-center font-geist text-[12px] font-medium tracking-[0.12em] text-black-token uppercase">
-          {Array.from({ length: 12 }, (_, index) => <span key={index}>chamathdilshan.dev | view only</span>)}
+    <div className="flex w-full justify-center bg-transparent">
+      <div className="relative max-h-[calc(100vh-7rem)] max-w-full">
+        {/* The protected API URL is runtime-generated and must bypass Next image optimization. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={url}
+          alt={label}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          onError={() => setError(true)}
+          className="block max-h-[calc(100vh-7rem)] max-w-full select-none object-contain"
+        />
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 grid w-[145%] -translate-x-1/2 -translate-y-1/2 -rotate-25 grid-cols-2 gap-x-16 gap-y-20 text-center font-geist text-[14px] font-semibold tracking-[0.12em] text-black-token uppercase opacity-30">
+            {Array.from({ length: 12 }, (_, index) => <span key={index}>chamathdilshan.dev | view only</span>)}
+          </div>
         </div>
       </div>
     </div>
