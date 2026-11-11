@@ -1,5 +1,6 @@
 import { ContentGuard } from "@/components/layout/content-guard";
 import { Faq } from "@/components/layout/faq";
+import { PageProximitySidebar } from "@/components/layout/page-proximity-sidebar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { Toaster } from "@/components/layout/toaster";
 import { MotionProvider } from "@/components/motion/motion-provider";
@@ -27,6 +28,7 @@ export default async function PublicLayout({ children }: { children: React.React
         <Toaster />
         <MotionProvider>
           <div className="protected relative flex min-h-svh w-full flex-col items-center justify-start overflow-x-clip bg-black-token">
+            <PageProximitySidebar />
             <main id="main-content" className="contents">
               {children}
             </main>
