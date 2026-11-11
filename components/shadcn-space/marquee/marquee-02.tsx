@@ -45,16 +45,18 @@ export default function MarqueeBrands({ items }: { items: readonly ToolboxItem[]
           );
         })}
       </Marquee>
-      <button
-        type="button"
-        aria-pressed={paused}
-        aria-label="Pause toolbox scrolling"
-        onClick={() => setPaused(!paused)}
-        className="absolute bottom-1/2 right-6 z-2 hidden translate-y-1/2 items-center gap-2 bg-neutral-900/90 px-2 py-1 font-geist text-[11px] text-white-a50 transition-colors hover:text-white-token focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white-token m:flex motion-reduce:hidden"
-      >
-        {paused ? <IconPlayerPlay aria-hidden className="size-3" /> : <IconPlayerPause aria-hidden className="size-3" />}
-        {paused ? "Resume" : "Pause"}
-      </button>
+      <div className="flex justify-center border-t border-white-a10 py-2">
+        <button
+          type="button"
+          aria-pressed={paused}
+          aria-label="Pause toolbox scrolling"
+          onClick={() => setPaused(!paused)}
+          className="hidden items-center gap-2 px-2 py-1 font-geist text-[11px] text-white-a50 transition-colors hover:text-white-token focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white-token m:flex motion-reduce:hidden"
+        >
+          {paused ? <IconPlayerPlay aria-hidden className="size-3" /> : <IconPlayerPause aria-hidden className="size-3" />}
+          {paused ? "Resume scrolling" : "Pause scrolling"}
+        </button>
+      </div>
     </div>
   );
 }
