@@ -34,7 +34,7 @@ export default function MarqueeBrands({ items }: { items: readonly ToolboxItem[]
         {items.map((item, i) => {
           const src = toolboxLogo(item);
           return (
-            <div key={`${i}-${item.name}`} className="group flex min-w-52 flex-none items-center gap-4 py-6 m:min-w-60">
+            <div key={`${i}-${item.name}`} className="group flex min-w-44 flex-none items-center gap-3 py-3 m:min-w-52 m:gap-4 m:py-4">
               <span className="font-geist text-[11px] tracking-[0.12em] text-white-a50">0{i + 1}</span>
               <ToolLogo src={src} name={item.name} />
               <span className="flex min-w-0 flex-col gap-1">
@@ -45,7 +45,7 @@ export default function MarqueeBrands({ items }: { items: readonly ToolboxItem[]
           );
         })}
       </Marquee>
-      <div className="flex justify-center border-t border-white-a10 py-2">
+      <div className="flex justify-center border-t border-white-a10 py-1">
         <button
           type="button"
           aria-pressed={paused}
