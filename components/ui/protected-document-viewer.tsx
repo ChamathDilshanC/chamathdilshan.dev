@@ -15,7 +15,7 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
 
   if (error) return <ViewerError />;
   return (
-    <div className="mx-auto my-4 flex max-h-[calc(100vh-7rem)] w-[calc(100%-2rem)] max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)] m:my-8">
+    <div className="flex max-h-[calc(100vh-7rem)] w-full justify-center bg-transparent">
       {/* The protected API URL is runtime-generated and must bypass Next image optimization. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
