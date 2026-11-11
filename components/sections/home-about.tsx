@@ -17,7 +17,7 @@ export function HomeAbout({ about }: { about: HomeAboutContent }) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0 z-1"
         style={{
           backgroundImage: "linear-gradient(to right, #e7e5e4 1px, transparent 1px), linear-gradient(to bottom, #e7e5e4 1px, transparent 1px)",
           backgroundSize: "20px 20px",
@@ -32,14 +32,14 @@ export function HomeAbout({ about }: { about: HomeAboutContent }) {
       />
       <Curtain className="bg-white-token" />
 
-      <div className="relative z-1 flex w-full max-w-360 flex-none flex-col items-center justify-center gap-15 m:gap-20">
+      <div className="relative z-2 flex w-full max-w-360 flex-none flex-col items-center justify-center gap-15 m:gap-20">
         <SectionTitle title={about.title} aside={about.aside} />
         <LineReveal text={about.statement} className={`${STATEMENT} text-black-token [--indent:22%] l:[--indent:37.5%]`} />
       </div>
 
       <div className="h-10 w-full flex-none m:h-12.5 l:h-27.5" />
 
-      <div className="relative z-1 flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:justify-between l:gap-0">
+      <div className="relative z-2 flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:justify-between l:gap-0">
         <Reveal duration={0.6} className="relative h-110 w-full flex-none m:h-svh l:h-110 l:w-82">
           <Parallax className="relative h-full w-full rounded-[5px]">
             <Media src={about.image} alt={about.imageAlt} sizes="(min-width: 1200px) 328px, 100vw" />
