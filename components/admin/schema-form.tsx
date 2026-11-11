@@ -27,6 +27,7 @@ import { fetcher, type FieldErrors, type JsonSchema, type JsonSchemaRoot, type P
 import { defaultFor, itemLabel, joinPath, labelFor, resolve, siblingValue, typeOf } from "@/lib/admin/schema";
 import { cn } from "@/lib/utils";
 import { BrandIconField } from "./brand-icon-field";
+import { ExperienceDocumentsField } from "./experience-documents-field";
 import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
 import { Button, Card, Field, IconButton, Input, Select, Switch, Textarea } from "./ui";
 
@@ -104,7 +105,7 @@ function FieldGrid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 gap-x-4 gap-y-5 m:grid-cols-2">{children}</div>;
 }
 
-const WIDE_WIDGETS = new Set(["textarea", "paragraphs", "image", "image-ref", "media", "gallery", "tags", "brand-icon"]);
+const WIDE_WIDGETS = new Set(["textarea", "paragraphs", "image", "image-ref", "media", "gallery", "tags", "brand-icon", "documents"]);
 
 function FieldCell({ schema, children }: { schema: JsonSchema; children: ReactNode }) {
   const { root } = useContext(FormContext);
@@ -121,7 +122,8 @@ function useError(path: string): string | undefined {
 /* --- dispatcher ----------------------------------------------------------- */
 
 function Node(props: NodeProps) {
-  const { root } = useContext(FormContext);
+  const context = useContext(FormContext);
+  const { root } = context;
   const { schema, nullable } = resolve(props.schema, root);
   const p = { ...props, schema };
 
@@ -142,6 +144,16 @@ function Node(props: NodeProps) {
       return <ParagraphsField {...p} />;
     case "project-ref":
       return <ProjectRefField {...p} />;
+    case "documents":
+      return (
+        <ExperienceDocumentsField
+          value={p.value}
+          onChange={p.onChange}
+          folder={context.uploadFolder}
+          description={schema.description}
+          error={context.errors[p.path]}
+        />
+      );
   }
 
   const type = typeOf(schema);

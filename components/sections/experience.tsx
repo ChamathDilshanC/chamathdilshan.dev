@@ -3,6 +3,7 @@ import { DrawLine } from "@/components/motion/draw-line";
 import { Reveal } from "@/components/motion/reveal";
 import { CompanyLogo } from "@/components/ui/company-logo";
 import { PlusList } from "@/components/ui/plus-list";
+import { ProtectedDocumentButtons } from "@/components/ui/protected-document-viewer";
 import { SectionTitle } from "@/components/ui/section-title";
 import { cn } from "@/lib/cn";
 import { formatDuration, monthsBetween, roleRange, tenure, thisMonth, yearRange } from "@/lib/experience";
@@ -90,6 +91,9 @@ function Company({ company, now }: { company: Experience; now: string }) {
                     )}
                   </div>
                 </div>
+              )}
+              {company.id !== undefined && (
+                <ProtectedDocumentButtons experienceId={company.id} documents={company.documents ?? []} />
               )}
             </div>
             <Roles roles={company.roles} now={now} />

@@ -79,6 +79,11 @@ const CONFIG: Record<Kind, Config> = {
     groups: [
       { title: "Company", fields: ["company", "location", "companyUrl", "logo"] },
       { title: "Roles", fields: ["roles"] },
+      {
+        title: "Documents",
+        description: "Upload one or more view-only service letters, employment letters or certificates. The label becomes the public button text.",
+        fields: ["documents"],
+      },
       { title: "Visibility", fields: ["published"] },
     ],
   },

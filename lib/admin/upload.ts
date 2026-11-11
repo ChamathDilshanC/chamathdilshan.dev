@@ -7,7 +7,7 @@
  * 3. The API verifies Cloudinary's signed response and records the asset.
  */
 
-import { adminFetch, AdminApiError, type MediaOut } from "./api";
+import { adminFetch, AdminApiError, type ExperienceDocumentOut, type MediaOut } from "./api";
 
 type Signature = {
   cloudName: string;
@@ -30,6 +30,8 @@ type CloudinaryResult = {
   bytes?: number;
   duration?: number;
   original_filename?: string;
+  type?: string;
+  pages?: number;
   error?: { message: string };
 };
 
@@ -41,6 +43,9 @@ export const ACCEPT = {
   video: "video/*",
   any: "image/*,video/*",
 } as const;
+
+export const DOCUMENT_ACCEPT = "application/pdf,image/jpeg,image/png,image/webp";
+export const DOCUMENT_LIMIT = 15 * 1024 * 1024;
 
 export function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -57,6 +62,19 @@ export function rejectReason(file: File, kind: keyof typeof ACCEPT): string | nu
   if (kind === "video" && !isVideo) return `${file.name} is not a video.`;
   const limit = isVideo ? LIMITS.video : LIMITS.image;
   if (file.size > limit) return `${file.name} is ${formatBytes(file.size)} — the limit is ${formatBytes(limit)}.`;
+  return null;
+}
+
+export function rejectDocumentReason(file: File): string | null {
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const acceptedType = DOCUMENT_ACCEPT.split(",").includes(file.type);
+  const acceptedExtension = ["pdf", "jpg", "jpeg", "png", "webp"].includes(extension);
+  if (!acceptedType && !acceptedExtension) {
+    return `${file.name} must be a PDF, JPG, PNG or WebP document.`;
+  }
+  if (file.size > DOCUMENT_LIMIT) {
+    return `${file.name} is ${formatBytes(file.size)} — the limit is ${formatBytes(DOCUMENT_LIMIT)}.`;
+  }
   return null;
 }
 
@@ -114,6 +132,49 @@ export async function uploadToCloudinary(
       duration: result.duration ?? null,
       originalFilename: (result.original_filename ?? file.name).slice(0, 300),
       alt: "",
+    },
+  });
+}
+
+/** Upload a document as an authenticated Cloudinary asset, then verify it server-side. */
+export async function uploadProtectedDocument(
+  file: File,
+  onProgress?: (fraction: number) => void,
+  folder?: string,
+): Promise<ExperienceDocumentOut> {
+  const sig = await adminFetch<Signature & { deliveryType: "authenticated" }>("/api/admin/experience-documents/sign", {
+    method: "POST",
+    body: folder ? { folder } : {},
+  });
+  const form = new FormData();
+  form.append("file", file);
+  form.append("api_key", sig.apiKey);
+  form.append("timestamp", String(sig.timestamp));
+  form.append("folder", sig.folder);
+  form.append("type", sig.deliveryType);
+  form.append("signature", sig.signature);
+
+  const result = await send(sig.uploadUrl, form, onProgress);
+  const format = (result.format ?? file.name.split(".").pop() ?? "").toLowerCase();
+  if (!(["image", "raw"] as string[]).includes(result.resource_type) || !(["pdf", "jpg", "jpeg", "png", "webp"] as string[]).includes(format)) {
+    throw new AdminApiError(400, `${file.name} must be a PDF, JPG, PNG or WebP document.`);
+  }
+  if (result.type !== "authenticated") {
+    throw new AdminApiError(400, `${file.name} was not stored as a protected document.`);
+  }
+  return adminFetch<ExperienceDocumentOut>("/api/admin/experience-documents", {
+    method: "POST",
+    body: {
+      publicId: result.public_id,
+      version: result.version,
+      signature: result.signature,
+      resourceType: result.resource_type,
+      deliveryType: result.type,
+      format,
+      secureUrl: result.secure_url,
+      pages: result.pages ?? 1,
+      bytes: result.bytes ?? file.size,
+      originalFilename: (result.original_filename ?? file.name).slice(0, 300),
     },
   });
 }

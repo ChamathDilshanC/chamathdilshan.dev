@@ -513,3 +513,9 @@ html:has(.protected)::-webkit-scrollbar,
   outline-offset: 2px;
   box-shadow: none;
 }
+
+@media print {
+  .protected-document {
+    display: none !important;
+  }
+}
