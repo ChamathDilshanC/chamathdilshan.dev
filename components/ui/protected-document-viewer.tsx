@@ -15,11 +15,28 @@ function documentUrl(experienceId: number, documentId: string): string {
 function PdfPage({ pdf, pageNumber }: { pdf: PdfDocument; pageNumber: number }) {
   const frame = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const element = frame.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "500px 0px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const element = frame.current;
     const target = canvas.current;
-    if (!element || !target) return;
+    if (!element || !target || !visible) return;
     let disposed = false;
     let renderTask: { cancel: () => void; promise: Promise<void> } | null = null;
 
@@ -64,10 +81,14 @@ function PdfPage({ pdf, pageNumber }: { pdf: PdfDocument; pageNumber: number }) 
       observer.disconnect();
       renderTask?.cancel();
     };
-  }, [pageNumber, pdf]);
+  }, [pageNumber, pdf, visible]);
 
   return (
-    <div ref={frame} className="relative flex w-full max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)]">
+    <div
+      ref={frame}
+      className="relative flex w-full max-w-[860px] justify-center bg-white-token shadow-[0_12px_40px_rgba(0,0,0,.22)]"
+      style={{ aspectRatio: visible ? "auto" : "0.707 / 1" }}
+    >
       <canvas ref={canvas} aria-label={`Document page ${pageNumber}`} className="block max-w-full select-none" />
       <Watermark />
     </div>
@@ -243,7 +264,7 @@ function DocumentModal({ experienceId, item, onClose }: { experienceId: number; 
           <IconX className="size-4" />
         </button>
       </header>
-      <div className="min-h-0 flex-1 overflow-y-auto bg-neutral-900" tabIndex={0}>
+      <div className="document-scroll min-h-0 flex-1 overflow-y-auto bg-neutral-900" tabIndex={0}>
         {item.format === "pdf" ? <PdfCanvas url={url} /> : <ImageCanvas url={url} label={item.label} />}
       </div>
       {obscured && (
