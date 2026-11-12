@@ -17,7 +17,13 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import useSWR, { SWRConfig } from "swr";
 import { AdminApiError, adminFetch, fetcher, type Me } from "@/lib/admin/api";
 import { toast } from "@/lib/toast";
@@ -30,7 +36,11 @@ export const ADMIN_NAV = [
   { href: `${ADMIN}/dashboard`, label: "Dashboard", icon: IconLayoutDashboard },
   { href: `${ADMIN}/sections`, label: "Sections", icon: IconLayoutGrid },
   { href: `${ADMIN}/projects`, label: "Projects", icon: IconBriefcase },
-  { href: `${ADMIN}/projects/studio`, label: "GitHub AI Studio", icon: IconSparkles },
+  {
+    href: `${ADMIN}/projects/studio`,
+    label: "GitHub AI Studio",
+    icon: IconSparkles,
+  },
   { href: `${ADMIN}/blog`, label: "Journal", icon: IconArticle },
   { href: `${ADMIN}/experience`, label: "Experience", icon: IconTimeline },
   { href: `${ADMIN}/skills`, label: "Skills", icon: IconStack2 },
@@ -45,17 +55,34 @@ function Mark({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
-      className={cn("block size-3.25 rounded-full bg-current [mask:radial-gradient(circle_at_72%_28%,transparent_34%,#000_35%)]", className)}
+      className={cn(
+        "block size-3.25 rounded-full bg-current [mask:radial-gradient(circle_at_72%_28%,transparent_34%,#000_35%)]",
+        className,
+      )}
     />
   );
 }
 
 export function AdminBrand({ tone = "light" }: { tone?: "light" | "dark" }) {
   return (
-    <span className={cn("flex items-center gap-1.5", tone === "light" ? "text-white-token" : "text-black-token")}>
+    <span
+      className={cn(
+        "flex items-center gap-1.5",
+        tone === "light" ? "text-white-token" : "text-black-token",
+      )}
+    >
       <Mark />
-      <span className="font-geist text-[15px] leading-none font-extrabold tracking-[-0.02em]">CHAMATH</span>
-      <span className={cn("ml-1 text-[12px] font-medium", tone === "light" ? "text-white-a50" : "text-black-a60")}>Admin</span>
+      <span className="font-geist text-[15px] leading-none font-extrabold tracking-[-0.02em]">
+        CHAMATH
+      </span>
+      <span
+        className={cn(
+          "ml-1 text-[12px] font-medium",
+          tone === "light" ? "text-white-a50" : "text-black-a60",
+        )}
+      >
+        Admin
+      </span>
     </span>
   );
 }
@@ -77,7 +104,11 @@ function Sidebar({ me, onNavigate }: { me: Me; onNavigate?: () => void }) {
 
   return (
     <div className="flex h-full flex-col gap-6 bg-neutral-900 px-3 py-5 text-white-token">
-      <Link href={`${ADMIN}/dashboard`} onClick={onNavigate} className="px-3 py-1">
+      <Link
+        href={`${ADMIN}/dashboard`}
+        onClick={onNavigate}
+        className="px-3 py-1"
+      >
         <AdminBrand />
       </Link>
       <nav aria-label="Admin" className="flex flex-col gap-0.5">
@@ -91,7 +122,9 @@ function Sidebar({ me, onNavigate }: { me: Me; onNavigate?: () => void }) {
               aria-current={active ? "page" : undefined}
               className={cn(
                 "flex h-9 items-center gap-2.5 rounded-[6px] px-3 text-[13.5px] transition-colors",
-                active ? "bg-white-a10 text-white-token" : "text-white-a50 hover:bg-white-a10/60 hover:text-white-token",
+                active
+                  ? "bg-white-a10 text-white-token"
+                  : "text-white-a50 hover:bg-white-a10/60 hover:text-white-token",
               )}
             >
               <Icon className="size-4.5" stroke={1.6} />
@@ -115,8 +148,12 @@ function Sidebar({ me, onNavigate }: { me: Me; onNavigate?: () => void }) {
             {(me.name || me.email).charAt(0)}
           </span>
           <span className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-[12.5px] text-white-token">{me.name || "Owner"}</span>
-            <span className="truncate text-[11.5px] text-white-a50">{me.email}</span>
+            <span className="truncate text-[12.5px] text-white-token">
+              {me.name || "Owner"}
+            </span>
+            <span className="truncate text-[11.5px] text-white-a50">
+              {me.email}
+            </span>
           </span>
           <button
             type="button"
@@ -141,7 +178,10 @@ function Sidebar({ me, onNavigate }: { me: Me; onNavigate?: () => void }) {
 export function AdminShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [menu, setMenu] = useState(false);
-  const { data: me, error } = useSWR<Me>("/api/auth/me", fetcher, { revalidateOnFocus: true, shouldRetryOnError: false });
+  const { data: me, error } = useSWR<Me>("/api/auth/me", fetcher, {
+    revalidateOnFocus: true,
+    shouldRetryOnError: false,
+  });
 
   const unauthorized = error instanceof AdminApiError && error.status === 401;
   useEffect(() => {
@@ -152,7 +192,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return (
       <div className="flex min-h-svh items-center justify-center bg-neutral-50">
         {error && !unauthorized ? (
-          <p className="max-w-80 text-center text-[13.5px] text-black-a60">{error.message}</p>
+          <p className="max-w-80 text-center text-[13.5px] text-black-a60">
+            {error.message}
+          </p>
         ) : (
           <Spinner label="Checking your session" />
         )}
@@ -166,7 +208,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
         fetcher,
         onError: (err) => {
           if (err instanceof AdminApiError && err.status === 401) {
-            toast.error("Signed out", { description: "Your session ended. Sign in again." });
+            toast.error("Signed out", {
+              description: "Your session ended. Sign in again.",
+            });
             router.replace(`${ADMIN}/login`);
           }
         },
@@ -180,7 +224,12 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
           {menu && (
             <div className="fixed inset-0 z-50 l:hidden">
-              <button type="button" aria-label="Close menu" className="absolute inset-0 bg-black/40" onClick={() => setMenu(false)} />
+              <button
+                type="button"
+                aria-label="Close menu"
+                className="absolute inset-0 bg-black/40"
+                onClick={() => setMenu(false)}
+              />
               <aside className="relative h-full w-64">
                 <Sidebar me={me} onNavigate={() => setMenu(false)} />
               </aside>
@@ -196,10 +245,16 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 onClick={() => setMenu(!menu)}
                 className="flex size-9 cursor-pointer items-center justify-center rounded-[6px] hover:bg-neutral-50"
               >
-                {menu ? <IconX className="size-5" /> : <IconMenu2 className="size-5" />}
+                {menu ? (
+                  <IconX className="size-5" />
+                ) : (
+                  <IconMenu2 className="size-5" />
+                )}
               </button>
             </header>
-            <main className="mx-auto flex w-full max-w-290 flex-col gap-7 px-4 py-7 m:px-8 m:py-10">{children}</main>
+            <main className="mx-auto flex w-full max-w-[1600px] flex-col gap-7 px-4 py-7 m:px-8 m:py-10">
+              {children}
+            </main>
           </div>
         </div>
       </AdminContext.Provider>
