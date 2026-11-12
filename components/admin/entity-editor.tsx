@@ -147,7 +147,16 @@ export function EntityEditor({ kind, id, imported, aside }: { kind: Kind; id: nu
           {record.data && <Badge tone={published ? "success" : "neutral"}>{published ? shown : hidden}</Badge>}
         </span>
       }
-      description={cfg.intro ?? (slug ? `${cfg.site}/${slug}` : `Fill in the basics and save. It stays a draft until you publish it.`)}
+      description={
+        cfg.intro ??
+        (kind === "project"
+          ? slug
+            ? `${cfg.site}/${slug} · Draft projects stay private until Published is enabled.`
+            : "Fill in the basics and save. New projects stay private until Published is enabled."
+          : slug
+            ? `${cfg.site}/${slug}`
+            : "Fill in the basics and save. It stays a draft until you publish it.")
+      }
       schema={root}
       initial={initial}
       aside={

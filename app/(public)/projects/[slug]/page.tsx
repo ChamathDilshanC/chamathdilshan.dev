@@ -58,7 +58,9 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
             ...(project.tech.length > 0 ? { keywords: project.tech.join(", ") } : {}),
           }}
         />
-        <ProjectTemplateRenderer project={project} />
+        <PlaceholderProvider value={previews}>
+          <ProjectTemplateRenderer project={project} />
+        </PlaceholderProvider>
       </>
     );
   }
