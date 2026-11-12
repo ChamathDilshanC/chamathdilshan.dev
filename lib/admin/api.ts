@@ -122,6 +122,11 @@ export type ProjectOut = {
   featured: boolean;
   sortOrder: number;
   updatedAt: string;
+  template?: string;
+  templateConfig?: Record<string, unknown>;
+  studioContent?: Record<string, unknown>;
+  seo?: Record<string, unknown>;
+  repositories?: Array<Record<string, unknown>>;
   [key: string]: unknown;
 };
 

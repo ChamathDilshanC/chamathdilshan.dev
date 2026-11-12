@@ -11,6 +11,7 @@ import { ArrowLink } from "@/components/ui/arrow-link";
 import { MediaAsset } from "@/components/ui/media-asset";
 import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
+import { ProjectTemplateRenderer } from "@/components/projects/project-template-renderer";
 import { getProject, getProjects } from "@/lib/content";
 import { placeholders } from "@/lib/placeholders";
 import { absoluteUrl, imageUrl, JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
@@ -41,6 +42,26 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
   const [project, projects] = await Promise.all([getProject(slug), getProjects()]);
   if (!project) notFound();
   const previews = await placeholders([project.hero.kind === "image" ? project.hero.url : null]);
+
+  if (project.template && project.template !== "legacy") {
+    return (
+      <>
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "CreativeWork",
+            name: project.title,
+            description: project.seo?.description || project.summary,
+            url: absoluteUrl(`/projects/${project.slug}`),
+            image: imageUrl(project.thumbnail.url),
+            author: { "@type": "Person", name: "Chamath Dilshan", url: siteUrl },
+            ...(project.tech.length > 0 ? { keywords: project.tech.join(", ") } : {}),
+          }}
+        />
+        <ProjectTemplateRenderer project={project} />
+      </>
+    );
+  }
 
   const index = projects.findIndex((p) => p.slug === project.slug);
   const more =
