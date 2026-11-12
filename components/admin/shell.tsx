@@ -10,6 +10,7 @@ import {
   IconLogout,
   IconMenu2,
   IconPhoto,
+  IconSparkles,
   IconStack2,
   IconTimeline,
   IconX,
@@ -25,10 +26,11 @@ import { Spinner } from "./ui";
 
 export const ADMIN = "/ChamathDilshanC";
 
-const NAV = [
+export const ADMIN_NAV = [
   { href: `${ADMIN}/dashboard`, label: "Dashboard", icon: IconLayoutDashboard },
   { href: `${ADMIN}/sections`, label: "Sections", icon: IconLayoutGrid },
   { href: `${ADMIN}/projects`, label: "Projects", icon: IconBriefcase },
+  { href: `${ADMIN}/projects/studio`, label: "GitHub AI Studio", icon: IconSparkles },
   { href: `${ADMIN}/blog`, label: "Journal", icon: IconArticle },
   { href: `${ADMIN}/experience`, label: "Experience", icon: IconTimeline },
   { href: `${ADMIN}/skills`, label: "Skills", icon: IconStack2 },
@@ -79,7 +81,7 @@ function Sidebar({ me, onNavigate }: { me: Me; onNavigate?: () => void }) {
         <AdminBrand />
       </Link>
       <nav aria-label="Admin" className="flex flex-col gap-0.5">
-        {NAV.map(({ href, label, icon: Icon }) => {
+        {ADMIN_NAV.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link

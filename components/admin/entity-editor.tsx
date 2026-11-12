@@ -154,7 +154,7 @@ export function EntityEditor({ kind, id, imported, aside }: { kind: Kind; id: nu
         kind === "project" ? (
           <div className="flex flex-wrap items-center gap-3 rounded-[8px] bg-neutral-100 p-3 text-[13px]">
             <ButtonLink href={`${ADMIN}/projects/studio`} variant="secondary" icon={<IconSparkles className="size-4" />}>
-              Open GitHub AI Project Studio
+              {id ? "Open GitHub AI Project Studio" : "Import from GitHub instead"}
             </ButtonLink>
             {aside}
           </div>
