@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { BrandIconField } from "./brand-icon-field";
 import { ExperienceDocumentsField } from "./experience-documents-field";
 import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
+import { ProjectContentField, ProjectTemplateField } from "./project-presentation-field";
 import { Button, Card, Field, IconButton, Input, Select, Switch, Textarea } from "./ui";
 
 /** `values` is the whole top-level value, for widgets that read a sibling field. */
@@ -105,7 +106,19 @@ function FieldGrid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 gap-x-4 gap-y-5 m:grid-cols-2">{children}</div>;
 }
 
-const WIDE_WIDGETS = new Set(["textarea", "paragraphs", "image", "image-ref", "media", "gallery", "tags", "brand-icon", "documents"]);
+const WIDE_WIDGETS = new Set([
+  "textarea",
+  "paragraphs",
+  "image",
+  "image-ref",
+  "media",
+  "gallery",
+  "tags",
+  "brand-icon",
+  "documents",
+  "project-template",
+  "project-content",
+]);
 
 function FieldCell({ schema, children }: { schema: JsonSchema; children: ReactNode }) {
   const { root } = useContext(FormContext);
@@ -154,6 +167,10 @@ function Node(props: NodeProps) {
           error={context.errors[p.path]}
         />
       );
+    case "project-template":
+      return <ProjectTemplateField {...p} />;
+    case "project-content":
+      return <ProjectContentField {...p} uploadFolder={context.uploadFolder} />;
   }
 
   const type = typeOf(schema);

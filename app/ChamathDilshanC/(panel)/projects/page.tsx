@@ -50,7 +50,7 @@ export default function ProjectsPage() {
     <>
       <PageHeader
         title="Projects"
-        description="Case studies on /projects. Featured ones also stack up in Selected Work on the home page, in this order."
+        description="Case studies on /projects. Drafts stay private until Published is enabled. Featured ones also stack up in Selected Work on the home page, in this order."
         actions={
           <div className="flex flex-wrap gap-2"><ButtonLink href={`${ADMIN}/projects/studio`} variant="secondary" icon={<IconSparkles className="size-4" />}>Import from GitHub</ButtonLink><ButtonLink href={`${ADMIN}/projects/new`} variant="primary" icon={<IconPlus className="size-4" />}>New project</ButtonLink></div>
         }

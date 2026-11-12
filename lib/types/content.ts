@@ -230,6 +230,7 @@ export type Project = {
     links?: Record<string, string>;
     caseStudy?: Record<string, string | string[]>;
     evidence?: Array<{ path: string; claim: string; confidence: string }>;
+    sectionImages?: Record<string, Array<{ url: string; alt?: string }>>;
   };
   seo?: { description?: string; keywords?: string[] };
   repositories?: Array<{ url: string; name: string; owner: string; role?: string; primary?: boolean; visibility?: string; language?: string | null; stars?: number }>;

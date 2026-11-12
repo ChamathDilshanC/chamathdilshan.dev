@@ -14,6 +14,62 @@ const list = (value: unknown) =>
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 
+function SectionImages({
+  images,
+  className,
+}: {
+  images: unknown;
+  className?: string;
+}) {
+  const items = Array.isArray(images)
+    ? images.filter(
+        (item): item is { url: string; alt?: string } =>
+          typeof item === "object" &&
+          item !== null &&
+          typeof (item as { url?: unknown }).url === "string",
+      )
+    : [];
+  if (!items.length) return null;
+  const pair = items.length > 1;
+  return (
+    <div
+      className={`${className ?? ""} mt-10 flex w-full flex-col items-center justify-center gap-2.5 ${
+        pair ? "m:grid m:grid-cols-[minmax(0,1fr)_32%] m:items-stretch" : ""
+      }`}
+    >
+      {items.map((image, index) => (
+        <Reveal
+          key={`${image.url}-${index}`}
+          delay={index * 0.1}
+          className={`touch-frame relative w-full ${pair && index === 1 ? "m:h-full" : ""}`}
+        >
+          <div
+            className={
+              pair && index === 1
+                ? "relative h-full min-h-60"
+                : "relative aspect-video"
+            }
+          >
+            <MediaAsset
+              item={{
+                kind: "image",
+                url: image.url,
+                alt: image.alt ?? "",
+                poster: null,
+              }}
+              sizes={
+                pair && index === 1
+                  ? "(min-width: 810px) 350px, 100vw"
+                  : "(min-width: 1200px) 1100px, 100vw"
+              }
+            />
+          </div>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
 function Technology({ name }: { name: string }) {
   const icon = technologyIcon(name);
   return (
@@ -89,6 +145,7 @@ function Repositories({ project }: { project: Project }) {
 
 export function ProjectTemplateRenderer({ project }: { project: Project }) {
   const content = project.studioContent ?? {};
+  const sectionImages = content.sectionImages ?? {};
   const tech = content.techStack ?? {};
   const features = content.features ?? [];
   const architecture = content.architecture ?? [];
@@ -181,6 +238,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   )}
                 </div>
               </div>
+              <SectionImages images={sectionImages.brief} className="l:col-span-2" />
             </section>
           </Reveal>
           {features.length > 0 && (
@@ -202,6 +260,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   </article>
                 ))}
               </div>
+              <SectionImages images={sectionImages.features} />
             </section>
           )}
           {architecture.length > 0 && (
@@ -226,6 +285,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   </article>
                 ))}
               </div>
+              <SectionImages images={sectionImages.architecture} />
             </section>
           )}
           {(problem || approach) && (
@@ -252,6 +312,8 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   </p>
                 </article>
               )}
+              <SectionImages images={sectionImages.challenge} className="col-span-full" />
+              <SectionImages images={sectionImages.implementation} className="col-span-full" />
             </section>
           )}
           {outcomes.length > 0 && (
@@ -270,6 +332,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   </li>
                 ))}
               </ul>
+              <SectionImages images={sectionImages.outcomes} />
             </section>
           )}
           <section
@@ -294,6 +357,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                 </div>
               ))}
             </div>
+            <SectionImages images={sectionImages.techStack} />
           </section>
           {project.gallery.length > 0 && (
             <section className="mt-24 grid gap-3 m:grid-cols-2">
@@ -311,6 +375,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
             </section>
           )}
           <Repositories project={project} />
+          <SectionImages images={sectionImages.repositories} />
         </div>
       </article>
     </>
