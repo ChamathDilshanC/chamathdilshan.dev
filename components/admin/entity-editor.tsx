@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { IconSparkles } from "@tabler/icons-react";
 import { useState, type ReactNode } from "react";
 import useSWR from "swr";
 import { adminFetch, errorMessage, type JsonSchemaRoot } from "@/lib/admin/api";
@@ -9,7 +10,7 @@ import { toast } from "@/lib/toast";
 import { FormEditor } from "./form-editor";
 import type { FieldGroup } from "./schema-form";
 import { ADMIN } from "./shell";
-import { Badge, ErrorBanner, PageHeader, Spinner } from "./ui";
+import { Badge, ButtonLink, ErrorBanner, PageHeader, Spinner } from "./ui";
 
 type Kind = "project" | "post" | "experience";
 
@@ -47,6 +48,7 @@ const CONFIG: Record<Kind, Config> = {
       },
       { title: "Story", fields: ["intro", "discover", "explore", "results"] },
       { title: "Details", fields: ["tech", "liveUrl", "repoUrl"] },
+      { title: "Studio presentation", description: "AI-generated content stays editable here. Evidence is retained with the project.", fields: ["template", "templateConfig", "studioContent", "seo", "repositories"] },
       { title: "Visibility", fields: ["published", "featured"] },
     ],
   },
@@ -148,7 +150,16 @@ export function EntityEditor({ kind, id, imported, aside }: { kind: Kind; id: nu
       description={cfg.intro ?? (slug ? `${cfg.site}/${slug}` : `Fill in the basics and save. It stays a draft until you publish it.`)}
       schema={root}
       initial={initial}
-      aside={aside}
+      aside={
+        kind === "project" ? (
+          <div className="flex flex-wrap items-center gap-3 rounded-[8px] bg-neutral-100 p-3 text-[13px]">
+            <ButtonLink href={`${ADMIN}/projects/studio`} variant="secondary" icon={<IconSparkles className="size-4" />}>
+              {id ? "Open GitHub AI Project Studio" : "Import from GitHub instead"}
+            </ButtonLink>
+            {aside}
+          </div>
+        ) : aside
+      }
       groups={cfg.groups}
       uploadFolder={`${kind === "post" ? "journal" : kind === "project" ? "projects" : "experience"}/${id ?? "draft"}`}
       saveLabel={id ? "Save changes" : `Create ${cfg.noun}`}

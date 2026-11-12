@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SITE_URL: https://chamathdilshan.dev
-      NEXT_PUBLIC_API_URL: https://api.chamathdilshan.dev
+      NEXT_PUBLIC_API_URL: https://api.chamathdilshan.com
       CACHE_REVALIDATE_SECRET: ci-placeholder
     steps:
       - uses: actions/checkout@v4

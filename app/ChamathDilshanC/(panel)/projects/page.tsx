@@ -1,6 +1,6 @@
 "use client";
 
-import { IconArrowDown, IconArrowUp, IconExternalLink, IconPencil, IconPlus } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconExternalLink, IconPencil, IconPlus, IconSparkles } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
@@ -52,9 +52,7 @@ export default function ProjectsPage() {
         title="Projects"
         description="Case studies on /projects. Featured ones also stack up in Selected Work on the home page, in this order."
         actions={
-          <ButtonLink href={`${ADMIN}/projects/new`} variant="primary" icon={<IconPlus className="size-4" />}>
-            New project
-          </ButtonLink>
+          <div className="flex flex-wrap gap-2"><ButtonLink href={`${ADMIN}/projects/studio`} variant="secondary" icon={<IconSparkles className="size-4" />}>Import from GitHub</ButtonLink><ButtonLink href={`${ADMIN}/projects/new`} variant="primary" icon={<IconPlus className="size-4" />}>New project</ButtonLink></div>
         }
       />
       {error && <ErrorBanner>{errorMessage(error)}</ErrorBanner>}
@@ -64,9 +62,7 @@ export default function ProjectsPage() {
           title="No projects yet"
           description="Add a thumbnail, a hero image or video and a gallery, then publish."
           action={
-            <ButtonLink href={`${ADMIN}/projects/new`} variant="primary" icon={<IconPlus className="size-4" />}>
-              New project
-            </ButtonLink>
+            <div className="flex flex-wrap gap-2"><ButtonLink href={`${ADMIN}/projects/studio`} variant="secondary" icon={<IconSparkles className="size-4" />}>Import from GitHub</ButtonLink><ButtonLink href={`${ADMIN}/projects/new`} variant="primary" icon={<IconPlus className="size-4" />}>New project</ButtonLink></div>
           }
         />
       )}

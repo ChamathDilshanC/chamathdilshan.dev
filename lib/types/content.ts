@@ -217,6 +217,22 @@ export type Project = {
   repoUrl: string | null;
   /** Shown in Selected Work on the home page. */
   featured: boolean;
+  /** Optional Studio presentation data; legacy projects remain unchanged. */
+  template?: string;
+  templateConfig?: Record<string, unknown>;
+  studioContent?: {
+    headline?: string;
+    brief?: Record<string, string>;
+    architecture?: Array<{ title: string; body: string }>;
+    features?: string[];
+    techStack?: Record<string, string[]>;
+    aiUsage?: string[];
+    links?: Record<string, string>;
+    caseStudy?: Record<string, string | string[]>;
+    evidence?: Array<{ path: string; claim: string; confidence: string }>;
+  };
+  seo?: { description?: string; keywords?: string[] };
+  repositories?: Array<{ url: string; name: string; owner: string; role?: string; primary?: boolean; visibility?: string; language?: string | null; stars?: number }>;
 };
 
 export type PostSection = {
