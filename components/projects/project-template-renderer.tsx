@@ -1,10 +1,10 @@
+import Image from "next/image";
+import type { ReactNode } from "react";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { PostHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
 import { Reveal } from "@/components/motion/reveal";
 import { MediaAsset } from "@/components/ui/media-asset";
-import { SectionTitle } from "@/components/ui/section-title";
-import Image from "next/image";
 import { technologyIcon } from "@/lib/tech-icons";
 import type { Project } from "@/lib/types/content";
 
@@ -14,13 +14,7 @@ const list = (value: unknown) =>
     ? value.filter((item): item is string => typeof item === "string")
     : [];
 
-function SectionImages({
-  images,
-  className,
-}: {
-  images: unknown;
-  className?: string;
-}) {
+function SectionImages({ images }: { images: unknown }) {
   const items = Array.isArray(images)
     ? images.filter(
         (item): item is { url: string; alt?: string } =>
@@ -33,7 +27,7 @@ function SectionImages({
   const pair = items.length > 1;
   return (
     <div
-      className={`${className ?? ""} mt-10 flex w-full flex-col items-center justify-center gap-2.5 ${
+      className={`flex w-full max-w-320 flex-col items-center justify-center gap-2.5 ${
         pair ? "m:grid m:grid-cols-[minmax(0,1fr)_32%] m:items-stretch" : ""
       }`}
     >
@@ -70,10 +64,37 @@ function SectionImages({
   );
 }
 
+function EditorialSection({
+  number,
+  title,
+  children,
+  images,
+}: {
+  number: number;
+  title: string;
+  children: ReactNode;
+  images?: unknown;
+}) {
+  return (
+    <div className="relative flex w-full flex-col items-center gap-20">
+      <Reveal className="relative flex w-full max-w-360 flex-col items-start justify-center gap-7.5 m:px-20 l:px-57.5">
+        <p className="w-full max-w-10 type-body-1 text-black-token m:absolute m:top-0 m:left-0">
+          {String(number).padStart(3, "0")}
+        </p>
+        <div className="flex min-w-0 w-full flex-col items-start justify-start gap-10">
+          <h2 className="type-heading-4 text-black-token">{title}</h2>
+          <div className="prose-flow w-full">{children}</div>
+        </div>
+      </Reveal>
+      {images !== undefined && <SectionImages images={images} />}
+    </div>
+  );
+}
+
 function Technology({ name }: { name: string }) {
   const icon = technologyIcon(name);
   return (
-    <li className="flex items-center gap-3 border-b border-black-a10 py-3 text-[16px]">
+    <li className="flex items-center gap-3 border-b border-black-a10 py-3 type-body-2">
       {icon ? (
         <span className="relative size-7 shrink-0">
           <Image
@@ -111,35 +132,53 @@ function Repositories({ project }: { project: Project }) {
       : []);
   if (!repositories.length) return null;
   return (
-    <section className="mt-16 border-t border-black-a10 pt-8">
-      <SectionTitle title="Repositories" aside="Verified source links" />
-      <div className="mt-8 grid gap-3 m:grid-cols-2">
-        {repositories.map((repo) => (
-          <a
-            key={repo.url}
-            href={repo.url}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-[6px] border border-black-a10 p-4 transition-colors hover:bg-neutral-50"
-          >
-            <span className="text-[11px] uppercase tracking-[0.12em] text-black-a50">
-              {repo.role ?? "repository"}
-            </span>
-            <span className="mt-2 block text-[15px] font-medium">
-              {repo.owner}/{repo.name}
-            </span>
-            <span className="mt-2 block text-[12px] text-black-a60">
-              {[
-                repo.language,
-                repo.stars !== undefined ? `${repo.stars} stars` : "",
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-            </span>
-          </a>
-        ))}
+    <EditorialSection number={8} title="Repositories">
+      <div className="flex flex-col gap-6">
+        <p className="type-body-2">Verified source links for this project.</p>
+        <div className="grid gap-3 m:grid-cols-2">
+          {repositories.map((repo) => (
+            <a
+              key={repo.url}
+              href={repo.url}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-[6px] border border-black-a10 p-4 transition-colors hover:bg-neutral-50"
+            >
+              <span className="type-body-3 uppercase text-black-a50">
+                {repo.role ?? "repository"}
+              </span>
+              <span className="mt-2 block type-body-2">
+                {repo.owner}/{repo.name}
+              </span>
+              <span className="mt-2 block type-body-3 text-black-a60">
+                {[
+                  repo.language,
+                  repo.stars !== undefined ? `${repo.stars} stars` : "",
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
-    </section>
+    </EditorialSection>
+  );
+}
+
+function ProjectGallery({ project }: { project: Project }) {
+  if (!project.gallery.length) return null;
+  return (
+    <div className="flex w-full max-w-360 flex-col gap-3 m:grid m:grid-cols-2">
+      {project.gallery.map((item) => (
+        <Reveal
+          key={item.url}
+          className="relative aspect-video overflow-hidden rounded-[6px] bg-neutral-50"
+        >
+          <MediaAsset item={item} sizes="(min-width: 768px) 50vw, 100vw" />
+        </Reveal>
+      ))}
+    </div>
   );
 }
 
@@ -162,10 +201,10 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
     text(content.brief?.users),
   ].filter(Boolean);
   const template = project.template ?? "minimal-case-study";
-  const editorial = template === "editorial-technical-story";
   const product = template === "product-showcase";
   const deepDive = template === "architecture-deep-dive";
   const openSource = template === "opensource-showcase";
+
   return (
     <>
       <PostHero
@@ -175,208 +214,154 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
         date={project.year}
         media={project.hero}
       />
-      <article
-        className={`relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:px-32.75 ${editorial ? "font-serif" : ""}`}
-      >
+      <article className="relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:px-32.75">
         <Curtain className="bg-white-token" />
         <div className="relative h-px w-full max-w-360 bg-black-a16" />
-        <div className="w-full max-w-360">
-          {editorial && (
-            <nav
-              aria-label="On this page"
-              className="mb-16 border-y border-black-a10 py-5"
-            >
-              <ol className="flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-black-a60">
-                {["Brief", "Architecture", "Features", "Stack"].map(
-                  (item, index) => (
-                    <li key={item}>
-                      <a
-                        href={`#studio-${index}`}
-                        className="hover:text-black-token"
-                      >
-                        0{index + 1} {item}
-                      </a>
-                    </li>
-                  ),
-                )}
-              </ol>
-            </nav>
-          )}
-          <Reveal>
-            <section
-              id="studio-0"
-              className="grid gap-8 border-t border-black-a10 pt-8 l:grid-cols-[0.35fr_1fr]"
-            >
-              <p className="text-[12px] uppercase tracking-[0.14em] text-black-a50">
-                01 ·{" "}
-                {deepDive
-                  ? "System brief"
-                  : product
-                    ? "Product brief"
-                    : openSource
-                      ? "Repository overview"
-                      : "Project brief"}
+
+        <EditorialSection
+          number={1}
+          title={
+            deepDive
+              ? "System brief"
+              : product
+                ? "Product brief"
+                : openSource
+                  ? "Repository overview"
+                  : "The project"
+          }
+          images={sectionImages.brief}
+        >
+          {paragraphs.length ? (
+            paragraphs.map((paragraph) => (
+              <p key={paragraph} className="type-body-2 text-justify">
+                {paragraph}
               </p>
-              <div className="max-w-190 space-y-6 text-[20px] leading-8">
-                {paragraphs.length ? (
-                  paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))
-                ) : (
-                  <p>{project.intro}</p>
-                )}
-                <div className="flex flex-wrap gap-4 pt-3">
-                  {project.liveUrl && (
-                    <ArrowLink href={project.liveUrl} variant="dark">
-                      Visit live site
-                    </ArrowLink>
-                  )}
-                  {project.repoUrl && (
-                    <ArrowLink href={project.repoUrl} variant="dark">
-                      View source
-                    </ArrowLink>
-                  )}
-                </div>
-              </div>
-              <SectionImages images={sectionImages.brief} className="l:col-span-2" />
-            </section>
-          </Reveal>
-          {features.length > 0 && (
-            <section
-              id="studio-2"
-              className="mt-24 border-t border-black-a10 pt-8"
-            >
-              <SectionTitle
-                title={product ? "Capabilities" : "What it does"}
-                aside={`${features.length} evidenced features`}
-              />
-              <div className="mt-10 grid gap-px overflow-hidden rounded-[6px] bg-black-a10 m:grid-cols-2 l:grid-cols-3">
-                {features.map((feature, index) => (
-                  <article key={feature} className="bg-white-token p-6">
-                    <span className="text-[12px] text-black-a50">
-                      0{index + 1}
-                    </span>
-                    <h2 className="mt-8 text-[17px] font-medium">{feature}</h2>
-                  </article>
-                ))}
-              </div>
-              <SectionImages images={sectionImages.features} />
-            </section>
+            ))
+          ) : (
+            <p className="type-body-2 text-justify">{project.intro}</p>
           )}
-          {architecture.length > 0 && (
-            <section
-              id="studio-1"
-              className="mt-24 border-t border-black-a10 pt-8"
-            >
-              <SectionTitle
-                title={deepDive ? "Architecture deep dive" : "How it works"}
-                aside="Evidence-backed structure"
-              />
-              <div className="mt-10 grid gap-4">
-                {architecture.map((item, index) => (
-                  <article
-                    key={`${item.title}-${index}`}
-                    className="grid gap-4 rounded-[6px] bg-neutral-50 p-6 l:grid-cols-[0.28fr_1fr]"
-                  >
-                    <h2 className="text-[17px] font-medium">{item.title}</h2>
-                    <p className="max-w-180 text-[16px] leading-7 text-black-a70">
-                      {item.body}
-                    </p>
-                  </article>
-                ))}
-              </div>
-              <SectionImages images={sectionImages.architecture} />
-            </section>
-          )}
-          {(problem || approach) && (
-            <section className="mt-24 grid gap-8 border-t border-black-a10 pt-8 l:grid-cols-2">
-              {problem && (
-                <article>
-                  <SectionTitle
-                    title="Challenge"
-                    aside="Repository-grounded context"
-                  />
-                  <p className="mt-6 max-w-160 text-[17px] leading-7 text-black-a70">
-                    {problem}
-                  </p>
-                </article>
-              )}
-              {approach && (
-                <article>
-                  <SectionTitle
-                    title="Implementation"
-                    aside="Engineering approach"
-                  />
-                  <p className="mt-6 max-w-160 text-[17px] leading-7 text-black-a70">
-                    {approach}
-                  </p>
-                </article>
-              )}
-              <SectionImages images={sectionImages.challenge} className="col-span-full" />
-              <SectionImages images={sectionImages.implementation} className="col-span-full" />
-            </section>
-          )}
-          {outcomes.length > 0 && (
-            <section className="mt-24 border-t border-black-a10 pt-8">
-              <SectionTitle
-                title="Verified outcomes"
-                aside="Only supported results"
-              />
-              <ul className="mt-8 grid gap-3 m:grid-cols-2">
-                {outcomes.map((outcome) => (
-                  <li
-                    key={outcome}
-                    className="rounded-[6px] bg-neutral-50 p-5 text-[16px] leading-7"
-                  >
-                    {outcome}
-                  </li>
-                ))}
-              </ul>
-              <SectionImages images={sectionImages.outcomes} />
-            </section>
-          )}
-          <section
-            id="studio-3"
-            className="mt-24 border-t border-black-a10 pt-8"
+          <div className="flex flex-wrap gap-6 pt-4">
+            {project.liveUrl && (
+              <ArrowLink href={project.liveUrl} variant="dark">
+                Visit live site
+              </ArrowLink>
+            )}
+            {project.repoUrl && (
+              <ArrowLink href={project.repoUrl} variant="dark">
+                View source
+              </ArrowLink>
+            )}
+          </div>
+        </EditorialSection>
+
+        {features.length > 0 && (
+          <EditorialSection
+            number={2}
+            title="What it does"
+            images={sectionImages.features}
           >
-            <SectionTitle
-              title="Technology stack"
-              aside="Detected from repository evidence"
-            />
-            <div className="mt-10 grid gap-8 m:grid-cols-2 l:grid-cols-3">
-              {Object.entries(tech).map(([group, values]) => (
-                <div key={group}>
-                  <h2 className="text-[13px] uppercase tracking-[0.12em] text-black-a50">
-                    {group}
-                  </h2>
-                  <ul className="mt-4">
-                    {list(values).map((value) => (
-                      <Technology key={value} name={value} />
-                    ))}
-                  </ul>
+            <p className="type-body-3 text-black-a60">
+              {features.length} evidenced features
+            </p>
+            <ol className="mt-8 grid gap-x-8 gap-y-10 m:grid-cols-2 l:grid-cols-3">
+              {features.map((feature, index) => (
+                <li
+                  key={feature}
+                  className="flex flex-col gap-6 border-t border-black-a10 pt-4"
+                >
+                  <span className="type-body-3 text-black-a60">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <p className="type-body-2">{feature}</p>
+                </li>
+              ))}
+            </ol>
+          </EditorialSection>
+        )}
+
+        {architecture.length > 0 && (
+          <EditorialSection
+            number={3}
+            title={deepDive ? "Architecture deep dive" : "How it works"}
+            images={sectionImages.architecture}
+          >
+            <div className="flex flex-col gap-10">
+              {architecture.map((item, index) => (
+                <div
+                  key={`${item.title}-${index}`}
+                  className="flex flex-col gap-3"
+                >
+                  <h3 className="type-body-1">{item.title}</h3>
+                  <p className="type-body-2 text-justify">{item.body}</p>
                 </div>
               ))}
             </div>
-            <SectionImages images={sectionImages.techStack} />
-          </section>
-          {project.gallery.length > 0 && (
-            <section className="mt-24 grid gap-3 m:grid-cols-2">
-              {project.gallery.map((item) => (
-                <div
-                  key={item.url}
-                  className="relative overflow-hidden rounded-[6px] bg-neutral-50 aspect-video"
+          </EditorialSection>
+        )}
+
+        {problem && (
+          <EditorialSection
+            number={4}
+            title="Challenge"
+            images={sectionImages.challenge}
+          >
+            <p className="type-body-2 text-justify">{problem}</p>
+          </EditorialSection>
+        )}
+
+        {approach && (
+          <EditorialSection
+            number={5}
+            title="Implementation"
+            images={sectionImages.implementation}
+          >
+            <p className="type-body-2 text-justify">{approach}</p>
+          </EditorialSection>
+        )}
+
+        {outcomes.length > 0 && (
+          <EditorialSection
+            number={6}
+            title="Verified outcomes"
+            images={sectionImages.outcomes}
+          >
+            <ul className="flex flex-col gap-6">
+              {outcomes.map((outcome) => (
+                <li
+                  key={outcome}
+                  className="border-t border-black-a10 pt-4 type-body-2"
                 >
-                  <MediaAsset
-                    item={item}
-                    sizes="(min-width: 768px) 50vw, 100vw"
-                  />
-                </div>
+                  {outcome}
+                </li>
               ))}
-            </section>
-          )}
-          <Repositories project={project} />
-          <SectionImages images={sectionImages.repositories} />
-        </div>
+            </ul>
+          </EditorialSection>
+        )}
+
+        <EditorialSection
+          number={7}
+          title="Technology stack"
+          images={sectionImages.techStack}
+        >
+          <div className="grid gap-10 m:grid-cols-2 l:grid-cols-3">
+            {Object.entries(tech).map(([group, values]) => (
+              <div key={group}>
+                <h3 className="type-body-3 uppercase text-black-a60">
+                  {group}
+                </h3>
+                <ul className="mt-3">
+                  {list(values).map((value) => (
+                    <Technology key={value} name={value} />
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </EditorialSection>
+
+        <Repositories project={project} />
+        <SectionImages images={sectionImages.repositories} />
+        <ProjectGallery project={project} />
       </article>
     </>
   );
