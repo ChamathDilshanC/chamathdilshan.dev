@@ -68,6 +68,8 @@ export type StudioDraft = {
   template: string;
   mediaLayout: string;
   privacyConsent: boolean;
+  provider: string | null;
   model: string | null;
+  providerFailures: Array<{ provider: string; code: string }>;
   error: string | null;
 };
