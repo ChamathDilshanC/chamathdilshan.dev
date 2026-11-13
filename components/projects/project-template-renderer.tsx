@@ -12,7 +12,14 @@ import type { Project } from "@/lib/types/content";
 const cleanText = (value: string) =>
   value
     .split(/\r?\n/)
-    .filter((line) => !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim()))
+    .filter((line, index, lines) => {
+      const current = line.trim();
+      const next = lines[index + 1]?.trim() ?? "";
+      return (
+        !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(current) &&
+        !(current.includes("|") && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(next))
+      );
+    })
     .map((line) => {
       const trimmed = line.trim();
       if (!trimmed.includes("|")) return trimmed;
