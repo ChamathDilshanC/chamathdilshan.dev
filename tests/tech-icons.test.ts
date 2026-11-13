@@ -8,6 +8,9 @@ describe("technology icons", () => {
     ["C#", "csharp"],
     ["FFmpeg", "ffmpeg"],
     ["Avalonia", "windows"],
+    ["AWS SDK", "aws"],
+    ["Tailwind CSS", "tailwind-css"],
+    ["Java/Maven", "apache-maven"],
   ])("maps %s to the %s icon", (technology, slug) => {
     expect(technologyIcon(technology)).toBe(`https://thesvg.org/icons/${slug}/default.svg`);
   });
