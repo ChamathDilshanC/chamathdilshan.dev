@@ -262,12 +262,12 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
         >
           {paragraphs.length ? (
             paragraphs.map((paragraph) => (
-              <p key={paragraph} className="type-body-2 text-justify">
+              <p key={paragraph} className="type-body-2">
                 {paragraph}
               </p>
             ))
           ) : (
-            <p className="type-body-2 text-justify">{project.intro}</p>
+            <p className="type-body-2">{project.intro}</p>
           )}
           <div className="flex flex-wrap gap-6 pt-4">
             {project.liveUrl && (
@@ -321,7 +321,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   className="flex flex-col gap-3"
                 >
                   <h3 className="type-body-1">{cleanText(item.title)}</h3>
-                  <p className="type-body-2 text-justify">{text(item.body)}</p>
+                  <p className="type-body-2">{text(item.body)}</p>
                 </div>
               ))}
             </div>
@@ -334,7 +334,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
             title="Challenge"
             images={sectionImages.challenge}
           >
-            <p className="type-body-2 text-justify">{problem}</p>
+            <p className="type-body-2">{problem}</p>
           </EditorialSection>
         )}
 
@@ -344,7 +344,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
             title="Implementation"
             images={sectionImages.implementation}
           >
-            <p className="type-body-2 text-justify">{approach}</p>
+            <p className="type-body-2">{approach}</p>
           </EditorialSection>
         )}
 
