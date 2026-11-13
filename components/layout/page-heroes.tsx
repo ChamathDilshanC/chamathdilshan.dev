@@ -143,7 +143,7 @@ export function PostHero({
 }: { title: string; category: string; excerpt: string; date: string; media: MediaItem }) {
   return (
     <StickyHero className="justify-start bg-black-token p-6">
-      <SiteHeader active="journal" />
+      <SiteHeader active="projects" />
       <div className="h-17.5 w-full flex-none" />
       <div
         className="group/hero animate-enter relative flex h-[70%] w-full flex-col items-center justify-between overflow-hidden rounded-[5px] p-6 l:max-w-360"
