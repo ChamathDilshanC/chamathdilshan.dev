@@ -9,10 +9,33 @@ import { MediaAsset } from "@/components/ui/media-asset";
 import { technologyIcon } from "@/lib/tech-icons";
 import type { Project } from "@/lib/types/content";
 
-const text = (value: unknown) => (typeof value === "string" ? value : "");
+const cleanText = (value: string) =>
+  value
+    .split(/\r?\n/)
+    .filter((line) => !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim()))
+    .map((line) => {
+      const trimmed = line.trim();
+      if (!trimmed.includes("|")) return trimmed;
+      return trimmed
+        .replace(/^\||\|$/g, "")
+        .split("|")
+        .map((cell) => cell.trim())
+        .filter(Boolean)
+        .join(": ");
+    })
+    .join(" ")
+    .replace(/[*_`]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const text = (value: unknown) =>
+  typeof value === "string" ? cleanText(value) : "";
 const list = (value: unknown) =>
   Array.isArray(value)
-    ? value.filter((item): item is string => typeof item === "string")
+    ? value
+        .filter((item): item is string => typeof item === "string")
+        .map(cleanText)
+        .filter(Boolean)
     : [];
 
 function SectionImages({ images }: { images: unknown }) {
@@ -93,7 +116,8 @@ function EditorialSection({
 }
 
 function Technology({ name }: { name: string }) {
-  const icon = technologyIcon(name);
+  const label = cleanText(name);
+  const icon = technologyIcon(label);
   return (
     <li className="flex items-center gap-3 border-b border-black-a10 py-3 type-body-2">
       {icon ? (
@@ -110,7 +134,7 @@ function Technology({ name }: { name: string }) {
       ) : (
         <IconCode aria-hidden className="size-5 shrink-0 text-black-a50" />
       )}
-      <span>{name}</span>
+      <span>{label}</span>
     </li>
   );
 }
@@ -289,8 +313,8 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
                   key={`${item.title}-${index}`}
                   className="flex flex-col gap-3"
                 >
-                  <h3 className="type-body-1">{item.title}</h3>
-                  <p className="type-body-2 text-justify">{item.body}</p>
+                  <h3 className="type-body-1">{cleanText(item.title)}</h3>
+                  <p className="type-body-2 text-justify">{text(item.body)}</p>
                 </div>
               ))}
             </div>

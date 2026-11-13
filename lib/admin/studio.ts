@@ -13,6 +13,7 @@ export type RepositorySummary = {
   fork: boolean;
   archived: boolean;
   hasReadme: boolean | null;
+  homepage: string;
   importedProjectId: number | null;
   importedProjectSlug: string | null;
 };
@@ -35,6 +36,7 @@ export type RepositoryAnalysis = {
   submodules: Array<{ path: string; name: string; url?: string | null; sha: string; accessible: boolean; role: string }>;
   evidence: Evidence[];
   warnings: string[];
+  liveUrl: string;
 };
 
 export type StudioContent = {

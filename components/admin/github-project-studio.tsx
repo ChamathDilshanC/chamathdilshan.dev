@@ -88,6 +88,7 @@ export function GitHubProjectStudio() {
   const [selected, setSelected] = useState<RepositorySummary | null>(null);
   const [url, setUrl] = useState("");
   const [consent, setConsent] = useState(false);
+  const [includeSubmodules, setIncludeSubmodules] = useState(true);
   const [draft, setDraft] = useState<StudioDraft | null>(null);
   const [template, setTemplate] = useState("minimal-case-study");
   const [mediaLayout, setMediaLayout] =
@@ -170,7 +171,14 @@ export function GitHubProjectStudio() {
     try {
       const result = await adminFetch<StudioDraft>(
         "/api/admin/github/analyze",
-        { method: "POST", body: { repositoryUrl, privacyConsent: consent } },
+        {
+          method: "POST",
+          body: {
+            repositoryUrl,
+            privacyConsent: consent,
+            includeSubmodules,
+          },
+        },
       );
       setDraft(result);
       setTemplate(result.template);
@@ -331,6 +339,21 @@ export function GitHubProjectStudio() {
               />
             </label>
           </div>
+          <label className="flex items-start gap-2 text-[12px] text-black-a60">
+            <input
+              type="checkbox"
+              checked={includeSubmodules}
+              onChange={(event) => setIncludeSubmodules(event.target.checked)}
+              className="mt-0.5"
+            />
+            <span>
+              Analyze linked Git submodules
+              <span className="mt-0.5 block text-black-a45">
+                Include public frontend/backend repositories in the generated
+                technology, architecture, and repository sections.
+              </span>
+            </span>
+          </label>
           {busy && !draft && <Spinner label={busy} />}
           {!page?.items.length && !busy && (
             <p className="py-10 text-center text-[13px] text-black-a60">
