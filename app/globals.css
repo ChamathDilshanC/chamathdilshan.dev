@@ -367,7 +367,6 @@ html:has(.protected-document),
  *   touch-line    arrow links   underline draws in from the left
  *   touch-arrow   arrow links   arrow slides in from the bottom left
  *   touch-press   cards/buttons shrink a touch while pressed
- *   stack-rise    work cards    grow into place below desktop, where they do not pile up
  *   touch-frame   card frames, arrow links: scroll timeline for touch-settle/-line/-arrow
  *
  * Unlayered on purpose, so they win over Tailwind's layered utilities. Each
@@ -433,15 +432,6 @@ html:has(.protected-document),
   }
 }
 
-@keyframes stack-rise {
-  from {
-    scale: 0.9;
-  }
-  to {
-    scale: 1;
-  }
-}
-
 @media (hover: none) and (prefers-reduced-motion: no-preference) {
   .hero-drift {
     /* Starts when the 2.6s entrance zoom (heroImageEnter) has finished. */
@@ -499,17 +489,6 @@ html:has(.protected-document),
     [data-sticky-hero] .touch-line,
     [data-sticky-hero] .touch-arrow {
       animation: none;
-    }
-  }
-}
-
-@media (width < 1200px) and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .stack-rise {
-      transform-origin: 50% 0;
-      animation: stack-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 40%;
     }
   }
 }
