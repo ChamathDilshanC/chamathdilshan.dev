@@ -21,6 +21,8 @@ type CacheOpts = {
   revalidate?: number;
   /** Tags the backend can invalidate via POST /api/revalidate. */
   tags?: string[];
+  /** Bypass Next.js data and route caches for rapidly changing public data. */
+  cache?: RequestCache;
 };
 
 /** Cached public read. Never use for authenticated data. */
@@ -28,7 +30,9 @@ export async function apiGet<T>(path: string, cache: CacheOpts = {}): Promise<T>
   if (!API_URL) throw new Error("NEXT_PUBLIC_API_URL is not set");
   const res = await fetch(`${API_URL}${path}`, {
     headers: { Accept: "application/json" },
-    next: { revalidate: cache.revalidate ?? 3600, tags: cache.tags ?? [] },
+    ...(cache.cache
+      ? { cache: cache.cache }
+      : { next: { revalidate: cache.revalidate ?? 3600, tags: cache.tags ?? [] } }),
     signal: AbortSignal.timeout(10_000),
   });
   if (!res.ok) throw new ApiError(res.status, path);

@@ -39,9 +39,15 @@ function fallBackTo<T>(path: string, err: unknown, fallback: () => T): T {
  * A collection or the site content. Any failure — including a 404 from an API
  * deployed before these endpoints existed — counts as "unavailable".
  */
-async function read<T>(path: string, tags: string[], revalidate: number, fallback: () => T): Promise<T> {
+async function read<T>(
+  path: string,
+  tags: string[],
+  revalidate: number,
+  fallback: () => T,
+  cache?: RequestCache,
+): Promise<T> {
   try {
-    return await apiGet<T>(path, { revalidate, tags });
+    return await apiGet<T>(path, cache ? { cache } : { revalidate, tags });
   } catch (err) {
     return fallBackTo(path, err, fallback);
   }
@@ -66,7 +72,7 @@ export async function getSiteContent(): Promise<SiteContent> {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  return read("/api/projects", [TAG.projects], TTL.list, () => defaultProjects);
+  return read("/api/projects", [TAG.projects], TTL.list, () => defaultProjects, "no-store");
 }
 
 export async function getProject(slug: string): Promise<Project | null> {
