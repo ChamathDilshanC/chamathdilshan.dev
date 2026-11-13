@@ -2,8 +2,13 @@ import { iconUrl, normalize } from "@/lib/thesvg";
 
 const SLUGS: Record<string, string> = {
   actions: "github-actions",
+  ".net": "dotnet",
+  ".net 8": "dotnet",
+  avalonia: "windows",
+  csharp: "csharp",
   docker: "docker",
   fastapi: "fastapi",
+  ffmpeg: "ffmpeg",
   github: "github",
   githubactions: "github-actions",
   javascripttypescript: "typescript",

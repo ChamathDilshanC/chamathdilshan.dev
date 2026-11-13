@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { IconCode } from "@tabler/icons-react";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { PostHero } from "@/components/layout/page-heroes";
 import { Curtain } from "@/components/motion/curtain";
@@ -107,10 +108,7 @@ function Technology({ name }: { name: string }) {
           />
         </span>
       ) : (
-        <span
-          aria-hidden
-          className="size-2 shrink-0 rounded-full bg-black-a30"
-        />
+        <IconCode aria-hidden className="size-5 shrink-0 text-black-a50" />
       )}
       <span>{name}</span>
     </li>
