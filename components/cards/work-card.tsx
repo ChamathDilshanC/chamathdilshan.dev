@@ -15,6 +15,7 @@ export function WorkCard({ project, sizes }: Props) {
           src={project.thumbnail.url}
           alt={project.thumbnail.alt}
           sizes={sizes}
+          fit="contain"
           className="touch-settle transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
         />
       </div>
