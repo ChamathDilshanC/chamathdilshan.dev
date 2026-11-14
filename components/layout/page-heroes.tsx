@@ -10,7 +10,11 @@ import { StickyHero } from "./sticky-hero";
 type ImageProps = { image: string; imageAlt: string };
 
 /** Full-bleed, slightly oversized blurred backdrop that zooms out on load (About). */
-function Backdrop({ image, imageAlt, className }: ImageProps & { className?: string }) {
+function Backdrop({
+  image,
+  imageAlt,
+  className,
+}: ImageProps & { className?: string }) {
   return (
     <div className={`absolute -inset-[5%] ${className}`}>
       <div className="animate-enter absolute inset-0" style={heroImageEnter}>
@@ -28,7 +32,12 @@ export function ListHero({
   description,
   image,
   imageAlt,
-}: ImageProps & { active: NavKey; title: readonly string[]; count: number; description: string }) {
+}: ImageProps & {
+  active: NavKey;
+  title: readonly string[];
+  count: number;
+  description: string;
+}) {
   return (
     <StickyHero className="group/hero justify-between p-6">
       <HeroPhoto fill={image} zoom className="opacity-70">
@@ -51,7 +60,10 @@ export function ListHero({
               {title[1]}
             </span>
           </h1>
-          <p className="animate-enter w-full max-w-[200.5px] type-body-3 text-white-a50" style={enter(1)}>
+          <p
+            className="animate-enter w-full max-w-[200.5px] type-body-3 text-white-a50"
+            style={enter(1)}
+          >
             {description}
           </p>
         </div>
@@ -74,7 +86,15 @@ export function CaseHero({
 }) {
   return (
     <StickyHero className="group/hero justify-start p-6">
-      <HeroPhoto fill={media.kind === "video" ? (media.poster ?? videoPoster(media.url)) : media.url} zoom className="opacity-70">
+      <HeroPhoto
+        fill={
+          media.kind === "video"
+            ? (media.poster ?? videoPoster(media.url))
+            : media.url
+        }
+        zoom
+        className="opacity-70"
+      >
         <MediaAsset item={media} sizes="100vw" preload />
       </HeroPhoto>
       <SiteHeader active="projects" />
@@ -82,16 +102,25 @@ export function CaseHero({
       <div className="relative flex w-full flex-1 flex-col items-center justify-between l:max-w-360">
         <div className="h-px w-full" />
         <div className="flex w-full items-center justify-center">
-          <h1 className="animate-enter max-w-225 text-center type-heading-2" style={enter(0.8)}>
+          <h1
+            className="animate-enter max-w-225 text-center type-heading-2"
+            style={enter(0.8)}
+          >
             {title}
           </h1>
         </div>
         <div className="flex w-full items-start justify-between px-2.5 m:px-0">
           <div className="flex w-full items-start justify-between gap-6 m:max-w-112.5 l:max-w-215">
-            <p className="animate-enter type-body-3 text-white-token" style={enter(0.9)}>
+            <p
+              className="animate-enter type-body-3 text-white-token"
+              style={enter(0.9)}
+            >
               {category}
             </p>
-            <p className="animate-enter max-w-[200.5px] type-body-4" style={enter(1)}>
+            <p
+              className="animate-enter max-w-[200.5px] type-body-4"
+              style={enter(1)}
+            >
               {summary}
             </p>
           </div>
@@ -120,13 +149,19 @@ export function AboutHero({
       >
         <div className="group/hero relative flex h-88.5 w-full flex-none flex-col items-center justify-center overflow-hidden rounded-[5px] m:h-91 l:h-auto l:flex-1">
           <div className={`absolute inset-0 ${heroZoom}`}>
-            <Media src={image} alt={imageAlt} sizes="(min-width: 1200px) 924px, 100vw" />
+            <Media
+              src={image}
+              alt={imageAlt}
+              sizes="(min-width: 1200px) 924px, 100vw"
+            />
           </div>
           <h1 className="relative text-center type-heading-2">{title}</h1>
         </div>
         <div className="flex w-full items-start justify-between gap-6 m:max-w-112.5 l:max-w-157.5">
           <p className="type-body-3 text-white-token">{label}</p>
-          <p className="max-w-60 type-body-3 text-white-token [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">{blurb}</p>
+          <p className="max-w-60 type-body-3 text-white-token [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">
+            {blurb}
+          </p>
         </div>
       </div>
     </StickyHero>
@@ -140,7 +175,13 @@ export function PostHero({
   excerpt,
   date,
   media,
-}: { title: string; category: string; excerpt: string; date: string; media: MediaItem }) {
+}: {
+  title: string;
+  category: string;
+  excerpt: string;
+  date: string;
+  media: MediaItem;
+}) {
   return (
     <StickyHero className="justify-start bg-black-token p-6">
       <SiteHeader active="projects" />
@@ -150,19 +191,30 @@ export function PostHero({
         style={enter(0.6, { y: "40px" })}
       >
         <div className={`absolute inset-0 opacity-70 ${heroZoom}`}>
-          <MediaAsset item={media} sizes="(min-width: 1200px) 1440px, 100vw" preload />
+          <MediaAsset
+            item={media}
+            sizes="(min-width: 1200px) 1440px, 100vw"
+            fit="contain"
+            preload
+          />
         </div>
         <div className="hidden h-4 w-full m:block" />
         <div className="relative flex w-full flex-col items-start justify-center gap-6 m:items-center">
-          <p className="w-full max-w-77.5 text-left type-body-3 m:text-center">{category}</p>
-          <h1 className="max-w-260 text-left type-heading-2 m:text-center">{title}</h1>
+          <p className="w-full max-w-77.5 text-left type-body-3 m:text-center">
+            {category}
+          </p>
+          <h1 className="max-w-260 text-left type-heading-2 m:text-center">
+            {title}
+          </h1>
         </div>
         <div className="relative flex w-full items-start justify-start gap-1">
           <p className="type-body-3">Date:</p>
           <p className="type-body-3 text-white-a50">{date}</p>
         </div>
       </div>
-      <p className="mt-5 w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">{excerpt}</p>
+      <p className="mt-5 w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">
+        {excerpt}
+      </p>
     </StickyHero>
   );
 }
