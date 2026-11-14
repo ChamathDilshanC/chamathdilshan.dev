@@ -175,19 +175,25 @@ export function PostHero({
   excerpt,
   date,
   media,
+  titleBelowMedia = false,
 }: {
   title: string;
   category: string;
   excerpt: string;
   date: string;
   media: MediaItem;
+  titleBelowMedia?: boolean;
 }) {
   return (
     <StickyHero className="justify-start bg-black-token p-6">
       <SiteHeader active="projects" />
       <div className="h-17.5 w-full flex-none" />
       <div
-        className="group/hero animate-enter relative flex h-[70%] w-full flex-col items-center justify-between overflow-hidden rounded-[5px] p-6 l:max-w-360"
+        className={`group/hero animate-enter relative w-full overflow-hidden rounded-[5px] l:max-w-360 ${
+          titleBelowMedia
+            ? "h-[60%]"
+            : "flex h-[70%] flex-col items-center justify-between p-6"
+        }`}
         style={enter(0.6, { y: "40px" })}
       >
         <div className={`absolute inset-0 opacity-70 ${heroZoom}`}>
@@ -198,23 +204,40 @@ export function PostHero({
             preload
           />
         </div>
-        <div className="hidden h-4 w-full m:block" />
-        <div className="relative flex w-full flex-col items-start justify-center gap-6 m:items-center">
-          <p className="w-full max-w-77.5 text-left type-body-3 m:text-center">
-            {category}
-          </p>
-          <h1 className="max-w-260 text-left type-heading-2 m:text-center">
+        {!titleBelowMedia && (
+          <>
+            <div className="hidden h-4 w-full m:block" />
+            <div className="relative flex w-full flex-col items-start justify-center gap-6 m:items-center">
+              <p className="w-full max-w-77.5 text-left type-body-3 m:text-center">
+                {category}
+              </p>
+              <h1 className="max-w-260 text-left type-heading-2 m:text-center">
+                {title}
+              </h1>
+            </div>
+            <div className="relative flex w-full items-start justify-start gap-1">
+              <p className="type-body-3">Date:</p>
+              <p className="type-body-3 text-white-a50">{date}</p>
+            </div>
+          </>
+        )}
+      </div>
+      {titleBelowMedia ? (
+        <div className="mt-5 w-full max-w-360">
+          <h1 className="w-full whitespace-nowrap text-[clamp(1.5rem,6.5vw,6.25rem)] leading-none font-medium tracking-[-0.06em] text-white-token">
             {title}
           </h1>
+          <p className="mt-5 w-full max-w-220 type-body-4">{excerpt}</p>
+          <div className="mt-4 flex w-full items-start justify-between gap-6 type-body-3">
+            <p>{category}</p>
+            <p className="text-white-a50">Date: {date}</p>
+          </div>
         </div>
-        <div className="relative flex w-full items-start justify-start gap-1">
-          <p className="type-body-3">Date:</p>
-          <p className="type-body-3 text-white-a50">{date}</p>
-        </div>
-      </div>
-      <p className="mt-5 w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">
-        {excerpt}
-      </p>
+      ) : (
+        <p className="mt-5 w-full max-w-180 px-6 text-center type-body-4 l:max-w-220">
+          {excerpt}
+        </p>
+      )}
     </StickyHero>
   );
 }

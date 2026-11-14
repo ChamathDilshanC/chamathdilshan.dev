@@ -17,7 +17,10 @@ const cleanText = (value: string) =>
       const next = lines[index + 1]?.trim() ?? "";
       return (
         !/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(current) &&
-        !(current.includes("|") && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(next))
+        !(
+          current.includes("|") &&
+          /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(next)
+        )
       );
     })
     .map((line) => {
@@ -242,6 +245,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
         excerpt={text(content.headline) || project.summary}
         date={project.year}
         media={project.hero}
+        titleBelowMedia
       />
       <article className="relative z-1 flex w-full flex-none flex-col items-center justify-center gap-20 bg-white-token px-6 py-20 m:pb-30 l:px-32.75">
         <Curtain className="bg-white-token" />
