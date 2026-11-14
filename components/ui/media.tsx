@@ -10,6 +10,8 @@ type Props = {
   alt?: string;
   /** Rendered width hint for responsive loading, e.g. "(min-width: 1200px) 50vw, 100vw". */
   sizes: string;
+  /** How the image is fitted inside its positioned parent. */
+  fit?: "cover" | "contain";
   /** Load immediately with high priority (above-the-fold images only). */
   preload?: boolean;
   className?: string;
@@ -21,7 +23,14 @@ type Props = {
  * Inside a <PlaceholderProvider> that has a preview for `src`, a blurred
  * version paints at once and the image replaces it when it loads.
  */
-export function Media({ src, alt = "", sizes, preload = false, className }: Props) {
+export function Media({
+  src,
+  alt = "",
+  sizes,
+  fit = "cover",
+  preload = false,
+  className,
+}: Props) {
   const preview = usePlaceholder(src);
   return (
     <Image
@@ -36,8 +45,12 @@ export function Media({ src, alt = "", sizes, preload = false, className }: Prop
       placeholder={preview ? "blur" : "empty"}
       blurDataURL={preview}
       // next/image sizes the preview from the inline objectFit, not the class.
-      style={preview ? { objectFit: "cover" } : undefined}
-      className={cn("rounded-[inherit] object-cover object-center", className)}
+      style={preview ? { objectFit: fit } : undefined}
+      className={cn(
+        "rounded-[inherit] object-center",
+        fit === "contain" ? "object-contain" : "object-cover",
+        className,
+      )}
     />
   );
 }
