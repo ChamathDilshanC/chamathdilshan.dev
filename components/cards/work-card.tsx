@@ -10,7 +10,7 @@ type Props = {
 export function WorkCard({ project, sizes }: Props) {
   return (
     <div className="group flex w-full flex-col gap-3">
-      <div className="touch-frame relative aspect-[4/5] w-full overflow-hidden rounded-[5px] bg-neutral-900 m:aspect-[16/10]">
+      <div className="touch-frame relative aspect-video w-full overflow-hidden rounded-[5px] bg-neutral-900">
         <Media
           src={project.thumbnail.url}
           alt={project.thumbnail.alt}
