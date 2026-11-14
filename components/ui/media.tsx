@@ -39,6 +39,8 @@ export function Media({
       fill
       sizes={sizes}
       preload={preload}
+      loading={preload ? "eager" : "lazy"}
+      fetchPriority={preload ? "high" : "auto"}
       draggable={false}
       loader={isCloudinary(src) ? cloudinaryLoader : undefined}
       unoptimized={src.startsWith("https://") && !isCloudinary(src)}
