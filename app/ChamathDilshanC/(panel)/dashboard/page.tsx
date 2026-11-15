@@ -30,7 +30,7 @@ export default function DashboardPage() {
     <>
       <PageHeader
         title={first ? `Hello, ${first}` : "Dashboard"}
-        description="Everything on chamathdilshan.dev — sections, projects, articles, skills and media — is edited here. Changes go live on the next visit."
+        description="Everything on chamathdilshan.com — sections, projects, articles, skills and media — is edited here. Changes go live on the next visit."
         actions={
           <>
             <ButtonLink href={`${ADMIN}/media`} icon={<IconPhotoPlus className="size-4" />}>

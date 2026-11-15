@@ -22,7 +22,7 @@ export const defaultContent: SiteContent = {
     name: "Chamath Dilshan",
     wordmark: "CHAMATH",
     logo: "CHAMATH",
-    email: "hello@chamathdilshan.dev",
+    email: "chamathdilshan.dev@gmail.com",
     year: "2026",
     github,
     description: "Software engineer building fast, accessible web apps, APIs and cloud platforms.",

@@ -36,7 +36,7 @@ function ImageCanvas({ url, label }: { url: string; label: string }) {
         />
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute top-1/2 left-1/2 grid w-[145%] -translate-x-1/2 -translate-y-1/2 -rotate-25 grid-cols-2 gap-x-16 gap-y-20 text-center font-geist text-[14px] font-semibold tracking-[0.12em] text-black-token uppercase opacity-30">
-            {Array.from({ length: 12 }, (_, index) => <span key={index}>chamathdilshan.dev | view only</span>)}
+            {Array.from({ length: 12 }, (_, index) => <span key={index}>chamathdilshan.com | view only</span>)}
           </div>
         </div>
       </div>
