@@ -14,7 +14,7 @@ import type { Skill } from "@/lib/types/content";
  * (on touch screens, while the tile crosses the middle of the screen).
  * A logo that fails to load is dropped rather than shown broken.
  */
-export function SkillTile({ skill, className }: { skill: Skill; className?: string }) {
+export function SkillTile({ skill, className, variant = "light" }: { skill: Skill; className?: string; variant?: "light" | "galaxy" }) {
   const [broken, setBroken] = useState(false);
   const icon = skill.icon && !broken ? skill.icon : null;
   const cloudinary = icon ? isCloudinary(icon) : false;
@@ -28,9 +28,19 @@ export function SkillTile({ skill, className }: { skill: Skill; className?: stri
   } as const;
 
   return (
-    <div className={cn("group/skill flex flex-col items-center justify-center gap-4 rounded-[5px] bg-neutral-50", className)}>
-      <span className="font-geist text-[19px] font-semibold tracking-[-0.04em] text-black-token">{skill.name}</span>
-      {icon && (
+    <div
+      className={cn(
+        "group/skill flex flex-col items-center justify-center gap-4 rounded-[5px]",
+        variant === "galaxy"
+          ? "border border-white-a10 bg-white-a10 text-white-token shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-sm"
+          : "bg-neutral-50",
+        className,
+      )}
+    >
+      <span className={cn("font-geist text-[17px] font-semibold tracking-[-0.04em]", variant === "galaxy" ? "text-white-token" : "text-black-token")}>
+        {skill.name}
+      </span>
+      {icon ? (
         <motion.span
           className="relative size-10"
           initial={{ opacity: 0, scale: 0.85, filter: "blur(10px)" }}
@@ -51,7 +61,13 @@ export function SkillTile({ skill, className }: { skill: Skill; className?: stri
             onError={() => setBroken(true)}
           />
         </motion.span>
-      )}
+      ) : variant === "galaxy" ? (
+        <span aria-hidden className="relative flex size-10 items-center justify-center">
+          <span className="absolute size-8 rounded-full border border-white-a16" />
+          <span className="absolute size-2 rounded-full bg-[#d6eaff] shadow-[0_0_18px_#b8ddff]" />
+          <span className="size-1 rounded-full bg-[#ffdcb9]" />
+        </span>
+      ) : null}
     </div>
   );
 }
