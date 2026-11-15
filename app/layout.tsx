@@ -5,7 +5,7 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"], variable: "--ff-geist", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--ff-inter", display: "swap" });
 
-const siteUrl = "https://www.chamathdilshan.com";
+const siteUrl = "https://chamathdilshan.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     siteName: "Chamath Dilshan",
     url: siteUrl,
   },
+  icons: { icon: "/icon.svg" },
   twitter: { card: "summary_large_image" },
 };
 

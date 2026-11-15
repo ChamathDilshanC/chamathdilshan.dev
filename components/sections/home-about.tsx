@@ -38,7 +38,7 @@ export function HomeAbout({ about }: { about: HomeAboutContent }) {
 
       <div className="h-10 w-full flex-none m:h-12.5 l:h-27.5" />
 
-      <div className="relative z-2 flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:justify-between l:gap-0">
+      <div className="relative z-2 flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:items-stretch l:justify-between l:gap-0">
         <Reveal duration={0.6} className="relative h-110 w-full flex-none m:h-svh l:h-110 l:w-82">
           <Parallax className="relative h-full w-full rounded-[5px]">
             <Media src={about.image} alt={about.imageAlt} sizes="(min-width: 1200px) 328px, 100vw" />
@@ -47,7 +47,7 @@ export function HomeAbout({ about }: { about: HomeAboutContent }) {
 
         <div className="hidden w-57.25 flex-none self-stretch l:block" />
 
-        <Reveal className="flex w-full max-w-208.75 flex-none flex-col justify-center l:w-px l:flex-1">
+        <Reveal className="flex w-full max-w-208.75 flex-none flex-col justify-center l:h-110 l:w-px l:flex-1">
           <AboutChat />
         </Reveal>
       </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createElement, type ReactNode } from "react";
 
-export const siteUrl = "https://www.chamathdilshan.com";
+export const siteUrl = "https://chamathdilshan.com";
 
 export function absoluteUrl(path: string): string {
   return new URL(path, siteUrl).toString();

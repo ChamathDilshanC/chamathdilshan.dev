@@ -68,7 +68,15 @@ export async function getSiteContent(): Promise<SiteContent> {
     sections: defaultContent,
   }));
   // Sections the API does not know yet (newer frontend) keep their defaults.
-  return { ...defaultContent, ...data.sections };
+  return {
+    ...defaultContent,
+    ...data.sections,
+    site: {
+      ...defaultContent.site,
+      ...data.sections.site,
+      email: defaultContent.site.email,
+    },
+  };
 }
 
 export async function getProjects(): Promise<Project[]> {

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getPosts, getProjects } from "@/lib/content";
 
-const siteUrl = "https://www.chamathdilshan.com";
+const siteUrl = "https://chamathdilshan.com";
 
 export const revalidate = 3600;
 

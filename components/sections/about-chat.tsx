@@ -70,7 +70,7 @@ export function AboutChat() {
   };
 
   return (
-    <div className="group relative isolate flex w-full flex-col gap-6 overflow-hidden rounded-[28px] border border-white/75 bg-white/55 p-5 shadow-[0_24px_80px_-32px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-2xl m:rounded-[34px] m:p-7.5">
+    <div className="group relative isolate flex h-full w-full flex-col gap-6 overflow-hidden rounded-[28px] border border-white/75 bg-white/55 p-5 shadow-[0_24px_80px_-32px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-2xl m:rounded-[34px] m:p-7.5">
       <div aria-hidden className="pointer-events-none absolute -right-20 -top-24 -z-10 size-64 rounded-full bg-orange-300/35 blur-3xl transition-transform duration-700 group-hover:scale-125" />
       <div aria-hidden className="pointer-events-none absolute -bottom-28 -left-20 -z-10 size-64 rounded-full bg-sky-200/30 blur-3xl" />
 
@@ -88,7 +88,7 @@ export function AboutChat() {
         </div>
       </div>
 
-      <div className="flex min-h-44 flex-col gap-4 overflow-y-auto rounded-[22px] border border-white/65 bg-white/30 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md m:p-4">
+      <div className="flex min-h-44 flex-1 flex-col gap-4 overflow-y-auto rounded-[22px] border border-white/65 bg-white/30 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md m:p-4">
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
             <MatrixOrb state="idle" size={112} color="#F75001" dots={9} labels={{ idle: "Ready" }} />
