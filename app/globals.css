@@ -155,6 +155,13 @@ html:has(.protected-document),
       #05080c;
   }
 
+  .galaxy-about {
+    isolation: isolate;
+    background:
+      radial-gradient(58% 85% at 64% 48%, rgba(13, 42, 72, 0.28), transparent 72%),
+      #05080c;
+  }
+
   .galaxy-hero-vignette {
     pointer-events: none;
     z-index: 1;
