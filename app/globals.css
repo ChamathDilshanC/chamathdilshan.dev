@@ -148,6 +148,43 @@ html:has(.protected-document),
  * always win when they are combined with a type class.
  */
 @layer components {
+  .galaxy-hero {
+    isolation: isolate;
+    background:
+      radial-gradient(70% 80% at 60% 48%, rgba(10, 31, 53, 0.34), transparent 68%),
+      #05080c;
+  }
+
+  .galaxy-hero-vignette {
+    pointer-events: none;
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(5, 8, 12, 0.88) 0%, rgba(5, 8, 12, 0.36) 32%, transparent 65%),
+      linear-gradient(0deg, rgba(5, 8, 12, 0.86) 0%, transparent 26%, rgba(5, 8, 12, 0.28) 100%);
+  }
+
+  .galaxy-kicker {
+    color: rgba(222, 237, 255, 0.58);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .galaxy-stack {
+    background:
+      radial-gradient(48% 90% at 70% 0%, rgba(31, 70, 112, 0.2), transparent 70%),
+      #05080c;
+  }
+
+  .galaxy-stack-grid {
+    opacity: 0.26;
+    background-image: linear-gradient(rgba(155, 191, 224, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(155, 191, 224, 0.1) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse 70% 100% at 50% 50%, black 0%, transparent 82%);
+  }
+
   .type-heading-1 {
     font-family: var(--ff-geist), sans-serif;
     color: var(--color-black-token);
