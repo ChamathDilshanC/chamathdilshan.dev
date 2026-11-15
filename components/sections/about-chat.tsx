@@ -95,7 +95,7 @@ export function AboutChat() {
       aria-label={expanded ? "AI portfolio assistant" : undefined}
       className={`relative flex min-h-0 w-full flex-col gap-6 overflow-hidden rounded-[5px] border border-black-a10 bg-transparent p-5 m:p-7.5 ${
         expanded
-          ? "h-[min(760px,calc(100svh-32px))] max-w-180 bg-white-token shadow-2xl"
+          ? "h-[min(760px,calc(100svh-32px))] max-w-[960px] bg-white-token shadow-2xl"
           : "h-full"
       }`}
     >
