@@ -3,7 +3,7 @@
 import Lenis from "lenis";
 import { cancelFrame, frame } from "motion/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { SMOOTH_SCROLL } from "@/lib/motion";
 
 type Props = {
@@ -34,6 +34,8 @@ export function SmoothScroll({ lerp = SMOOTH_SCROLL.lerp, wheelMultiplier = SMOO
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    const previousRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
     const lenis = new Lenis({ lerp, wheelMultiplier, smoothWheel: true, anchors: true, autoRaf: false });
     lenisRef.current = lenis;
 
@@ -60,18 +62,26 @@ export function SmoothScroll({ lerp = SMOOTH_SCROLL.lerp, wheelMultiplier = SMOO
       observer.disconnect();
       lenis.destroy();
       lenisRef.current = null;
+      window.history.scrollRestoration = previousRestoration;
     };
   }, [lerp, wheelMultiplier]);
 
   // Route navigation should always start at the top of the new page. Reusing
   // the previous scroll position makes links opened near the footer appear
   // to start halfway through their content.
-  useEffect(() => {
+  useLayoutEffect(() => {
     const lenis = lenisRef.current;
     if (!lenis) return;
+
     lenis.resize();
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     lenis.scrollTo(0, { immediate: true, force: true });
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      lenis.scrollTo(0, { immediate: true, force: true });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
   return null;
