@@ -1,6 +1,7 @@
 "use client";
 
-import { IconArrowUp, IconRobot, IconSparkles, IconX } from "@tabler/icons-react";
+import { IconArrowUp, IconSparkles, IconX } from "@tabler/icons-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import MatrixOrb from "@/components/ui/matrix-orb";
 import PromptBox from "@/components/ui/prompt-box";
@@ -190,9 +191,13 @@ export function AboutChat() {
         className="group fixed right-5 bottom-20 z-40 flex size-16 items-center justify-center rounded-full bg-white-token text-glow-orange shadow-[0_4px_24px_rgb(0_0_0_/_25%)] transition-transform duration-300 ease-out hover:-translate-y-1 m:right-7.5 m:bottom-22.5 motion-safe:animate-bounce"
       >
         <span aria-hidden className="absolute inset-0 rounded-full bg-glow-orange/15 motion-safe:animate-ping" />
-        <span aria-hidden className="relative flex size-12 items-center justify-center rounded-full border border-glow-orange/25 bg-white-token shadow-inner transition-transform duration-300 group-hover:scale-105">
-          <IconRobot className="size-8" stroke={1.6} />
-        </span>
+        <Image
+          src="/images/chatbot-robot.png"
+          alt=""
+          width={72}
+          height={72}
+          className="relative size-18 object-contain transition-transform duration-300 group-hover:scale-105"
+        />
       </button>
     </>
   );
