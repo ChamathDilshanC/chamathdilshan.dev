@@ -11,6 +11,25 @@ import { streamChat, type ChatHistoryMessage } from "@/lib/chat";
 type Message = ChatHistoryMessage & { id: number; status?: "streaming" | "done" };
 
 const STARTER = "Ask me about Chamath's work, projects, or experience.";
+const INSTANT_ABOUT =
+  "Independent software engineer building fast, accessible web apps, APIs and cloud platforms for ambitious teams that plan for tomorrow.";
+
+function instantReply(value: string) {
+  const question = value.toLowerCase().replace(/\s+/g, " ").trim();
+  if (
+    [
+      "what does chamath do",
+      "what do you do",
+      "who is chamath",
+      "about chamath",
+      "tell me about chamath",
+      "what kind of work",
+    ].some((term) => question.includes(term))
+  ) {
+    return INSTANT_ABOUT;
+  }
+  return null;
+}
 
 export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -46,15 +65,26 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
     const message = value.trim();
     if (!message || streaming) return;
 
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
+    const instant = instantReply(message);
     const userId = Date.now();
     const assistantId = userId + 1;
     const history = messages.map(({ role, content }) => ({ role, content }));
     setError("");
-    setStreaming(true);
     stickToBottomRef.current = true;
+
+    if (instant) {
+      setMessages((current) => [
+        ...current,
+        { id: userId, role: "user", content: message },
+        { id: assistantId, role: "assistant", content: instant, status: "done" },
+      ]);
+      return;
+    }
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setStreaming(true);
     setMessages((current) => [
       ...current,
       { id: userId, role: "user", content: message },
