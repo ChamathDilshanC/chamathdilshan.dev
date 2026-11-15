@@ -3,54 +3,72 @@
 import { motion } from "motion/react";
 import { SiteHeader } from "@/components/layout/site-header";
 import { StickyHero } from "@/components/layout/sticky-hero";
+import { Wordmark } from "@/components/layout/wordmark";
+import { LiquidImage } from "@/components/motion/liquid-image";
 import { usePageParallax } from "@/components/motion/parallax";
 import { ArrowLink } from "@/components/ui/arrow-link";
+import { HeroPhoto } from "@/components/ui/hero-photo";
+import { Media } from "@/components/ui/media";
 import { useSiteContent } from "@/components/layout/site-content";
 import { enter } from "@/lib/enter";
-import { GalaxyScene } from "./galaxy-scene";
 
 export function HomeHero() {
   const { site, "home.hero": hero } = useSiteContent();
   const bottomY = usePageParallax(107);
 
   return (
-    <StickyHero className="galaxy-hero justify-between bg-[#05080c] text-white-token">
-      <GalaxyScene />
-      <div aria-hidden className="galaxy-hero-vignette absolute inset-0" />
+    <StickyHero className="justify-between">
+      {/* The liquid effect is the hover here, so no zoom. */}
+      <HeroPhoto fill={hero.image} scrollZoom>
+        <Media src={hero.image} alt={hero.imageAlt} sizes="100vw" preload />
+        <LiquidImage src={hero.image} className="hidden l:block" />
+      </HeroPhoto>
+
       <SiteHeader active="home" />
 
-      <div className="relative z-1 flex w-full max-w-360 flex-1 flex-col justify-between px-6 pb-8 pt-32 l:px-10 l:pb-10 l:pt-36">
-        <div className="flex w-full items-start justify-between gap-8">
-          <div className="max-w-94">
-            <p className="animate-enter galaxy-kicker" style={enter(0.8)}>
-              Independent software engineer · 2021—{site.year}
-            </p>
-            <h1 className="animate-enter mt-4 max-w-92 text-[clamp(2.5rem,6vw,6.5rem)] font-medium leading-[0.92] tracking-[-0.07em]" style={enter(0.92)}>
-              Building ideas with a little more gravity.
-            </h1>
-            <p className="animate-enter mt-6 max-w-76 text-[15px] leading-6 text-white-a50 l:text-[17px]" style={enter(1.06)}>
-              {hero.intro.line1} {hero.intro.line2}{hero.intro.line2Dim} {hero.intro.line3Dim}
-            </p>
-            <div className="animate-enter mt-8" style={enter(1.16)}>
-              <ArrowLink href={hero.cta.href} variant="light">
-                {hero.cta.label}
-              </ArrowLink>
-            </div>
-          </div>
-          <div className="hidden max-w-48 pt-1 text-right l:block">
-            <p className="galaxy-kicker">Selected orbit</p>
-            <p className="mt-3 text-[15px] leading-5 text-white-a50">Frontend · Backend · Cloud</p>
-          </div>
-        </div>
+      <div className="h-17.5 w-full flex-none" />
 
-        <motion.div className="flex w-full items-end justify-between gap-8" style={{ y: bottomY }}>
-          <div className="flex items-end gap-3">
-            <span className="size-2 rounded-full bg-[#d9ecff] shadow-[0_0_18px_#b8ddff]" />
-            <p className="text-[13px] tracking-[0.08em] text-white-a50">LIVE / IN MOTION</p>
-          </div>
-          <p className="text-[13px] tracking-[0.08em] text-white-a50">{site.year}</p>
-        </motion.div>
+      <div className="relative z-1 flex w-full max-w-360 flex-none flex-col items-start justify-center gap-10 px-6 l:absolute l:top-48.25 l:left-6 l:w-min l:px-0">
+        <div className="relative flex w-full flex-none flex-col items-start justify-center l:w-auto l:self-stretch">
+          <p className="animate-enter w-full max-w-75 type-body-1" style={enter(0.8)}>
+            {hero.intro.line1}
+          </p>
+          <p className="animate-enter w-full max-w-75 type-body-1" style={enter(0.9)}>
+            {hero.intro.line2}
+            <span className="text-white-a50">{hero.intro.line2Dim}</span>
+          </p>
+          <p className="animate-enter w-full max-w-75 type-body-1 text-white-a50" style={enter(1)}>
+            {hero.intro.line3Dim}
+          </p>
+        </div>
+        <div className="animate-enter relative flex-none" style={enter(1.1)}>
+          <ArrowLink href={hero.cta.href} variant="light">
+            {hero.cta.label}
+          </ArrowLink>
+        </div>
       </div>
+
+      <motion.div
+        className="relative flex w-full max-w-360 flex-none flex-col items-start justify-center gap-14 px-6 m:gap-6.5 l:px-0"
+        style={{ y: bottomY }}
+      >
+        <div className="relative flex w-min flex-none flex-col items-start justify-center gap-1.5 pt-7.5 l:pl-60">
+          {hero.disciplines.map((item, i) => (
+            <p key={`${i}-${item}`} className="animate-enter whitespace-pre type-body-1" style={enter(0.9 + i * 0.1)}>
+              {i === 0 && <span className="text-white-a50">01/ </span>}
+              {item}
+            </p>
+          ))}
+        </div>
+        <div className="relative flex w-full flex-none flex-col items-start justify-start gap-7.5 m:flex-row m:content-end m:items-end m:justify-between m:gap-0">
+          <div className="animate-enter relative order-1 flex flex-none items-end m:order-0 m:w-min" style={enter(1.2)}>
+            <p className="whitespace-pre type-body-1">{site.year}</p>
+          </div>
+          <h1 className="relative order-0 w-full flex-none text-white-token m:order-0 m:w-3/5 l:w-3/4">
+            <Wordmark />
+          </h1>
+        </div>
+      </motion.div>
     </StickyHero>
   );
 }
