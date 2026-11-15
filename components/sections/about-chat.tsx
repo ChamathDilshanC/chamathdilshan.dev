@@ -106,14 +106,16 @@ export function AboutChat() {
         </div>
         <div className="flex items-center gap-3">
           <IconSparkles aria-hidden className="size-5 text-glow-orange" />
-          <button
-            type="button"
-            aria-label={expanded ? "Close expanded chat" : "Open expanded chat"}
-            onClick={() => setExpanded((value) => !value)}
-            className="flex size-9 items-center justify-center rounded-full border border-black-a10 text-black-a60 transition-colors hover:bg-black/[0.05] hover:text-black-token"
-          >
-            {expanded ? <IconX aria-hidden className="size-4" /> : <IconMaximize aria-hidden className="size-4" />}
-          </button>
+          {expanded && (
+            <button
+              type="button"
+              aria-label="Close expanded chat"
+              onClick={() => setExpanded(false)}
+              className="flex size-9 items-center justify-center rounded-full border border-black-a10 text-black-a60 transition-colors hover:bg-black/[0.05] hover:text-black-token"
+            >
+              <IconX aria-hidden className="size-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -179,6 +181,16 @@ export function AboutChat() {
       </div>
     </div>
   ) : (
-    panel
+    <>
+      {panel}
+      <button
+        type="button"
+        aria-label="Open AI chat"
+        onClick={() => setExpanded(true)}
+        className="fixed right-5 bottom-20 z-40 flex size-11 items-center justify-center rounded-full bg-white-token text-black-token shadow-[0_4px_20px_rgb(0_0_0_/_25%)] mix-blend-difference transition-transform duration-300 ease-out hover:-translate-y-0.5 m:right-7.5 m:bottom-22.5"
+      >
+        <IconMaximize aria-hidden className="size-5" />
+      </button>
+    </>
   );
 }
