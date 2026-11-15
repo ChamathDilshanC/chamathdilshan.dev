@@ -1,10 +1,6 @@
 import { Curtain } from "@/components/motion/curtain";
 import { LineReveal } from "@/components/motion/line-reveal";
-import { Parallax } from "@/components/motion/parallax";
-import { Reveal } from "@/components/motion/reveal";
-import { Media } from "@/components/ui/media";
 import { SectionTitle } from "@/components/ui/section-title";
-import { AboutChat } from "@/components/sections/about-chat";
 import type { HomeAbout as HomeAboutContent } from "@/lib/types/content";
 import { STATEMENT } from "@/lib/typography";
 
@@ -36,21 +32,7 @@ export function HomeAbout({ about }: { about: HomeAboutContent }) {
         <LineReveal text={about.statement} className={`${STATEMENT} text-black-token [--indent:22%] l:[--indent:37.5%]`} />
       </div>
 
-      <div className="h-10 w-full flex-none m:h-12.5 l:h-27.5" />
-
-      <div className="relative z-2 flex w-full max-w-360 flex-none flex-col items-start justify-start gap-10 m:gap-12.5 l:flex-row l:items-stretch l:justify-between l:gap-0">
-        <Reveal duration={0.6} className="relative h-110 w-full flex-none m:h-svh l:h-110 l:w-82">
-          <Parallax className="relative h-full w-full rounded-[5px]">
-            <Media src={about.image} alt={about.imageAlt} sizes="(min-width: 1200px) 328px, 100vw" />
-          </Parallax>
-        </Reveal>
-
-        <div className="hidden w-57.25 flex-none self-stretch l:block" />
-
-        <Reveal className="flex w-full max-w-208.75 flex-none flex-col justify-center l:h-110 l:w-px l:flex-1">
-          <AboutChat />
-        </Reveal>
-      </div>
+      <div className="h-20 w-full flex-none l:h-28" />
     </section>
   );
 }

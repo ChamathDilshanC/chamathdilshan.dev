@@ -43,7 +43,7 @@ export function PageProximitySidebar() {
   if (sections.length < 2) return null;
 
   return (
-    <div className="pointer-events-none fixed top-1/2 right-0 z-30 max-h-[70vh] -translate-y-1/2 overflow-y-auto mix-blend-difference">
+    <div className="pointer-events-none fixed top-1/2 right-0 z-30 hidden max-h-[70vh] -translate-y-1/2 overflow-y-auto mix-blend-difference m:block">
       <div className="pointer-events-auto">
         <ProximitySidebar sections={sections} side="right" className="w-34" />
       </div>

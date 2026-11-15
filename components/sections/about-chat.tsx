@@ -12,7 +12,7 @@ type Message = ChatHistoryMessage & { id: number; status?: "streaming" | "done" 
 
 const STARTER = "Ask me about Chamath's work, projects, or experience.";
 
-export function AboutChat() {
+export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState("");
@@ -175,30 +175,32 @@ export function AboutChat() {
     </div>
   );
 
-  return expanded ? (
+  const expandedPanel = (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]" onClick={() => setExpanded(false)}>
       <div className="flex h-full w-full items-center justify-center" onClick={(event) => event.stopPropagation()}>
         {panel}
       </div>
     </div>
-  ) : (
-    <>
-      {panel}
-      <button
-        type="button"
-        aria-label="Open AI chat"
-        onClick={() => setExpanded(true)}
-        className="group fixed right-5 bottom-20 z-40 flex size-16 items-center justify-center rounded-full bg-white-token text-glow-orange shadow-[0_4px_24px_rgb(0_0_0_/_25%)] transition-transform duration-300 ease-out hover:-translate-y-1 m:right-7.5 m:bottom-22.5 motion-safe:animate-bounce"
-      >
-        <span aria-hidden className="absolute inset-0 rounded-full bg-glow-orange/15 motion-safe:animate-ping" />
-        <Image
-          src="/images/chatbot-robot.png"
-          alt=""
-          width={72}
-          height={72}
-          className="relative size-18 object-contain transition-transform duration-300 group-hover:scale-105"
-        />
-      </button>
-    </>
   );
+
+  const launcher = (
+    <button
+      type="button"
+      aria-label="Open AI chat"
+      onClick={() => setExpanded(true)}
+      className="group fixed right-5 bottom-[5.75rem] z-40 flex size-16 items-center justify-center rounded-full bg-white-token text-glow-orange shadow-[0_4px_24px_rgb(0_0_0_/_25%)] transition-transform duration-300 ease-out hover:-translate-y-1 m:right-7.5 m:bottom-[6.5rem] motion-safe:animate-bounce"
+    >
+      <span aria-hidden className="absolute inset-0 rounded-full bg-glow-orange/15 motion-safe:animate-ping" />
+      <Image
+        src="/images/chatbot-robot.png"
+        alt=""
+        width={72}
+        height={72}
+        className="relative size-18 object-contain transition-transform duration-300 group-hover:scale-105"
+      />
+    </button>
+  );
+
+  if (floatingOnly) return expanded ? expandedPanel : launcher;
+  return expanded ? expandedPanel : <>{panel}{launcher}</>;
 }
