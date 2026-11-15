@@ -180,6 +180,7 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
           placeholder="Ask a question…"
           hint="Press enter to send"
           efforts={[{ id: "quick", label: "Quick" }]}
+          inputProps={{ autoFocus: expanded }}
         />
       </div>
     </div>
