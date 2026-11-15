@@ -20,17 +20,22 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const stickToBottomRef = useRef(true);
 
   useEffect(() => {
     const messagesElement = messagesRef.current;
-    if (messagesElement) {
+    if (messagesElement && stickToBottomRef.current) {
       messagesElement.scrollTop = messagesElement.scrollHeight;
     }
   }, [messages]);
 
   const handleMessagesScroll = () => {
     const messagesElement = messagesRef.current;
-    setShowScrollTop(Boolean(messagesElement && messagesElement.scrollTop > 160));
+    if (!messagesElement) return;
+    const distanceFromBottom =
+      messagesElement.scrollHeight - messagesElement.scrollTop - messagesElement.clientHeight;
+    stickToBottomRef.current = distanceFromBottom < 80;
+    setShowScrollTop(messagesElement.scrollTop > 160);
   };
 
   const scrollMessagesToTop = () => {
@@ -49,6 +54,7 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
     const history = messages.map(({ role, content }) => ({ role, content }));
     setError("");
     setStreaming(true);
+    stickToBottomRef.current = true;
     setMessages((current) => [
       ...current,
       { id: userId, role: "user", content: message },
@@ -121,7 +127,11 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
       </div>
 
       <div className="relative min-h-0 flex-1">
-        <div ref={messagesRef} onScroll={handleMessagesScroll} className="flex h-full flex-col overflow-y-auto">
+        <div
+          ref={messagesRef}
+          onScroll={handleMessagesScroll}
+          className="flex h-full touch-pan-y flex-col overscroll-contain overflow-y-scroll"
+        >
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
               <MatrixOrb state="idle" size={112} color="#F75001" dots={9} labels={{ idle: "Ready" }} />
