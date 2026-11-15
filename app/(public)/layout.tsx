@@ -1,5 +1,6 @@
 import { ContentGuard } from "@/components/layout/content-guard";
 import { BackToTop } from "@/components/layout/back-to-top";
+import { AboutChat } from "@/components/sections/about-chat";
 import { Faq } from "@/components/layout/faq";
 import { PageProximitySidebar } from "@/components/layout/page-proximity-sidebar";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -35,6 +36,7 @@ export default async function PublicLayout({ children }: { children: React.React
             </main>
             <Faq />
             <SiteFooter site={content.site} footer={content.footer} />
+            <AboutChat floatingOnly />
             <BackToTop />
           </div>
         </MotionProvider>
