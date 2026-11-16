@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { enter } from "@/lib/enter";
 import { useSiteContent } from "./site-content";
@@ -11,14 +12,17 @@ export function Logo() {
     <Link
       href="/"
       aria-label={`${site.name} home`}
-      className="animate-enter relative flex h-4.5 flex-none items-center gap-1.5 text-white-token"
+      className="animate-enter relative h-4.5 w-25 flex-none overflow-hidden"
       style={enter(0.6, { y: "20%" })}
     >
-      <span
-        aria-hidden
-        className="block size-3.25 rounded-full bg-current [mask:radial-gradient(circle_at_72%_28%,transparent_34%,#000_35%)]"
+      <Image
+        src="/Logo.png"
+        alt={site.logo}
+        fill
+        priority
+        sizes="100px"
+        className="object-cover brightness-0 invert"
       />
-      <span className="font-geist text-[15px] leading-none font-extrabold tracking-[-0.02em]">{site.logo}</span>
     </Link>
   );
 }

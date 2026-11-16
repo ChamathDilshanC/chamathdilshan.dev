@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     siteName: "Chamath Dilshan",
     url: siteUrl,
   },
-  icons: { icon: "/icon.svg" },
+  icons: { icon: "/Logo.png", apple: "/Logo.png" },
   twitter: { card: "summary_large_image" },
 };
 
