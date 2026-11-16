@@ -15,10 +15,10 @@ export function ProcessImage({ src, alt }: Props) {
 
   return (
     <Parallax
-      className="relative aspect-[var(--image-aspect)] w-full rounded-[5px] m:aspect-auto m:h-svh l:h-[80vh]"
+      className="relative aspect-[var(--image-aspect)] w-full rounded-[5px]"
       style={{ "--image-aspect": ratio } as CSSProperties}
     >
-      <Media src={src} alt={alt} sizes="100vw" />
+      <Media src={src} alt={alt} sizes="100vw" fit="contain" />
     </Parallax>
   );
 }
