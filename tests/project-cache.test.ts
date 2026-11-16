@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { defaultProjects } from "../content/projects";
+
 describe("project reads", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -23,5 +25,17 @@ describe("project reads", () => {
       }),
     );
     expect(fetch.mock.calls[0]?.[1]).not.toHaveProperty("next");
+  });
+
+  it("keeps production pages renderable when the API returns a server error", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(
+      new Response("Internal Server Error", { status: 500 }),
+    );
+    vi.stubGlobal("fetch", fetch);
+
+    const { getProjects } = await import("../lib/content");
+
+    await expect(getProjects()).resolves.toEqual(defaultProjects);
   });
 });
