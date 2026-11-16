@@ -1,9 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--ff-geist", display: "swap" });
 const inter = Inter({ subsets: ["latin"], variable: "--ff-inter", display: "swap" });
+const spacex = localFont({
+  src: "../public/fonts/SpaceX.ttf",
+  variable: "--ff-spacex",
+  display: "block",
+  preload: true,
+});
 
 const siteUrl = "https://chamathdilshan.com";
 
@@ -37,7 +44,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${inter.variable}`}>
+    <html lang="en" className={`${geist.variable} ${inter.variable} ${spacex.variable}`}>
       <body>{children}</body>
     </html>
   );
