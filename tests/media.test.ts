@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { cloudinaryLoader, faceArea, faceInfoUrl, isCloudinary, placeholderUrl, videoPoster, videoSrc } from "../lib/media";
-import { DOCUMENT_LIMIT, rejectDocumentReason } from "../lib/admin/upload";
+import { DOCUMENT_LIMIT, normalizeUploadFolder, rejectDocumentReason } from "../lib/admin/upload";
 
 const image = "https://res.cloudinary.com/demo/image/upload/v1730000000/site/shot.png";
 const video = "https://res.cloudinary.com/demo/video/upload/v1730000000/site/demo.mp4";
@@ -81,5 +81,13 @@ describe("protected document uploads", () => {
     expect(rejectDocumentReason(new File(["text"], "notes.txt", { type: "text/plain" }))).toContain("must be a PNG");
     const oversized = { name: "large.png", type: "image/png", size: DOCUMENT_LIMIT + 1 } as File;
     expect(rejectDocumentReason(oversized)).toContain("the limit is");
+  });
+});
+
+describe("media upload folders", () => {
+  it("normalizes section keys before sending them to the API", () => {
+    expect(normalizeUploadFolder("sections/page.about")).toBe("sections/page-about");
+    expect(normalizeUploadFolder("projects/my project/cover")).toBe("projects/my-project/cover");
+    expect(normalizeUploadFolder("///")).toBeUndefined();
   });
 });

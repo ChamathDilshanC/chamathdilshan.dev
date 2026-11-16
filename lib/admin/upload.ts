@@ -44,6 +44,17 @@ export const ACCEPT = {
   any: "image/*,video/*",
 } as const;
 
+/** Keep client-provided upload folders compatible with the API's path rules. */
+export function normalizeUploadFolder(folder?: string): string | undefined {
+  const normalized = folder
+    ?.split("/")
+    .map((segment) => segment.replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^[-_]+|[-_]+$/g, ""))
+    .filter(Boolean)
+    .join("/");
+
+  return normalized || undefined;
+}
+
 export const DOCUMENT_ACCEPT = "image/png";
 export const DOCUMENT_LIMIT = 15 * 1024 * 1024;
 
@@ -105,7 +116,11 @@ export async function uploadToCloudinary(
   onProgress?: (fraction: number) => void,
   folder?: string,
 ): Promise<MediaOut> {
-  const sig = await adminFetch<Signature>("/api/admin/media/sign", { method: "POST", body: folder ? { folder } : {} });
+  const safeFolder = normalizeUploadFolder(folder);
+  const sig = await adminFetch<Signature>("/api/admin/media/sign", {
+    method: "POST",
+    body: safeFolder ? { folder: safeFolder } : {},
+  });
   const form = new FormData();
   form.append("file", file);
   form.append("api_key", sig.apiKey);
