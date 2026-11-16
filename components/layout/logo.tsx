@@ -5,7 +5,7 @@ import Link from "next/link";
 import { enter } from "@/lib/enter";
 import { useSiteContent } from "./site-content";
 
-/** Header logo: a small crescent mark and the name in heavy caps. */
+/** Header logo: the CXD brand mark rendered from the SpaceX-style artwork. */
 export function Logo() {
   const { site } = useSiteContent();
   return (
