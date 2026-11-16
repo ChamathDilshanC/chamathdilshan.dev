@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "SpaceX";
-  src: url("/fonts/SpaceX.ttf") format("truetype");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 400;
-}
-
 /*
  * Design tokens.
  * Breakpoints: m = tablet (810px), l = desktop (1200px).
@@ -294,7 +286,7 @@ html:has(.protected-document),
   }
 
   .font-spacex {
-    font-family: "SpaceX", sans-serif;
+    font-family: var(--ff-spacex), sans-serif;
     font-weight: 400;
     letter-spacing: 0;
   }
