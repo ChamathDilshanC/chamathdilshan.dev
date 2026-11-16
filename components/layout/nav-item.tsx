@@ -26,6 +26,10 @@ export function NavItem({ href, title, number, dimmed, underlined, current, clas
   return (
     <Link
       href={href}
+      // Public pages fetch server data, so opt into a full RSC prefetch for
+      // the small primary navigation. This keeps tab clicks client-side when
+      // the next page is likely to be visited.
+      prefetch
       aria-current={current ? "page" : undefined}
       className={cn(
         "relative flex h-min w-min flex-none cursor-pointer items-end justify-center gap-3 overflow-clip text-white-token",
