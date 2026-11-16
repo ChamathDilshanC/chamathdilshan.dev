@@ -1,6 +1,7 @@
 "use client";
 
 import { Parallax } from "@/components/motion/parallax";
+import { Ticker } from "@/components/motion/ticker";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Media } from "@/components/ui/media";
 import { useImageAspectRatio } from "@/hooks/use-image-aspect-ratio";
@@ -30,13 +31,15 @@ export function CtaBand({ cta }: { cta: HomeCta }) {
 
           <div className="relative flex w-full flex-col items-center justify-center gap-30 overflow-clip pt-32.5">
             <div className="flex min-h-38 w-full items-center justify-center">
-              <div className="flex flex-col items-center gap-4 text-center">
+              <div className="flex w-full flex-col items-center gap-4 text-center">
                 <div className="relative h-12 w-40 m:h-15 m:w-48">
                   <Image src="/brand-logo.png" alt="Chamath logo" fill sizes="192px" className="object-contain" />
                 </div>
-                <p className="max-w-72 text-[11px] font-semibold uppercase tracking-[0.16em] text-white-a75 m:max-w-none m:text-[13px]">
-                  {cta.marquee}
-                </p>
+                <div className="h-25 w-full max-w-140 l:max-w-200">
+                  <Ticker speed={50} gap={10} fade={10}>
+                    <h2 className="whitespace-pre type-heading-2 mix-blend-difference">{cta.marquee} —</h2>
+                  </Ticker>
+                </div>
               </div>
             </div>
             <ArrowLink href={cta.action.href} variant="light">

@@ -3,26 +3,11 @@ import { Media } from "@/components/ui/media";
 import { MediaAsset } from "@/components/ui/media-asset";
 import { videoPoster } from "@/lib/media";
 import type { MediaItem, NavKey } from "@/lib/types/content";
-import { enter, heroImageEnter } from "@/lib/enter";
+import { enter } from "@/lib/enter";
 import { SiteHeader } from "./site-header";
 import { StickyHero } from "./sticky-hero";
 
 type ImageProps = { image: string; imageAlt: string };
-
-/** Full-bleed, slightly oversized blurred backdrop that zooms out on load (About). */
-function Backdrop({
-  image,
-  imageAlt,
-  className,
-}: ImageProps & { className?: string }) {
-  return (
-    <div className={`absolute -inset-[5%] ${className}`}>
-      <div className="animate-enter absolute inset-0" style={heroImageEnter}>
-        <Media src={image} alt={imageAlt} sizes="110vw" preload />
-      </div>
-    </div>
-  );
-}
 
 /** Listing hero ("Latest Projects (04)") used by /projects and /blog. */
 export function ListHero({
@@ -130,7 +115,7 @@ export function CaseHero({
   );
 }
 
-/** About hero: blurred backdrop, a sharp inset frame with the title, and a caption row. */
+/** About hero: one full-bleed image with the title and caption anchored at the bottom. */
 export function AboutHero({
   title,
   label,
@@ -139,27 +124,23 @@ export function AboutHero({
   imageAlt,
 }: ImageProps & { title: string; label: string; blurb: string }) {
   return (
-    <StickyHero className="justify-start gap-17.5 p-6">
-      <Backdrop image={image} imageAlt="" className="blur-[5px]" />
+    <StickyHero className="group/hero justify-between p-6">
+      <HeroPhoto fill={image} zoom className="opacity-70">
+        <Media src={image} alt={imageAlt} sizes="100vw" preload />
+      </HeroPhoto>
       <SiteHeader active="about" />
       <div className="h-17.5 w-full flex-none" />
-      <div
-        className="animate-enter relative flex h-[66%] w-full flex-col items-center justify-center gap-2.5 m:h-[70%] l:h-[66%] l:max-w-231"
-        style={enter(0.7, { y: "40px" })}
-      >
-        <div className="group/hero relative flex h-88.5 w-full flex-none flex-col items-center justify-center overflow-hidden rounded-[5px] m:h-91 l:h-auto l:flex-1">
-          <div className={`absolute inset-0 ${heroZoom}`}>
-            <Media
-              src={image}
-              alt={imageAlt}
-              sizes="(min-width: 1200px) 924px, 100vw"
-            />
-          </div>
-          <h1 className="relative text-center type-heading-2">{title}</h1>
-        </div>
-        <div className="flex w-full items-start justify-between gap-6 m:max-w-112.5 l:max-w-157.5">
-          <p className="type-body-3 text-white-token">{label}</p>
-          <p className="max-w-60 type-body-3 text-white-token [text-shadow:0_1px_12px_rgb(0_0_0/0.55)]">
+      <div className="relative flex w-full max-w-360 items-end justify-start gap-2.5 m:justify-between m:gap-0">
+        <div className="flex w-full flex-col items-start justify-start gap-2.5 m:max-w-112.5 m:gap-5 l:max-w-249.75 l:flex-row l:content-end l:items-end l:justify-between l:gap-0">
+          <h1 className="flex w-min flex-col flex-wrap content-start items-start justify-center m:flex-nowrap">
+            <span className="animate-enter type-heading-2" style={enter(0.8)}>
+              {title}
+            </span>
+            <span className="animate-enter type-body-1 text-white-a50" style={enter(0.9)}>
+              {label}
+            </span>
+          </h1>
+          <p className="animate-enter w-full max-w-[200.5px] type-body-3 text-white-a50" style={enter(1)}>
             {blurb}
           </p>
         </div>
