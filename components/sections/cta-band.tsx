@@ -1,14 +1,14 @@
 "use client";
 
 import { Parallax } from "@/components/motion/parallax";
-import { Ticker } from "@/components/motion/ticker";
 import { ArrowLink } from "@/components/ui/arrow-link";
 import { Media } from "@/components/ui/media";
 import { useImageAspectRatio } from "@/hooks/use-image-aspect-ratio";
 import type { HomeCta } from "@/lib/types/content";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
-/** Dark rounded band with a parallax backdrop, a scrolling line and a centred portrait. */
+/** Dark rounded band with a parallax backdrop, brand mark and a contact action. */
 export function CtaBand({ cta }: { cta: HomeCta }) {
   const backgroundRatio = useImageAspectRatio(cta.background, 3 / 2);
 
@@ -29,19 +29,19 @@ export function CtaBand({ cta }: { cta: HomeCta }) {
           </Parallax>
 
           <div className="relative flex w-full flex-col items-center justify-center gap-30 overflow-clip pt-32.5">
-            <div className="flex min-h-38 w-full items-center justify-center opacity-0 m:opacity-100">
-              <div className="h-25 w-px max-w-140 flex-1 l:max-w-200">
-                <Ticker speed={50} gap={10} fade={10}>
-                  <h2 className="whitespace-pre type-heading-2 mix-blend-difference">{cta.marquee} —</h2>
-                </Ticker>
+            <div className="flex min-h-38 w-full items-center justify-center">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="relative h-12 w-40 m:h-15 m:w-48">
+                  <Image src="/brand-logo.png" alt="Chamath logo" fill sizes="192px" className="object-contain" />
+                </div>
+                <p className="max-w-72 text-[11px] font-semibold uppercase tracking-[0.16em] text-white-a75 m:max-w-none m:text-[13px]">
+                  {cta.marquee}
+                </p>
               </div>
             </div>
             <ArrowLink href={cta.action.href} variant="light">
               {cta.action.label}
             </ArrowLink>
-            <div className="absolute top-1/2 left-1/2 z-1 aspect-[640/930] h-auto w-[30vw] max-w-56 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[5px] m:top-[calc(50.12%-162px)] m:left-[calc(50%-112px)] m:h-81 m:w-56 m:translate-x-0 m:translate-y-0">
-              <Media src={cta.portrait} alt={cta.portraitAlt} sizes="224px" />
-            </div>
           </div>
         </div>
       </section>

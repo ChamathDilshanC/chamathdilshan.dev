@@ -75,9 +75,12 @@ export function defaultFor(schema: JsonSchema, root: JsonSchemaRoot): unknown {
 export function withDefaults(value: unknown, schema: JsonSchema, root: JsonSchemaRoot): unknown {
   const { schema: s } = resolve(schema, root);
   if (typeOf(s) !== "object" || !value || typeof value !== "object" || Array.isArray(value)) return value;
-  const out: Record<string, unknown> = { ...(value as Record<string, unknown>) };
+  // Keep only fields that still exist in the current schema. This also removes
+  // legacy fields before a schema-driven form sends the object back to the API.
+  const out: Record<string, unknown> = {};
   for (const [key, prop] of Object.entries(s.properties ?? {})) {
-    out[key] = key in out ? withDefaults(out[key], prop, root) : defaultFor(prop, root);
+    const stored = value as Record<string, unknown>;
+    out[key] = key in stored ? withDefaults(stored[key], prop, root) : defaultFor(prop, root);
   }
   return out;
 }

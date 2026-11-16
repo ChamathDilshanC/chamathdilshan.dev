@@ -108,8 +108,6 @@ export type HomeCta = {
   marquee: string;
   background: string;
   backgroundAlt: string;
-  portrait: string;
-  portraitAlt: string;
   action: Cta;
 };
 

@@ -251,8 +251,6 @@ export const defaultContent: SiteContent = {
     marquee: "Software Made For Tomorrow, By Chamath",
     background: img("cta"),
     backgroundAlt: "Dusk light over a pool and dark walls",
-    portrait: img("cta-portrait"),
-    portraitAlt: "A dark column in glowing amber smoke",
     action: { label: "Contact Now", href: "/contact" },
   },
 

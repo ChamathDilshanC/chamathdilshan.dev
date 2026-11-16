@@ -160,7 +160,8 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
         <div
           ref={messagesRef}
           onScroll={handleMessagesScroll}
-          className="flex h-full touch-pan-y flex-col overscroll-contain overflow-y-scroll"
+          data-lenis-prevent
+          className="flex h-full min-h-0 touch-pan-y flex-col overscroll-contain overflow-y-auto"
         >
           {messages.length === 0 ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-2 text-center">
@@ -217,7 +218,11 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
   );
 
   const expandedPanel = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]" onClick={() => setExpanded(false)}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]"
+      data-stop-scroll
+      onClick={() => setExpanded(false)}
+    >
       <div className="flex h-full w-full items-center justify-center" onClick={(event) => event.stopPropagation()}>
         {panel}
       </div>

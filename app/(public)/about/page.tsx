@@ -8,6 +8,7 @@ import { Journal } from "@/components/sections/journal";
 import { Numbers } from "@/components/sections/numbers";
 import { ProcessImage } from "@/components/sections/process-image";
 import MarqueeBrands from "@/components/shadcn-space/marquee/marquee-02";
+import { TopographyBackground } from "@/components/animate-ui/backgrounds/topography";
 import { PlusList } from "@/components/ui/plus-list";
 import { SectionTitle } from "@/components/ui/section-title";
 import { SkillTile } from "@/components/ui/skill-tile";
@@ -108,10 +109,20 @@ function StackGrid({ stack, skills }: { stack: AboutStack; skills: Skill[] }) {
   if (visible.length === 0) return null;
   return (
     <section className="relative z-1 flex w-full flex-none flex-col items-center justify-start gap-15 bg-white-token px-6 pt-6 pb-20 m:gap-20 m:pb-30">
-      <div className="w-full max-w-360">
+      <TopographyBackground
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#fafafa_0%,#f0f0f0_100%)] text-neutral-500"
+        lineColor={undefined}
+        levels={16}
+        speed={1}
+        scale={1}
+        peak={1}
+        interactive
+      />
+      <div className="relative z-1 w-full max-w-360">
         <SectionTitle title={stack.title} aside={stack.aside} />
       </div>
-      <div className="grid w-full max-w-360 grid-cols-2 gap-2.5 m:grid-cols-3 l:grid-cols-6">
+      <div className="relative z-1 grid w-full max-w-360 grid-cols-2 gap-2.5 m:grid-cols-3 l:grid-cols-6">
         {withGaps(visible).map((skill, i) =>
           skill ? (
             <Reveal key={`${i}-${skill.name}`} duration={0.8} delay={0.04 * i}>
