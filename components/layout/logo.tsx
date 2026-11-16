@@ -16,12 +16,12 @@ export function Logo() {
       style={enter(0.6, { y: "20%" })}
     >
       <Image
-        src="/Logo.png"
+        src="/brand-logo.png"
         alt={site.logo}
         fill
         priority
         sizes="100px"
-        className="object-cover brightness-0 invert"
+        className="object-contain brightness-0 invert"
       />
     </Link>
   );
