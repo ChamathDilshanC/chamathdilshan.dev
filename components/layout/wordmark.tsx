@@ -47,7 +47,7 @@ export function Wordmark({ text: textProp, label: labelProp, animated = true, cl
       <span
         ref={lineRef}
         aria-hidden
-        className="flex w-full justify-between overflow-hidden font-geist leading-[0.8] font-black tracking-[-0.04em] whitespace-nowrap"
+        className="flex w-full justify-between overflow-hidden font-spacex leading-[0.8] whitespace-nowrap"
         style={{ fontSize: estimate }}
       >
         {letters.map((letter, i) => (

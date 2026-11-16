@@ -35,6 +35,10 @@ describe("default content", () => {
     for (const src of paths) expect(existsSync(publicFile(src)), src).toBe(true);
   });
 
+  it("ships the SpaceX wordmark font used by the home hero", () => {
+    expect(existsSync(join(root, "public", "fonts", "SpaceX.ttf"))).toBe(true);
+  });
+
   it("links the navigation to existing routes", () => {
     for (const item of defaultContent.navigation.items) {
       const page = item.href === "/" ? "app/(public)/page.tsx" : `app/(public)${item.href}/page.tsx`;
