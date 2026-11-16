@@ -5,11 +5,9 @@
  * backend calls /api/revalidate with those tags after each admin change, so
  * an edit shows up on the next visit.
  *
- * When the API cannot be reached:
- *  - during `next build` and in development the bundled defaults in content/
- *    are used, so a build never fails because the API is down;
- *  - in production the error propagates, so Next.js keeps serving the last
- *    good version of the page instead of replacing real content with defaults.
+ * When the API cannot be reached, the bundled defaults in content/ are used.
+ * Public pages must stay renderable during a transient API/database outage;
+ * the API failure is still logged so it can be fixed independently.
  */
 
 import { defaultExperience } from "@/content/experience";
@@ -21,16 +19,13 @@ import { ApiError, apiGet } from "@/lib/api";
 import { TAG, TTL, post as postTag, project as projectTag } from "@/lib/cache-tags";
 import type { Experience, Post, Project, SiteContent, Skill } from "@/lib/types/content";
 
-const canUseDefaults = () =>
-  process.env.NEXT_PHASE === "phase-production-build" || process.env.NODE_ENV !== "production";
-
 const warned = new Set<string>();
 
 function fallBackTo<T>(path: string, err: unknown, fallback: () => T): T {
-  if (!canUseDefaults()) throw err;
   if (!warned.has(path)) {
     warned.add(path);
-    console.warn(`[content] ${path} unavailable (${(err as Error).message}) — using bundled defaults`);
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`[content] ${path} unavailable (${message}) — using bundled defaults`);
   }
   return fallback();
 }
