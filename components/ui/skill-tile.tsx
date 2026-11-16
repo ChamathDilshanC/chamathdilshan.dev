@@ -14,7 +14,7 @@ import type { Skill } from "@/lib/types/content";
  * (on touch screens, while the tile crosses the middle of the screen).
  * A logo that fails to load is dropped rather than shown broken.
  */
-export function SkillTile({ skill, className, variant = "light" }: { skill: Skill; className?: string; variant?: "light" | "galaxy" }) {
+export function SkillTile({ skill, className, variant = "light" }: { skill: Skill; className?: string; variant?: "light" | "galaxy" | "plain" }) {
   const [broken, setBroken] = useState(false);
   const icon = skill.icon && !broken ? skill.icon : null;
   const cloudinary = icon ? isCloudinary(icon) : false;
@@ -33,7 +33,9 @@ export function SkillTile({ skill, className, variant = "light" }: { skill: Skil
         "group/skill flex flex-col items-center justify-center gap-4 rounded-[5px]",
         variant === "galaxy"
           ? "border border-white-a10 bg-white-a10 text-white-token shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_12px_40px_rgba(0,0,0,0.18)] backdrop-blur-sm"
-          : "bg-neutral-50",
+          : variant === "plain"
+            ? "bg-transparent"
+            : "bg-neutral-50",
         className,
       )}
     >
