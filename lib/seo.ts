@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { createElement, type ReactNode } from "react";
 
 export const siteUrl = "https://chamathdilshan.com";
@@ -48,10 +49,12 @@ export function pageMetadata({
   };
 }
 
-export function JsonLd({ data }: { data: Record<string, unknown> }): ReactNode {
+export async function JsonLd({ data }: { data: Record<string, unknown> }): Promise<ReactNode> {
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return createElement("script", {
     type: "application/ld+json",
+    nonce,
     dangerouslySetInnerHTML: { __html: json },
   });
 }

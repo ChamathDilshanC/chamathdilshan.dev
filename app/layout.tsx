@@ -14,6 +14,8 @@ const spacex = localFont({
 
 const siteUrl = "https://chamathdilshan.com";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
