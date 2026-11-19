@@ -34,7 +34,7 @@ export function HomeHero() {
             {hero.intro.line1}
           </p>
           <p className="animate-enter w-full max-w-75 type-body-1" style={enter(0.9)}>
-            {hero.intro.line2}
+            {hero.intro.line2.trimEnd()}{" "}
             <span className="text-white-a50">{hero.intro.line2Dim}</span>
           </p>
           <p className="animate-enter w-full max-w-75 type-body-1 text-white-a50" style={enter(1)}>
