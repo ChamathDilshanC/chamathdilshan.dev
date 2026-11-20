@@ -14,7 +14,9 @@ const spacex = localFont({
 
 const siteUrl = "https://chamathdilshan.com";
 
-export const dynamic = "force-dynamic";
+// Public routes use the tagged data caches below this layout. Admin routes
+// opt into force-dynamic and no-store in their own nested layout.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

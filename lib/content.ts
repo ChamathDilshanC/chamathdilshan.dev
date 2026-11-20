@@ -75,7 +75,7 @@ export async function getSiteContent(): Promise<SiteContent> {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  return read("/api/projects", [TAG.projects], TTL.list, () => defaultProjects, "no-store");
+  return read("/api/projects", [TAG.projects], TTL.list, () => defaultProjects);
 }
 
 export async function getProject(slug: string): Promise<Project | null> {

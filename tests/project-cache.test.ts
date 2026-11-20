@@ -8,7 +8,7 @@ describe("project reads", () => {
     vi.stubEnv("NEXT_PUBLIC_API_URL", "https://api.example.test");
   });
 
-  it("bypasses the Next.js data cache so published changes render immediately", async () => {
+  it("uses tagged revalidation so public project pages can be cached", async () => {
     const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(
       new Response(JSON.stringify([{ slug: "cap-it-screen-recorder" }]), { status: 200 }),
     );
@@ -20,11 +20,10 @@ describe("project reads", () => {
     expect(fetch).toHaveBeenCalledWith(
       "https://api.example.test/api/projects",
       expect.objectContaining({
-        cache: "no-store",
         headers: { Accept: "application/json" },
+        next: { revalidate: 600, tags: ["projects"] },
       }),
     );
-    expect(fetch.mock.calls[0]?.[1]).not.toHaveProperty("next");
   });
 
   it("keeps production pages renderable when the API returns a server error", async () => {
