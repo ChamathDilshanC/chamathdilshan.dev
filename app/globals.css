@@ -92,6 +92,26 @@ html.lenis body {
   pointer-events: none;
 }
 
+/* The chat overlay follows the visual viewport when a mobile keyboard opens. */
+.chat-overlay {
+  height: var(--chat-viewport-height, 100dvh);
+}
+
+.chat-dialog-panel {
+  height: var(--chat-viewport-height, 100dvh);
+  padding-top: calc(1rem + env(safe-area-inset-top));
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 810px) {
+  .chat-dialog-panel {
+    height: auto;
+    max-height: calc(100dvh - 32px);
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+}
+
 /*
  * The public site scrolls without visible scrollbars; the wheel, trackpad,
  * keyboard and touch all still scroll. The admin panel keeps its scrollbars.
