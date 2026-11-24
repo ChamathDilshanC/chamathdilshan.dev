@@ -39,7 +39,81 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
   const [showScrollTop, setShowScrollTop] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const wasExpandedRef = useRef(false);
   const stickToBottomRef = useRef(true);
+
+  useEffect(() => {
+    if (!expanded) {
+      if (wasExpandedRef.current) {
+        wasExpandedRef.current = false;
+        launcherRef.current?.focus();
+      }
+      return;
+    }
+
+    wasExpandedRef.current = true;
+    const root = document.documentElement;
+    const body = document.body;
+    const scrollY = window.scrollY;
+    const previous = {
+      htmlOverflow: root.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyRight: body.style.right,
+      bodyWidth: body.style.width,
+    };
+
+    root.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+
+    return () => {
+      root.style.overflow = previous.htmlOverflow;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.position = previous.bodyPosition;
+      body.style.top = previous.bodyTop;
+      body.style.left = previous.bodyLeft;
+      body.style.right = previous.bodyRight;
+      body.style.width = previous.bodyWidth;
+      window.scrollTo({ top: scrollY, left: 0, behavior: "auto" });
+    };
+  }, [expanded]);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const root = document.documentElement;
+    const viewport = window.visualViewport;
+    const updateViewportHeight = () => {
+      const height = viewport?.height ?? window.innerHeight;
+      root.style.setProperty("--chat-viewport-height", `${Math.round(height)}px`);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpanded(false);
+    };
+
+    updateViewportHeight();
+    viewport?.addEventListener("resize", updateViewportHeight);
+    viewport?.addEventListener("scroll", updateViewportHeight);
+    window.addEventListener("resize", updateViewportHeight);
+    window.addEventListener("orientationchange", updateViewportHeight);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      viewport?.removeEventListener("resize", updateViewportHeight);
+      viewport?.removeEventListener("scroll", updateViewportHeight);
+      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("orientationchange", updateViewportHeight);
+      window.removeEventListener("keydown", handleKeyDown);
+      root.style.removeProperty("--chat-viewport-height");
+    };
+  }, [expanded]);
 
   useEffect(() => {
     const messagesElement = messagesRef.current;
@@ -130,13 +204,13 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
       role={expanded ? "dialog" : undefined}
       aria-modal={expanded || undefined}
       aria-label={expanded ? "AI portfolio assistant" : undefined}
-      className={`relative flex min-h-0 w-full flex-col gap-6 overflow-hidden rounded-[5px] border border-black-a10 bg-transparent p-5 m:p-7.5 ${
+      className={`relative flex min-h-0 w-full min-w-0 flex-col gap-6 overflow-hidden bg-transparent p-4 m:p-7.5 ${
         expanded
-          ? "h-[min(760px,calc(100svh-32px))] max-w-[960px] bg-white-token shadow-2xl"
-          : "h-full"
+          ? "chat-dialog-panel max-w-[960px] rounded-none border-0 bg-white-token shadow-2xl m:h-[min(760px,calc(100dvh-32px))] m:rounded-[5px] m:border m:border-black-a10"
+          : "h-full rounded-[5px] border border-black-a10"
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex shrink-0 items-start justify-between gap-4">
         <div>
           <p className="type-body-1 text-black-token">Ask about Chamath</p>
           <p className="mt-1 type-body-4 text-black-a60">A quick portfolio assistant</p>
@@ -171,11 +245,11 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
           ) : (
             messages.map((message) =>
               message.role === "user" ? (
-                <div key={message.id} className="mb-4 ml-auto w-fit max-w-[85%] rounded-[5px] bg-black-token px-3.5 py-2.5 type-body-3 text-white-token">
+                <div key={message.id} className="mb-4 ml-auto min-w-0 w-fit max-w-[85%] break-words rounded-[5px] bg-black-token px-3.5 py-2.5 type-body-3 text-white-token">
                   {message.content}
                 </div>
               ) : (
-                <div key={message.id} className="mb-4 rounded-[5px] bg-neutral-50 px-3.5 py-3 text-black-token">
+                <div key={message.id} className="mb-4 min-w-0 break-words rounded-[5px] bg-neutral-50 px-3.5 py-3 text-black-token">
                   <StreamingResponse
                     text={message.content || "Thinking…"}
                     status={message.status ?? "done"}
@@ -201,17 +275,21 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
       </div>
 
       {error && <p role="alert" className="type-body-4 text-red-700">{error}</p>}
-      <div className="flex items-center gap-3">
+      <div className="flex shrink-0 items-end gap-2.5">
         <MatrixOrb state={streaming ? "thinking" : "listening"} size={42} color="#F75001" dots={7} labels={{ listening: "", thinking: "" }} />
         <PromptBox
-          className="min-w-0 flex-1"
+          className="min-w-0 w-full max-w-full flex-1"
           status={streaming ? "streaming" : "idle"}
           onSubmit={(value) => void submit(value)}
           onStop={stop}
           placeholder="Ask a question…"
           hint="Press enter to send"
           efforts={[{ id: "quick", label: "Quick" }]}
-          inputProps={{ autoFocus: expanded }}
+          inputProps={{
+            autoFocus: false,
+            className: "text-base",
+            enterKeyHint: "send",
+          }}
         />
       </div>
     </div>
@@ -219,11 +297,11 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
 
   const expandedPanel = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 backdrop-blur-[2px]"
+      className="chat-overlay fixed inset-x-0 top-0 z-50 flex w-full items-stretch justify-center bg-black/35 backdrop-blur-[2px] m:inset-0 m:items-center m:p-4"
       data-stop-scroll
       onClick={() => setExpanded(false)}
     >
-      <div className="flex h-full w-full items-center justify-center" onClick={(event) => event.stopPropagation()}>
+      <div className="flex h-full min-h-0 w-full items-stretch justify-center m:items-center" onClick={(event) => event.stopPropagation()}>
         {panel}
       </div>
     </div>
@@ -232,6 +310,7 @@ export function AboutChat({ floatingOnly = false }: { floatingOnly?: boolean }) 
   const launcher = (
     <button
       type="button"
+      ref={launcherRef}
       aria-label="Open AI chat"
       onClick={() => setExpanded(true)}
       className="group fixed right-5 bottom-[5.75rem] z-40 flex size-16 items-center justify-center rounded-full bg-white-token text-glow-orange shadow-[0_4px_24px_rgb(0_0_0_/_25%)] transition-transform duration-300 ease-out hover:-translate-y-1 m:right-7.5 m:bottom-[6.5rem] motion-safe:animate-bounce"
