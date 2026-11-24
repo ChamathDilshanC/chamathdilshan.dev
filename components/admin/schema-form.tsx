@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 import { BrandIconField } from "./brand-icon-field";
 import { ExperienceDocumentsField } from "./experience-documents-field";
 import { Dropzone, MediaPicker, MediaThumb, type MediaKind } from "./media";
-import { ProjectContentField, ProjectTemplateField } from "./project-presentation-field";
+import { ProjectContentField, ProjectTemplateField, type LegacyProjectContent } from "./project-presentation-field";
 import { Button, Card, Field, IconButton, Input, Select, Switch, Textarea } from "./ui";
 
 /** `values` is the whole top-level value, for widgets that read a sibling field. */
@@ -170,7 +170,33 @@ function Node(props: NodeProps) {
     case "project-template":
       return <ProjectTemplateField {...p} />;
     case "project-content":
-      return <ProjectContentField {...p} uploadFolder={context.uploadFolder} />;
+      return (
+        <ProjectContentField
+          {...p}
+          uploadFolder={context.uploadFolder}
+          legacy={
+            {
+              intro: typeof context.values.intro === "string" ? context.values.intro : "",
+              discover: typeof context.values.discover === "string" ? context.values.discover : "",
+              explore: typeof context.values.explore === "string" ? context.values.explore : "",
+              tech: Array.isArray(context.values.tech)
+                ? context.values.tech.filter((item): item is string => typeof item === "string")
+                : [],
+              results: Array.isArray(context.values.results)
+                ? context.values.results.filter(
+                    (item): item is { label: string; value: string } =>
+                      Boolean(
+                        item &&
+                          typeof item === "object" &&
+                          typeof (item as Record<string, unknown>).label === "string" &&
+                          typeof (item as Record<string, unknown>).value === "string",
+                      ),
+                  )
+                : [],
+            } satisfies LegacyProjectContent
+          }
+        />
+      );
   }
 
   const type = typeOf(schema);

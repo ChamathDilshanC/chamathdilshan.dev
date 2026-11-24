@@ -223,16 +223,24 @@ function ProjectGallery({ project }: { project: Project }) {
 export function ProjectTemplateRenderer({ project }: { project: Project }) {
   const content = project.studioContent ?? {};
   const sectionImages = content.sectionImages ?? {};
-  const tech = content.techStack ?? {};
+  const studioTech = content.techStack ?? {};
+  const tech = Object.keys(studioTech).length
+    ? studioTech
+    : project.tech.length
+      ? { Technologies: project.tech }
+      : {};
   const features = content.features ?? [];
   const architecture = content.architecture ?? [];
-  const problem = text(content.caseStudy?.problem);
-  const approach = text(content.caseStudy?.approach);
-  const outcomes = Array.isArray(content.caseStudy?.results)
+  const problem = text(content.caseStudy?.problem) || text(project.discover);
+  const approach = text(content.caseStudy?.approach) || text(project.explore);
+  const studioOutcomes = Array.isArray(content.caseStudy?.results)
     ? content.caseStudy.results.filter(
         (item): item is string => typeof item === "string" && item.length > 0,
       )
     : [];
+  const outcomes = studioOutcomes.length
+    ? studioOutcomes
+    : project.results.map((result) => `${result.label}: ${result.value}`);
   const paragraphs = [
     text(content.brief?.overview),
     text(content.brief?.purpose),

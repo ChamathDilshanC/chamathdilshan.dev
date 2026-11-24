@@ -4,7 +4,7 @@ import { IconCheck, IconPhotoPlus, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 import type { JsonSchema, MediaOut } from "@/lib/admin/api";
 import { cn } from "@/lib/utils";
-import { Button, Field, IconButton } from "./ui";
+import { Button, Field, IconButton, Input, Textarea } from "./ui";
 import { MediaPicker, MediaThumb } from "./media";
 
 export const PROJECT_TEMPLATES = [
@@ -52,9 +52,200 @@ const IMAGE_SECTIONS = [
 ] as const;
 
 type PresentationValue = {
+  headline?: string;
+  brief?: Record<string, string>;
+  features?: string[];
+  architecture?: Array<{ title: string; body: string }>;
+  techStack?: Record<string, string[]>;
+  caseStudy?: { problem?: string; approach?: string; results?: string[] };
   sectionImages?: Record<string, Array<{ url: string; alt: string }>>;
   [key: string]: unknown;
 };
+
+export type LegacyProjectContent = {
+  intro?: string;
+  discover?: string;
+  explore?: string;
+  tech?: string[];
+  results?: Array<{ label: string; value: string }>;
+};
+
+const lines = (value: string) =>
+  value
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+const architectureLines = (value: string) =>
+  lines(value)
+    .map((item) => {
+      const [title, ...body] = item.split(":");
+      return { title: title?.trim() ?? "", body: body.join(":").trim() };
+    })
+    .filter((item) => item.title && item.body);
+
+const architectureText = (value: unknown) =>
+  Array.isArray(value)
+    ? value
+        .filter(
+          (item): item is { title: string; body: string } =>
+            Boolean(item && typeof item === "object" && "title" in item && "body" in item),
+        )
+        .map((item) => `${item.title}: ${item.body}`)
+        .join("\n")
+    : "";
+
+const techStackText = (value: unknown) =>
+  value && typeof value === "object"
+    ? Object.entries(value as Record<string, unknown>)
+        .map(([group, items]) => `${group}: ${Array.isArray(items) ? items.join(", ") : ""}`)
+        .join("\n")
+    : "";
+
+const parseTechStack = (value: string) =>
+  lines(value).reduce<Record<string, string[]>>((groups, item) => {
+    const [group, ...items] = item.split(":");
+    const name = group?.trim();
+    const technologies = items
+      .join(":")
+      .split(",")
+      .map((technology) => technology.trim())
+      .filter(Boolean);
+    if (name && technologies.length) groups[name] = technologies;
+    return groups;
+  }, {});
+
+function SectionContentFields({
+  section,
+  content,
+  legacy,
+  update,
+}: {
+  section: string;
+  content: PresentationValue;
+  legacy?: LegacyProjectContent;
+  update: (value: PresentationValue) => void;
+}) {
+  const brief = content.brief ?? {};
+  const caseStudy = content.caseStudy ?? {};
+  const updateBrief = (key: string, value: string) =>
+    update({ ...content, brief: { ...brief, [key]: value } });
+  const updateCaseStudy = (key: "problem" | "approach" | "results", value: string | string[]) =>
+    update({ ...content, caseStudy: { ...caseStudy, [key]: value } });
+
+  switch (section) {
+    case "brief":
+      return (
+        <div className="grid gap-3 m:grid-cols-2">
+          <Field label="Headline">
+            <Input
+              value={content.headline ?? ""}
+              onChange={(event) => update({ ...content, headline: event.target.value })}
+            />
+          </Field>
+          <Field label="Overview" description="Shown as the main project brief.">
+            <Textarea
+              value={brief.overview ?? legacy?.intro ?? ""}
+              rows={3}
+              onChange={(event) => updateBrief("overview", event.target.value)}
+            />
+          </Field>
+          <Field label="Purpose">
+            <Textarea
+              value={brief.purpose ?? ""}
+              rows={3}
+              onChange={(event) => updateBrief("purpose", event.target.value)}
+            />
+          </Field>
+          <Field label="Users">
+            <Textarea
+              value={brief.users ?? ""}
+              rows={3}
+              onChange={(event) => updateBrief("users", event.target.value)}
+            />
+          </Field>
+        </div>
+      );
+    case "features":
+      return (
+        <Field label="Features" description="One feature per line.">
+          <Textarea
+            value={(content.features ?? []).join("\n")}
+            rows={4}
+            onChange={(event) => update({ ...content, features: lines(event.target.value) })}
+          />
+        </Field>
+      );
+    case "architecture":
+      return (
+        <Field label="Architecture" description="One section per line in the format Title: explanation.">
+          <Textarea
+            value={architectureText(content.architecture)}
+            rows={4}
+            onChange={(event) => update({ ...content, architecture: architectureLines(event.target.value) })}
+          />
+        </Field>
+      );
+    case "challenge":
+      return (
+        <Field label="Challenge" description="The problem this project solves.">
+          <Textarea
+            value={caseStudy.problem ?? legacy?.discover ?? ""}
+            rows={4}
+            onChange={(event) => updateCaseStudy("problem", event.target.value)}
+          />
+        </Field>
+      );
+    case "implementation":
+      return (
+        <Field label="Implementation" description="The engineering approach used to solve the challenge.">
+          <Textarea
+            value={caseStudy.approach ?? legacy?.explore ?? ""}
+            rows={4}
+            onChange={(event) => updateCaseStudy("approach", event.target.value)}
+          />
+        </Field>
+      );
+    case "outcomes":
+      return (
+        <Field label="Verified outcomes" description="One outcome per line.">
+          <Textarea
+            value={
+              Array.isArray(caseStudy.results)
+                ? caseStudy.results.join("\n")
+                : (legacy?.results ?? []).map((item) => `${item.label}: ${item.value}`).join("\n")
+            }
+            rows={4}
+            onChange={(event) => updateCaseStudy("results", lines(event.target.value))}
+          />
+        </Field>
+      );
+    case "techStack":
+      return (
+        <Field label="Technology stack" description="One group per line in the format Group: item, item.">
+          <Textarea
+            value={
+              content.techStack !== undefined
+                ? techStackText(content.techStack)
+                : (legacy?.tech ?? []).length
+                  ? `Technologies: ${(legacy?.tech ?? []).join(", ")}`
+                  : ""
+            }
+            rows={4}
+            onChange={(event) => update({ ...content, techStack: parseTechStack(event.target.value) })}
+          />
+        </Field>
+      );
+    case "repositories":
+      return (
+        <p className="rounded-[6px] bg-white-token px-3 py-2 text-[12px] leading-5 text-black-a60 ring-1 ring-black-a10">
+          Repository links are managed in the separate Repositories field. Add section images here if this template needs them.
+        </p>
+      );
+    default:
+      return null;
+  }
+}
 
 function TemplatePreview({
   accent,
@@ -151,12 +342,14 @@ export function ProjectContentField({
   onChange,
   label,
   uploadFolder,
+  legacy,
 }: {
   schema: JsonSchema;
   value: unknown;
   onChange: (value: unknown) => void;
   label: string;
   uploadFolder?: string;
+  legacy?: LegacyProjectContent;
 }) {
   const content = (
     value && typeof value === "object" ? value : {}
@@ -211,6 +404,14 @@ export function ProjectContentField({
                   <IconPhotoPlus className="size-4" />
                   Add images
                 </Button>
+              </div>
+              <div className="mt-3 rounded-[6px] bg-white-token p-3 ring-1 ring-black-a10">
+                <SectionContentFields
+                  section={key}
+                  content={content}
+                  legacy={legacy}
+                  update={(next) => onChange(next)}
+                />
               </div>
               {images.length > 0 && (
                 <div className="mt-3 grid grid-cols-2 gap-2 m:grid-cols-4">
