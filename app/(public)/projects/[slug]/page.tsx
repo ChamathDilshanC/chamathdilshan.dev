@@ -12,6 +12,7 @@ import { MediaAsset } from "@/components/ui/media-asset";
 import { PlaceholderProvider } from "@/components/ui/placeholders";
 import { SectionTitle } from "@/components/ui/section-title";
 import { ProjectTemplateRenderer } from "@/components/projects/project-template-renderer";
+import { ProjectYoutubeVideo } from "@/components/projects/project-youtube-video";
 import { getProject, getProjects } from "@/lib/content";
 import { placeholders } from "@/lib/placeholders";
 import { absoluteUrl, imageUrl, JsonLd, pageMetadata, siteUrl } from "@/lib/seo";
@@ -158,6 +159,10 @@ export default async function ProjectPage(props: PageProps<"/projects/[slug]">) 
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="relative z-1 flex w-full flex-none items-center justify-center bg-white-token px-6 pb-20 m:pb-30">
+        <ProjectYoutubeVideo project={project} />
       </section>
 
       {more.length > 0 && (

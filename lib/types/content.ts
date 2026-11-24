@@ -214,6 +214,7 @@ export type Project = {
   tech: string[];
   liveUrl: string | null;
   repoUrl: string | null;
+  youtubeUrl: string | null;
   /** Shown in Selected Work on the home page. */
   featured: boolean;
   /** Optional Studio presentation data; legacy projects remain unchanged. */

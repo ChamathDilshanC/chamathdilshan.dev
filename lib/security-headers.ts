@@ -12,7 +12,7 @@ export function contentSecurityPolicy(nonce: string): string {
     "media-src 'self' blob: https://res.cloudinary.com",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
-    "frame-src 'none'",
+    "frame-src https://www.youtube-nocookie.com",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

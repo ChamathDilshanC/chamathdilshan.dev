@@ -47,7 +47,7 @@ const CONFIG: Record<Kind, Config> = {
         fields: ["thumbnail", "hero", "gallery"],
       },
       { title: "Story", fields: ["intro", "discover", "explore", "results"] },
-      { title: "Details", fields: ["tech", "liveUrl", "repoUrl"] },
+      { title: "Details", fields: ["tech", "liveUrl", "repoUrl", "youtubeUrl"] },
       { title: "Studio presentation", description: "AI-generated content stays editable here. Evidence is retained with the project.", fields: ["template", "templateConfig", "studioContent", "seo", "repositories"] },
       { title: "Visibility", fields: ["published", "featured"] },
     ],

@@ -36,6 +36,7 @@ export const defaultProjects: Project[] = [
     tech: ["Next.js", "TypeScript", "PostgreSQL"],
     liveUrl: null,
     repoUrl: null,
+    youtubeUrl: null,
     featured: true,
   },
   {
@@ -64,6 +65,7 @@ export const defaultProjects: Project[] = [
     tech: ["React", "FastAPI", "Stripe"],
     liveUrl: null,
     repoUrl: null,
+    youtubeUrl: null,
     featured: true,
   },
   {
@@ -92,6 +94,7 @@ export const defaultProjects: Project[] = [
     tech: ["Next.js", "Supabase"],
     liveUrl: null,
     repoUrl: null,
+    youtubeUrl: null,
     featured: true,
   },
   {
@@ -120,6 +123,7 @@ export const defaultProjects: Project[] = [
     tech: ["React Native", "Supabase"],
     liveUrl: null,
     repoUrl: null,
+    youtubeUrl: null,
     featured: true,
   },
 ];

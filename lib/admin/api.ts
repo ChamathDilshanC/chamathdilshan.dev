@@ -118,6 +118,7 @@ export type ProjectOut = {
   summary: string;
   thumbnail: { url: string; alt: string } | null;
   hero: { kind: "image" | "video"; url: string; alt: string; poster: string | null } | null;
+  youtubeUrl: string | null;
   published: boolean;
   featured: boolean;
   sortOrder: number;

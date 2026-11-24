@@ -8,6 +8,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { MediaAsset } from "@/components/ui/media-asset";
 import { technologyIcon } from "@/lib/tech-icons";
 import type { Project } from "@/lib/types/content";
+import { ProjectYoutubeVideo } from "./project-youtube-video";
 
 const cleanText = (value: string) =>
   value
@@ -392,6 +393,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
           </div>
         </EditorialSection>
 
+        <ProjectYoutubeVideo project={project} />
         <Repositories project={project} />
         <SectionImages images={sectionImages.repositories} />
         <ProjectGallery project={project} />

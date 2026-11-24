@@ -14,6 +14,7 @@ describe("security response headers", () => {
     expect(policy).toContain("style-src-elem 'self' 'unsafe-inline'");
     expect(policy).toContain("style-src-attr 'unsafe-inline'");
     expect(policy).toContain("frame-ancestors 'none'");
+    expect(policy).toContain("frame-src https://www.youtube-nocookie.com");
     expect(policy).toContain("object-src 'none'");
     expect(policy).toContain("connect-src 'self' https://api.chamathdilshan.com");
     expect(policy).not.toContain("script-src 'unsafe-inline'");
