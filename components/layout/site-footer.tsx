@@ -13,12 +13,8 @@ export function SiteFooter({ site, footer }: { site: SiteSettings; footer: Foote
     <footer className="relative z-1 flex w-full flex-col items-center justify-end gap-17.5 glow-gradient px-6 pt-11.25 pb-6">
       <Curtain heightClassName="h-132.5" className="glow-grain mask-b-from-62% mask-b-to-100%" />
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-132.5">
-        <div className="mx-auto flex h-full w-full max-w-360 items-start justify-center px-6 pt-5 l:justify-end l:pt-18">
-          <div className="pointer-events-auto">
-            <FooterProfileHoverCard email={site.email} />
-          </div>
-        </div>
+      <div className="relative -mb-8 flex w-full max-w-360 justify-center l:justify-end">
+        <FooterProfileHoverCard email={site.email} image={footer.profileImage} />
       </div>
 
       <div className="relative h-px w-full max-w-360 bg-white-a16" />

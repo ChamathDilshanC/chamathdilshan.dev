@@ -72,6 +72,8 @@ export const defaultContent: SiteContent = {
   footer: {
     heading: "Let’s work together",
     cta: { label: "Contact Now", href: "/contact" },
+    profileImage:
+      "https://res.cloudinary.com/vmfn84y1/image/upload/f_auto,q_auto,c_fill,g_face,w_256,h_256/v1793902790/chamathdilshan.dev/shared/hcc5l3yfawhijzq2vbsc-15.png",
     copyright: "© {year}, All Rights Reserved",
     credit: { label: "Code on", linkLabel: "GitHub", href: github },
   },

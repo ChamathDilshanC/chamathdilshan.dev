@@ -46,6 +46,7 @@ export type Faq = {
 export type Footer = {
   heading: string;
   cta: Cta;
+  profileImage: string;
   /** `{year}` is replaced with the year from site settings. */
   copyright: string;
   credit: { label: string; linkLabel: string; href: string };

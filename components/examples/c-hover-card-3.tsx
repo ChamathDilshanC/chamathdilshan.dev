@@ -17,16 +17,19 @@ const PROFILE_IMAGE =
 
 type FooterProfileHoverCardProps = {
   email: string
+  image?: string | null
 }
 
-export function FooterProfileHoverCard({ email }: FooterProfileHoverCardProps) {
+export function FooterProfileHoverCard({ email, image }: FooterProfileHoverCardProps) {
+  const profileImage = image?.trim() || PROFILE_IMAGE
+
   return (
     <div className="flex items-center justify-center">
       <HoverCard openDelay={100} closeDelay={100}>
         <HoverCardTrigger asChild>
-          <div className="group inline-flex cursor-pointer items-center gap-3 rounded-full border border-white/20 bg-black/35 p-1.5 pr-4 shadow-[0_12px_45px_rgba(0,0,0,0.28)] backdrop-blur-md transition duration-300 hover:border-orange-300/70 hover:bg-black/50">
-            <Avatar className="size-16 border border-white/25 ring-2 ring-white/10 ring-offset-2 ring-offset-black/40 transition duration-300 group-hover:scale-105 group-hover:ring-orange-300/40">
-              <AvatarImage src={PROFILE_IMAGE} alt="Chamath Dilshan" />
+          <div className="group inline-flex h-14 min-w-72 cursor-pointer items-center gap-2.5 rounded-full border border-white/20 bg-black/35 p-1.5 pr-5 shadow-[0_12px_45px_rgba(0,0,0,0.28)] backdrop-blur-md transition duration-300 hover:border-orange-300/70 hover:bg-black/50 l:min-w-80">
+            <Avatar className="size-12 border border-white/25 ring-2 ring-white/10 ring-offset-2 ring-offset-black/40 transition duration-300 group-hover:scale-105 group-hover:ring-orange-300/40">
+              <AvatarImage src={profileImage} alt="Chamath Dilshan" />
               <AvatarFallback className="bg-orange-600 text-white">CD</AvatarFallback>
             </Avatar>
             <div className="space-y-1">
@@ -43,14 +46,14 @@ export function FooterProfileHoverCard({ email }: FooterProfileHoverCardProps) {
           side="bottom"
           align="end"
           sideOffset={16}
-          className="w-[min(21rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border-white/15 bg-[#101010]/95 p-0 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
+          className="w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border-white/15 bg-[#101010]/95 p-0 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
         >
-          <div className="relative h-36 overflow-hidden">
+          <div className="relative h-28 overflow-hidden">
             <Image
               fill
-              src={PROFILE_IMAGE}
+              src={profileImage}
               alt="Chamath Dilshan"
-              sizes="336px"
+              sizes="400px"
               className="h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-[#101010]/10 to-transparent" />
