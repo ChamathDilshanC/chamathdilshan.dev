@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Curtain } from "@/components/motion/curtain";
 import { ArrowLink } from "@/components/ui/arrow-link";
+import { FooterProfileHoverCard } from "@/components/examples/c-hover-card-3";
 import type { Footer, SiteSettings } from "@/lib/types/content";
 import { FooterNav } from "./footer-nav";
 import { Wordmark } from "./wordmark";
@@ -11,6 +12,14 @@ export function SiteFooter({ site, footer }: { site: SiteSettings; footer: Foote
   return (
     <footer className="relative z-1 flex w-full flex-col items-center justify-end gap-17.5 glow-gradient px-6 pt-11.25 pb-6">
       <Curtain heightClassName="h-132.5" className="glow-grain mask-b-from-62% mask-b-to-100%" />
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-132.5">
+        <div className="mx-auto flex h-full w-full max-w-360 items-start justify-center px-6 pt-5 l:justify-end l:pt-18">
+          <div className="pointer-events-auto">
+            <FooterProfileHoverCard email={site.email} />
+          </div>
+        </div>
+      </div>
 
       <div className="relative h-px w-full max-w-360 bg-white-a16" />
 

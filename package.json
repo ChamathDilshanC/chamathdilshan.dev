@@ -26,6 +26,7 @@
     "lucide-react": "^1.73.0",
     "motion": "^14.14.0",
     "next": "^16.0.0",
+    "radix-ui": "^1.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "reshaped": "^4.2.0",
