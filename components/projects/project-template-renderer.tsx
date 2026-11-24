@@ -7,6 +7,7 @@ import { Curtain } from "@/components/motion/curtain";
 import { Reveal } from "@/components/motion/reveal";
 import { MediaAsset } from "@/components/ui/media-asset";
 import { technologyIcon } from "@/lib/tech-icons";
+import { youtubeEmbedUrl } from "@/lib/youtube";
 import type { Project } from "@/lib/types/content";
 import { ProjectYoutubeVideo } from "./project-youtube-video";
 
@@ -150,8 +151,8 @@ function Technology({ name }: { name: string }) {
   );
 }
 
-function Repositories({ project }: { project: Project }) {
-  const repositories =
+function projectRepositories(project: Project) {
+  return (
     project.repositories ??
     (project.repoUrl
       ? [
@@ -162,10 +163,14 @@ function Repositories({ project }: { project: Project }) {
             role: "primary",
           },
         ]
-      : []);
+      : []));
+}
+
+function Repositories({ project, number }: { project: Project; number: number }) {
+  const repositories = projectRepositories(project);
   if (!repositories.length) return null;
   return (
-    <EditorialSection number={8} title="Repositories">
+    <EditorialSection number={number} title="Repositories">
       <div className="flex flex-col gap-6">
         <p className="type-body-2">Verified source links for this project.</p>
         <div className="grid gap-3 m:grid-cols-2">
@@ -237,6 +242,10 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
   const product = template === "product-showcase";
   const deepDive = template === "architecture-deep-dive";
   const openSource = template === "opensource-showcase";
+  let sectionNumber = 1;
+  const nextSectionNumber = () => sectionNumber++;
+  const hasYoutubeVideo = youtubeEmbedUrl(project.youtubeUrl) !== null;
+  const hasRepositories = projectRepositories(project).length > 0;
 
   return (
     <>
@@ -253,7 +262,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
         <div className="relative h-px w-full max-w-360 bg-black-a16" />
 
         <EditorialSection
-          number={1}
+          number={nextSectionNumber()}
           title={
             deepDive
               ? "System brief"
@@ -290,7 +299,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
 
         {features.length > 0 && (
           <EditorialSection
-            number={2}
+            number={nextSectionNumber()}
             title="What it does"
             images={sectionImages.features}
           >
@@ -315,7 +324,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
 
         {architecture.length > 0 && (
           <EditorialSection
-            number={3}
+            number={nextSectionNumber()}
             title={deepDive ? "Architecture deep dive" : "How it works"}
             images={sectionImages.architecture}
           >
@@ -335,7 +344,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
 
         {problem && (
           <EditorialSection
-            number={4}
+            number={nextSectionNumber()}
             title="Challenge"
             images={sectionImages.challenge}
           >
@@ -345,7 +354,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
 
         {approach && (
           <EditorialSection
-            number={5}
+            number={nextSectionNumber()}
             title="Implementation"
             images={sectionImages.implementation}
           >
@@ -355,7 +364,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
 
         {outcomes.length > 0 && (
           <EditorialSection
-            number={6}
+            number={nextSectionNumber()}
             title="Verified outcomes"
             images={sectionImages.outcomes}
           >
@@ -373,7 +382,7 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
         )}
 
         <EditorialSection
-          number={7}
+          number={nextSectionNumber()}
           title="Technology stack"
           images={sectionImages.techStack}
         >
@@ -393,8 +402,8 @@ export function ProjectTemplateRenderer({ project }: { project: Project }) {
           </div>
         </EditorialSection>
 
-        <ProjectYoutubeVideo project={project} />
-        <Repositories project={project} />
+        {hasYoutubeVideo && <ProjectYoutubeVideo project={project} number={nextSectionNumber()} />}
+        {hasRepositories && <Repositories project={project} number={nextSectionNumber()} />}
         <SectionImages images={sectionImages.repositories} />
         <ProjectGallery project={project} />
       </article>

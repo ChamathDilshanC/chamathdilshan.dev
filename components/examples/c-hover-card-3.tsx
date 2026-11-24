@@ -1,5 +1,4 @@
 import { CalendarDays } from "lucide-react"
-import Image from "next/image"
 
 import {
   Avatar,
@@ -48,16 +47,9 @@ export function FooterProfileHoverCard({ email, image }: FooterProfileHoverCardP
           sideOffset={16}
           className="w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border-white/15 bg-[#101010]/95 p-0 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl"
         >
-          <div className="relative h-28 overflow-hidden">
-            <Image
-              fill
-              src={profileImage}
-              alt="Chamath Dilshan"
-              sizes="400px"
-              className="h-full w-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#101010] via-[#101010]/10 to-transparent" />
-            <p className="absolute bottom-3 left-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/65">
+          <div className="relative overflow-hidden bg-gradient-to-br from-orange-400/25 via-[#101010] to-emerald-300/10 px-4 py-4">
+            <div className="absolute -top-8 -right-8 size-24 rounded-full bg-orange-300/20 blur-2xl" />
+            <p className="relative text-[10px] font-semibold uppercase tracking-[0.2em] text-white/65">
               Independent engineer
             </p>
           </div>
